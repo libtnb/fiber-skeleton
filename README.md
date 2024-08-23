@@ -1,4 +1,4 @@
-# Go Web skeleton
+# Fiber skeleton
 
 ## 前言
 
