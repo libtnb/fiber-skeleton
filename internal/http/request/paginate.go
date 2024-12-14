@@ -9,7 +9,7 @@ type Paginate struct {
 	Limit uint `json:"limit" form:"limit" query:"limit" validate:"required|number|min=1,max=1000"`
 }
 
-func (r *Paginate) PrepareForValidation(c fiber.Ctx) error {
+func (r *Paginate) Prepare(c fiber.Ctx) error {
 	if r.Page == 0 {
 		r.Page = 1
 	}
