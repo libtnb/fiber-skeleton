@@ -2,25 +2,25 @@ module github.com/go-rat/fiber-skeleton
 
 go 1.23
 
-toolchain go1.23.0
+toolchain go1.23.4
 
 require (
 	github.com/dromara/carbon/v2 v2.5.2
 	github.com/glebarez/sqlite v1.11.0
-	github.com/go-gormigrate/gormigrate/v2 v2.1.2
+	github.com/go-gormigrate/gormigrate/v2 v2.1.3
 	github.com/go-rat/utils v1.0.7
 	github.com/gofiber/fiber/v3 v3.0.0-beta.3
 	github.com/google/wire v0.6.0
 	github.com/gookit/validate v1.5.3
 	github.com/knadh/koanf/parsers/yaml v0.1.0
-	github.com/knadh/koanf/providers/file v1.1.0
-	github.com/knadh/koanf/v2 v2.1.1
+	github.com/knadh/koanf/providers/file v1.1.2
+	github.com/knadh/koanf/v2 v2.1.2
 	github.com/orandin/slog-gorm v1.4.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/stretchr/testify v1.10.0
 	github.com/urfave/cli/v3 v3.0.0-beta1
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
-	gorm.io/gorm v1.25.11
+	gorm.io/gorm v1.25.12
 )
 
 require (
@@ -29,7 +29,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/glebarez/go-sqlite v1.22.0 // indirect
-	github.com/go-viper/mapstructure/v2 v2.0.0 // indirect
+	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
 	github.com/gofiber/utils/v2 v2.0.0-beta.6 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gookit/filter v1.2.1 // indirect
