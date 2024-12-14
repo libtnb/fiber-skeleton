@@ -1,4 +1,4 @@
-# Fiber skeleton
+# fiber-skeleton
 
 ## 前言
 
@@ -11,23 +11,22 @@
 
 Goravel 是一个非常容易上手的优秀框架，但其完全复制 Laravel 的设计导致了它是一个重量级框架，不符合以上设计理念。因此便有了本脚手架。
 
+和 chi-skeleton 不同，此脚手架使用了 [Fiber](https://gofiber.io/) 框架。
+
 ## 设计
 
 按以上设计理念，最终本脚手架的目录结构如下：
 
 * cmd 目录存放应用的入口文件，每个应用一个文件
 * config 目录存放配置文件，可以有多种配置文件
-* internal 目录存放应用的代码
+* internal 目录存放应用的各种代码
+* mocks 目录存放生成的 mock 代码，用于测试
 * pkg 目录存放可以被应用重复使用的一些包
 * storage 目录存放应用运行时产生的文件
 * web 目录存放应用的前端代码
 * go.mod 和 go.sum 用于管理依赖
 
 其中 internal 目录参考了 [Kratos](https://go-kratos.dev/) 的设计，将应用分为 biz、data 和 service 三层，分别负责业务逻辑、数据访问和服务层。
-
-## 使用
-
-**目前本脚手架还在开发中，不建议在自己的项目中使用。**
 
 ## TODO
 

@@ -1,24 +1,29 @@
 package data
 
 import (
-	"github.com/TheTNB/go-web-skeleton/internal/app"
-	"github.com/TheTNB/go-web-skeleton/internal/biz"
+	"gorm.io/gorm"
+
+	"github.com/go-rat/fiber-skeleton/internal/biz"
 )
 
-type userRepo struct{}
+type userRepo struct {
+	db *gorm.DB
+}
 
-func NewUserRepo() biz.UserRepo {
-	return &userRepo{}
+func NewUserRepo(db *gorm.DB) biz.UserRepo {
+	return &userRepo{
+		db: db,
+	}
 }
 
 func (r *userRepo) List(page, limit uint) ([]*biz.User, int64, error) {
 	var total int64
-	if err := app.Orm.Model(&biz.User{}).Count(&total).Error; err != nil {
+	if err := r.db.Model(&biz.User{}).Count(&total).Error; err != nil {
 		return nil, 0, err
 	}
 
 	var list []*biz.User
-	if err := app.Orm.Offset(int((page - 1) * limit)).Limit(int(limit)).Find(&list).Error; err != nil {
+	if err := r.db.Offset(int((page - 1) * limit)).Limit(int(limit)).Find(&list).Error; err != nil {
 		return nil, 0, err
 	}
 
@@ -27,7 +32,7 @@ func (r *userRepo) List(page, limit uint) ([]*biz.User, int64, error) {
 
 func (r *userRepo) Get(id uint) (*biz.User, error) {
 	user := new(biz.User)
-	if err := app.Orm.First(user, id).Error; err != nil {
+	if err := r.db.First(user, id).Error; err != nil {
 		return nil, err
 	}
 
@@ -35,9 +40,9 @@ func (r *userRepo) Get(id uint) (*biz.User, error) {
 }
 
 func (r *userRepo) Save(user *biz.User) error {
-	return app.Orm.Save(user).Error
+	return r.db.Save(user).Error
 }
 
 func (r *userRepo) Delete(id uint) error {
-	return app.Orm.Delete(&biz.User{}, id).Error
+	return r.db.Delete(&biz.User{}, id).Error
 }

@@ -1,0 +1,40 @@
+name: Lint
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  golangci:
+    name: golanci-lint
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          cache: true
+          go-version: 'stable'
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          skip-cache: true
+          version: latest
+          args: --timeout=30m ./...
+  govulncheck:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          cache: true
+          go-version: 'stable'
+      - name: Install Govulncheck
+        run: go install golang.org/x/vuln/cmd/govulncheck@latest
+      - name: Run Govulncheck
+        run: govulncheck ./...

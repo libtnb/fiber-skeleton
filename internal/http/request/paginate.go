@@ -5,8 +5,8 @@ import (
 )
 
 type Paginate struct {
-	Page  uint `json:"page" form:"page" query:"page" validate:"required,number,gte=1" comment:"页码"`
-	Limit uint `json:"limit" form:"limit" query:"limit" validate:"required,number,gte=1,lte=1000" comment:"每页数量"`
+	Page  uint `json:"page" form:"page" query:"page" validate:"required|number|min=1"`
+	Limit uint `json:"limit" form:"limit" query:"limit" validate:"required|number|min=1,max=1000"`
 }
 
 func (r *Paginate) PrepareForValidation(c fiber.Ctx) error {

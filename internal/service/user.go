@@ -3,18 +3,17 @@ package service
 import (
 	"github.com/gofiber/fiber/v3"
 
-	"github.com/TheTNB/go-web-skeleton/internal/biz"
-	"github.com/TheTNB/go-web-skeleton/internal/data"
-	"github.com/TheTNB/go-web-skeleton/internal/http/request"
+	"github.com/go-rat/fiber-skeleton/internal/biz"
+	"github.com/go-rat/fiber-skeleton/internal/http/request"
 )
 
 type UserService struct {
-	repo biz.UserRepo
+	user biz.UserRepo
 }
 
-func NewUserService() *UserService {
+func NewUserService(user biz.UserRepo) *UserService {
 	return &UserService{
-		repo: data.NewUserRepo(),
+		user: user,
 	}
 }
 
@@ -23,7 +22,7 @@ func (r *UserService) List(c fiber.Ctx) error {
 	if err != nil {
 		return Error(c, fiber.StatusUnprocessableEntity, err.Error())
 	}
-	users, total, err := r.repo.List(req.Page, req.Limit)
+	users, total, err := r.user.List(req.Page, req.Limit)
 	if err != nil {
 		return ErrorSystem(c)
 	}
@@ -40,7 +39,7 @@ func (r *UserService) Get(c fiber.Ctx) error {
 		return Error(c, fiber.StatusUnprocessableEntity, err.Error())
 	}
 
-	user, err := r.repo.Get(req.ID)
+	user, err := r.user.Get(req.ID)
 	if err != nil {
 		return ErrorSystem(c)
 	}
@@ -56,7 +55,7 @@ func (r *UserService) Create(c fiber.Ctx) error {
 
 	user := new(biz.User)
 	user.Name = req.Name
-	if err = r.repo.Save(user); err != nil {
+	if err = r.user.Save(user); err != nil {
 		return ErrorSystem(c)
 	}
 
@@ -72,7 +71,7 @@ func (r *UserService) Update(c fiber.Ctx) error {
 	user := new(biz.User)
 	user.ID = req.ID
 	user.Name = req.Name
-	if err = r.repo.Save(user); err != nil {
+	if err = r.user.Save(user); err != nil {
 		return ErrorSystem(c)
 	}
 
@@ -85,7 +84,7 @@ func (r *UserService) Delete(c fiber.Ctx) error {
 		return Error(c, fiber.StatusUnprocessableEntity, err.Error())
 	}
 
-	if err = r.repo.Delete(req.ID); err != nil {
+	if err = r.user.Delete(req.ID); err != nil {
 		return ErrorSystem(c)
 	}
 

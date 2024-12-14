@@ -8,12 +8,12 @@ import (
 func main() {
 	debug.SetGCPercent(10)
 
-	app, err := initApp()
+	cli, err := initCli()
 	if err != nil {
 		panic(err)
 	}
 
-	if err = app.Run(); err != nil {
+	if err = cli.Run(); err != nil {
 		panic(err)
 	}
 }

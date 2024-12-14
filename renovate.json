@@ -1,25 +1,38 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base"
+    "config:recommended"
   ],
   "labels": [
     "🤖 Dependencies"
   ],
   "commitMessagePrefix": "chore(deps): ",
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": true
+  },
   "postUpdateOptions": [
-    "gomodTidy"
+    "gomodTidy",
+    "pnpmDedupe"
   ],
   "packageRules": [
     {
-      "description": "Automerge non-major updates",
-      "matchUpdateTypes": [
-        "minor",
-        "patch"
+      "groupName": "all dependencies",
+      "groupSlug": "all",
+      "description": "Automerge updates",
+      "matchPackageNames": [
+        "*"
       ],
-      "matchCurrentVersion": "!/^0/",
+      "matchUpdateTypes": [
+        "digest",
+        "patch",
+        "minor",
+        "major"
+      ],
       "automerge": true
     }
   ],
-  "ignoreDeps": []
+  "ignoreDeps": [
+    "typescript"
+  ]
 }
