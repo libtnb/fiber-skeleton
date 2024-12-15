@@ -60,12 +60,7 @@ func (r *App) Run() error {
 // runServer fallback for unsupported graceful OS
 func (r *App) runServer() error {
 	fmt.Println("[HTTP] Listening and serving HTTP on", r.conf.MustString("http.address"))
-	return r.router.Listen(r.conf.MustString("http.address"), fiber.ListenConfig{
-		ListenerNetwork:       "tcp",
-		EnablePrefork:         r.conf.Bool("http.prefork"),
-		EnablePrintRoutes:     r.conf.Bool("http.debug"),
-		DisableStartupMessage: !r.conf.Bool("http.debug"),
-	})
+	return r.router.Listen(r.conf.MustString("http.address"), r.fiberListenConfig())
 }
 
 // runServerGraceful graceful for linux and darwin
@@ -90,19 +85,18 @@ func (r *App) runServerGraceful() error {
 		}
 	}()
 
+	fmt.Println("[HTTP] Listening and serving HTTP graceful on", r.conf.MustString("http.address"))
 	ln, err := upg.Listen("tcp", r.conf.MustString("http.address"))
 	if err != nil {
 		return err
 	}
 	defer ln.Close()
 
-	fmt.Println("[HTTP] Listening and serving HTTP graceful on", r.conf.MustString("http.address"))
-	go r.router.Listener(ln, fiber.ListenConfig{
-		ListenerNetwork:       "tcp",
-		EnablePrefork:         r.conf.Bool("http.prefork"),
-		EnablePrintRoutes:     r.conf.Bool("http.debug"),
-		DisableStartupMessage: !r.conf.Bool("http.debug"),
-	}) // nolint: errcheck
+	go func() {
+		if err = r.router.Listener(ln, r.fiberListenConfig()); err != nil {
+			log.Println("http server error:", err)
+		}
+	}()
 
 	// tableflip ready
 	if err = upg.Ready(); err != nil {
@@ -115,4 +109,13 @@ func (r *App) runServerGraceful() error {
 	// after upg.Exit() is closed. No new upgrades can be
 	// performed if the parent doesn't exit.
 	return r.router.ShutdownWithTimeout(60 * time.Second)
+}
+
+func (r *App) fiberListenConfig() fiber.ListenConfig {
+	return fiber.ListenConfig{
+		ListenerNetwork:       "tcp",
+		EnablePrefork:         r.conf.Bool("http.prefork"),
+		EnablePrintRoutes:     r.conf.Bool("http.debug"),
+		DisableStartupMessage: !r.conf.Bool("http.debug"),
+	}
 }
