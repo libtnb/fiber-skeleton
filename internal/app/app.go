@@ -102,7 +102,7 @@ func (r *App) runServerGraceful() error {
 		EnablePrefork:         r.conf.Bool("http.prefork"),
 		EnablePrintRoutes:     r.conf.Bool("http.debug"),
 		DisableStartupMessage: !r.conf.Bool("http.debug"),
-	})
+	}) // nolint: errcheck
 
 	// tableflip ready
 	if err = upg.Ready(); err != nil {
