@@ -102,7 +102,7 @@ func Bind[T any](c *fiber.Ctx) (*T, error) {
 		return req, nil
 	}
 
-	return nil, v.Errors.ErrOrNil()
+	return nil, v.Errors.OneError()
 }
 
 // Paginate 取分页条目
