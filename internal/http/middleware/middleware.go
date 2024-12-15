@@ -10,11 +10,24 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
+	"github.com/google/wire"
 	"github.com/knadh/koanf/v2"
 )
 
-// GlobalMiddleware is a collection of global middleware that will be applied to every request.
-func GlobalMiddleware(conf *koanf.Koanf) []fiber.Handler {
+var ProviderSet = wire.NewSet(NewMiddlewares)
+
+type Middlewares struct {
+	conf *koanf.Koanf
+}
+
+func NewMiddlewares(conf *koanf.Koanf) *Middlewares {
+	return &Middlewares{
+		conf: conf,
+	}
+}
+
+// Globals is a collection of global middleware that will be applied to every request.
+func (r *Middlewares) Globals(app *fiber.App) []fiber.Handler {
 	return []fiber.Handler{
 		recover.New(),
 		cors.New(),
@@ -24,7 +37,7 @@ func GlobalMiddleware(conf *koanf.Koanf) []fiber.Handler {
 		requestid.New(),
 		logger.New(),
 		encryptcookie.New(encryptcookie.Config{
-			Key: conf.String("app.key"),
+			Key: r.conf.String("app.key"),
 		}),
 	}
 }

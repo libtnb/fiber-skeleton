@@ -10,6 +10,7 @@ import (
 	"github.com/go-rat/fiber-skeleton/internal/app"
 	"github.com/go-rat/fiber-skeleton/internal/bootstrap"
 	"github.com/go-rat/fiber-skeleton/internal/data"
+	"github.com/go-rat/fiber-skeleton/internal/http/middleware"
 	"github.com/go-rat/fiber-skeleton/internal/route"
 	"github.com/go-rat/fiber-skeleton/internal/service"
 )
@@ -26,6 +27,7 @@ func initApp() (*app.App, error) {
 	if err != nil {
 		return nil, err
 	}
+	middlewares := middleware.NewMiddlewares(koanf)
 	logger := bootstrap.NewLog(koanf)
 	db, err := bootstrap.NewDB(koanf, logger)
 	if err != nil {
@@ -35,7 +37,7 @@ func initApp() (*app.App, error) {
 	userService := service.NewUserService(userRepo)
 	http := route.NewHttp(userService)
 	ws := route.NewWs()
-	fiberApp := bootstrap.NewRouter(koanf, http, ws)
+	fiberApp := bootstrap.NewRouter(koanf, middlewares, http, ws)
 	gormigrate := bootstrap.NewMigrate(db)
 	cron := bootstrap.NewCron(koanf, logger)
 	validation := bootstrap.NewValidator(db)

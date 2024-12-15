@@ -10,7 +10,7 @@ import (
 	"github.com/go-rat/fiber-skeleton/internal/route"
 )
 
-func NewRouter(conf *koanf.Koanf, http *route.Http, ws *route.Ws) *fiber.App {
+func NewRouter(conf *koanf.Koanf, middlewares *middleware.Middlewares, http *route.Http, ws *route.Ws) *fiber.App {
 	// prefork not support dual stack
 	network := fiber.NetworkTCP
 	if conf.Bool("http.prefork") {
@@ -32,7 +32,7 @@ func NewRouter(conf *koanf.Koanf, http *route.Http, ws *route.Ws) *fiber.App {
 	})
 
 	// add middleware
-	for _, handler := range middleware.GlobalMiddleware(conf) {
+	for _, handler := range middlewares.Globals(r) {
 		r.Use(handler)
 	}
 
