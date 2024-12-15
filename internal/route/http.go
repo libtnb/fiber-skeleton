@@ -1,7 +1,7 @@
 package route
 
 import (
-	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v2"
 
 	"github.com/go-rat/fiber-skeleton/internal/service"
 )
@@ -17,7 +17,7 @@ func NewHttp(user *service.UserService) *Http {
 }
 
 func (r *Http) Register(router fiber.Router) {
-	router.Get("/", func(c fiber.Ctx) error {
+	router.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World 👋!")
 	})
 

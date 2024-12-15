@@ -12,7 +12,7 @@ import (
 
 	"github.com/cloudflare/tableflip"
 	"github.com/go-gormigrate/gormigrate/v2"
-	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v2"
 	"github.com/knadh/koanf/v2"
 	"github.com/robfig/cron/v3"
 	"gorm.io/gorm"
@@ -79,7 +79,7 @@ func (r *App) runServer() error {
 		}
 	}()
 
-	fmt.Println("[HTTP] Listening and serving HTTP on", r.conf.MustString("http.address"))
+	fmt.Println("[HTTP] listening and serving on", r.conf.MustString("http.address"))
 	ln, err := upg.Listen("tcp", r.conf.MustString("http.address"))
 	if err != nil {
 		return err
@@ -87,7 +87,7 @@ func (r *App) runServer() error {
 	defer ln.Close()
 
 	go func() {
-		if err = r.router.Listener(ln, r.listenConfig()); err != nil {
+		if err = r.router.Listener(ln); err != nil {
 			log.Println("[HTTP] server error:", err)
 		}
 	}()
@@ -108,15 +108,6 @@ func (r *App) runServer() error {
 
 // runServerFallback fallback for windows
 func (r *App) runServerFallback() error {
-	fmt.Println("[HTTP] Listening and serving HTTP on", r.conf.MustString("http.address"))
-	return r.router.Listen(r.conf.MustString("http.address"), r.listenConfig())
-}
-
-func (r *App) listenConfig() fiber.ListenConfig {
-	return fiber.ListenConfig{
-		ListenerNetwork:       "tcp",
-		EnablePrefork:         r.conf.Bool("http.prefork"),
-		EnablePrintRoutes:     r.conf.Bool("http.debug"),
-		DisableStartupMessage: !r.conf.Bool("http.debug"),
-	}
+	fmt.Println("[HTTP] listening and serving on", r.conf.MustString("http.address"))
+	return r.router.Listen(r.conf.MustString("http.address"))
 }

@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v2"
 
 	"github.com/go-rat/fiber-skeleton/internal/biz"
 	"github.com/go-rat/fiber-skeleton/internal/http/request"
@@ -17,10 +17,10 @@ func NewUserService(user biz.UserRepo) *UserService {
 	}
 }
 
-func (r *UserService) List(c fiber.Ctx) error {
+func (r *UserService) List(c *fiber.Ctx) error {
 	req, err := Bind[request.Paginate](c)
 	if err != nil {
-		return Error(c, fiber.StatusUnprocessableEntity, err.Error())
+		return Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 	}
 	users, total, err := r.user.List(req.Page, req.Limit)
 	if err != nil {
@@ -33,10 +33,10 @@ func (r *UserService) List(c fiber.Ctx) error {
 	})
 }
 
-func (r *UserService) Get(c fiber.Ctx) error {
+func (r *UserService) Get(c *fiber.Ctx) error {
 	req, err := Bind[request.UserID](c)
 	if err != nil {
-		return Error(c, fiber.StatusUnprocessableEntity, err.Error())
+		return Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 	}
 
 	user, err := r.user.Get(req.ID)
@@ -47,10 +47,10 @@ func (r *UserService) Get(c fiber.Ctx) error {
 	return Success(c, user)
 }
 
-func (r *UserService) Create(c fiber.Ctx) error {
+func (r *UserService) Create(c *fiber.Ctx) error {
 	req, err := Bind[request.AddUser](c)
 	if err != nil {
-		return Error(c, fiber.StatusUnprocessableEntity, err.Error())
+		return Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 	}
 
 	user := new(biz.User)
@@ -62,10 +62,10 @@ func (r *UserService) Create(c fiber.Ctx) error {
 	return Success(c, user)
 }
 
-func (r *UserService) Update(c fiber.Ctx) error {
+func (r *UserService) Update(c *fiber.Ctx) error {
 	req, err := Bind[request.UpdateUser](c)
 	if err != nil {
-		return Error(c, fiber.StatusUnprocessableEntity, err.Error())
+		return Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 	}
 
 	user := new(biz.User)
@@ -78,10 +78,10 @@ func (r *UserService) Update(c fiber.Ctx) error {
 	return Success(c, user)
 }
 
-func (r *UserService) Delete(c fiber.Ctx) error {
+func (r *UserService) Delete(c *fiber.Ctx) error {
 	req, err := Bind[request.UserID](c)
 	if err != nil {
-		return Error(c, fiber.StatusUnprocessableEntity, err.Error())
+		return Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 	}
 
 	if err = r.user.Delete(req.ID); err != nil {

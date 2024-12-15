@@ -2,6 +2,7 @@ app:
   name: "go-web-app"
   version: "1.0.0"
   key: "a-long-string-with-32-characters"
+  debug: true
 
 http:
   debug: true
