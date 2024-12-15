@@ -38,6 +38,7 @@ func initApp() (*app.App, error) {
 	fiberApp := bootstrap.NewRouter(koanf, http, ws)
 	gormigrate := bootstrap.NewMigrate(db)
 	cron := bootstrap.NewCron(koanf, logger)
-	appApp := app.NewApp(koanf, fiberApp, db, gormigrate, cron, logger)
+	validation := bootstrap.NewValidator(db)
+	appApp := app.NewApp(koanf, fiberApp, gormigrate, cron, validation)
 	return appApp, nil
 }

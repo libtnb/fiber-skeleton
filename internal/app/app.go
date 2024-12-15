@@ -3,7 +3,6 @@ package app
 import (
 	"fmt"
 	"log"
-	"log/slog"
 	"os"
 	"os/signal"
 	"runtime"
@@ -13,28 +12,24 @@ import (
 	"github.com/cloudflare/tableflip"
 	"github.com/go-gormigrate/gormigrate/v2"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gookit/validate"
 	"github.com/knadh/koanf/v2"
 	"github.com/robfig/cron/v3"
-	"gorm.io/gorm"
 )
 
 type App struct {
 	conf     *koanf.Koanf
 	router   *fiber.App
-	db       *gorm.DB
 	migrator *gormigrate.Gormigrate
 	cron     *cron.Cron
-	log      *slog.Logger
 }
 
-func NewApp(conf *koanf.Koanf, router *fiber.App, db *gorm.DB, migrator *gormigrate.Gormigrate, cron *cron.Cron, log *slog.Logger) *App {
+func NewApp(conf *koanf.Koanf, router *fiber.App, migrator *gormigrate.Gormigrate, cron *cron.Cron, _ *validate.Validation) *App {
 	return &App{
 		conf:     conf,
 		router:   router,
-		db:       db,
 		migrator: migrator,
 		cron:     cron,
-		log:      log,
 	}
 }
 
