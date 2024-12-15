@@ -50,21 +50,15 @@ func (r *App) Run() error {
 	fmt.Println("[CRON] cron scheduler started")
 
 	// run http server
-	if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
-		return r.runServerGraceful()
+	if runtime.GOOS != "windows" {
+		return r.runServer()
 	}
 
-	return r.runServer()
+	return r.runServerFallback()
 }
 
-// runServer fallback for unsupported graceful OS
+// runServer graceful run server
 func (r *App) runServer() error {
-	fmt.Println("[HTTP] Listening and serving HTTP on", r.conf.MustString("http.address"))
-	return r.router.Listen(r.conf.MustString("http.address"), r.listenConfig())
-}
-
-// runServerGraceful graceful for linux and darwin
-func (r *App) runServerGraceful() error {
 	upg, err := tableflip.New(tableflip.Options{})
 	if err != nil {
 		return err
@@ -110,6 +104,12 @@ func (r *App) runServerGraceful() error {
 	// after upg.Exit() is closed. No new upgrades can be
 	// performed if the parent doesn't exit.
 	return r.router.ShutdownWithTimeout(60 * time.Second)
+}
+
+// runServerFallback fallback for windows
+func (r *App) runServerFallback() error {
+	fmt.Println("[HTTP] Listening and serving HTTP on", r.conf.MustString("http.address"))
+	return r.router.Listen(r.conf.MustString("http.address"), r.listenConfig())
 }
 
 func (r *App) listenConfig() fiber.ListenConfig {
