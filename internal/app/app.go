@@ -60,7 +60,7 @@ func (r *App) Run() error {
 // runServer fallback for unsupported graceful OS
 func (r *App) runServer() error {
 	fmt.Println("[HTTP] Listening and serving HTTP on", r.conf.MustString("http.address"))
-	return r.router.Listen(r.conf.MustString("http.address"), r.fiberListenConfig())
+	return r.router.Listen(r.conf.MustString("http.address"), r.listenConfig())
 }
 
 // runServerGraceful graceful for linux and darwin
@@ -72,7 +72,7 @@ func (r *App) runServerGraceful() error {
 	defer upg.Stop()
 
 	// By prefixing PID to log, easy to interrupt from another process.
-	log.SetPrefix(fmt.Sprintf("[PID: %d]", os.Getpid()))
+	log.SetPrefix(fmt.Sprintf("[PID %d]", os.Getpid()))
 
 	// Listen for the process signal to trigger the tableflip upgrade.
 	go func() {
@@ -80,12 +80,12 @@ func (r *App) runServerGraceful() error {
 		signal.Notify(sig, syscall.SIGHUP)
 		for range sig {
 			if err = upg.Upgrade(); err != nil {
-				log.Printf("graceful upgrade failed: %v", err)
+				log.Println("[Graceful] upgrade failed:", err)
 			}
 		}
 	}()
 
-	fmt.Println("[HTTP] Listening and serving HTTP graceful on", r.conf.MustString("http.address"))
+	fmt.Println("[HTTP] Listening and serving HTTP on", r.conf.MustString("http.address"))
 	ln, err := upg.Listen("tcp", r.conf.MustString("http.address"))
 	if err != nil {
 		return err
@@ -93,8 +93,8 @@ func (r *App) runServerGraceful() error {
 	defer ln.Close()
 
 	go func() {
-		if err = r.router.Listener(ln, r.fiberListenConfig()); err != nil {
-			log.Println("http server error:", err)
+		if err = r.router.Listener(ln, r.listenConfig()); err != nil {
+			log.Println("[HTTP] server error:", err)
 		}
 	}()
 
@@ -103,6 +103,7 @@ func (r *App) runServerGraceful() error {
 		return err
 	}
 
+	fmt.Println("[Graceful] ready for upgrade")
 	<-upg.Exit()
 
 	// Make sure to set a deadline on exiting the process
@@ -111,7 +112,7 @@ func (r *App) runServerGraceful() error {
 	return r.router.ShutdownWithTimeout(60 * time.Second)
 }
 
-func (r *App) fiberListenConfig() fiber.ListenConfig {
+func (r *App) listenConfig() fiber.ListenConfig {
 	return fiber.ListenConfig{
 		ListenerNetwork:       "tcp",
 		EnablePrefork:         r.conf.Bool("http.prefork"),
