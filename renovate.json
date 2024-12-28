@@ -11,28 +11,22 @@
     "enabled": true,
     "automerge": true
   },
+  "platformAutomerge": true,
   "postUpdateOptions": [
     "gomodTidy",
     "pnpmDedupe"
   ],
   "packageRules": [
     {
-      "groupName": "all dependencies",
-      "groupSlug": "all",
-      "description": "Automerge updates",
-      "matchPackageNames": [
-        "*"
-      ],
+      "groupName": "non-major dependencies",
       "matchUpdateTypes": [
         "digest",
+        "pin",
         "patch",
-        "minor",
-        "major"
+        "minor"
       ],
       "automerge": true
     }
   ],
-  "ignoreDeps": [
-    "typescript"
-  ]
+  "ignoreDeps": []
 }
