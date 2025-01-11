@@ -10,7 +10,7 @@ type User struct {
 	Name      string          `json:"name"`
 	CreatedAt carbon.DateTime `json:"created_at"`
 	UpdatedAt carbon.DateTime `json:"updated_at"`
-	DeletedAt gorm.DeletedAt  `gorm:"index" json:"deleted_at"`
+	DeletedAt gorm.DeletedAt  `json:"-"`
 }
 
 type UserRepo interface {
