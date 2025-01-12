@@ -48,7 +48,7 @@ func (r *UserService) Get(c *fiber.Ctx) error {
 }
 
 func (r *UserService) Create(c *fiber.Ctx) error {
-	req, err := Bind[request.AddUser](c)
+	req, err := Bind[request.UserAdd](c)
 	if err != nil {
 		return Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 	}
@@ -63,7 +63,7 @@ func (r *UserService) Create(c *fiber.Ctx) error {
 }
 
 func (r *UserService) Update(c *fiber.Ctx) error {
-	req, err := Bind[request.UpdateUser](c)
+	req, err := Bind[request.UserUpdate](c)
 	if err != nil {
 		return Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 	}
