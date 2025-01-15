@@ -15,7 +15,7 @@ import (
 func NewDB(conf *koanf.Koanf, log *slog.Logger) (*gorm.DB, error) {
 	// You can use any other database, like MySQL or PostgreSQL.
 	return gorm.Open(sqlite.Open(conf.MustString("database.path")), &gorm.Config{
-		Logger:                                   sloggorm.New(slogGorm.WithHandler(log.Handler())),
+		Logger:                                   sloggorm.New(sloggorm.WithHandler(log.Handler())),
 		SkipDefaultTransaction:                   true,
 		DisableForeignKeyConstraintWhenMigrating: true,
 	})
