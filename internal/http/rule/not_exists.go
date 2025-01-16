@@ -13,11 +13,11 @@ import (
 // 例子：notExists:users,phone,email
 // Example: notExists:users,phone,email
 type NotExists struct {
-	DB *gorm.DB
+	db *gorm.DB
 }
 
 func NewNotExists(db *gorm.DB) *NotExists {
-	return &NotExists{DB: db}
+	return &NotExists{db: db}
 }
 
 func (r *NotExists) Passes(val any, options ...any) bool {
@@ -28,7 +28,7 @@ func (r *NotExists) Passes(val any, options ...any) bool {
 	tableName := options[0].(string)
 	fieldNames := options[1:]
 
-	query := r.DB.Table(tableName).Where(fmt.Sprintf("%s = ?", fieldNames[0]), val)
+	query := r.db.Table(tableName).Where(fmt.Sprintf("%s = ?", fieldNames[0]), val)
 	for _, fieldName := range fieldNames[1:] {
 		query = query.Or(fmt.Sprintf("%s = ?", fieldName), val)
 	}

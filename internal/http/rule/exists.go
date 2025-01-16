@@ -13,11 +13,11 @@ import (
 // 例子：exists:users,phone,email
 // Example: exists:users,phone,email
 type Exists struct {
-	DB *gorm.DB
+	db *gorm.DB
 }
 
 func NewExists(db *gorm.DB) *Exists {
-	return &Exists{DB: db}
+	return &Exists{db: db}
 }
 
 func (r *Exists) Passes(val any, options ...any) bool {
@@ -28,7 +28,7 @@ func (r *Exists) Passes(val any, options ...any) bool {
 	tableName := options[0].(string)
 	fieldNames := options[1:]
 
-	query := r.DB.Table(tableName).Where(fmt.Sprintf("%s = ?", fieldNames[0]), val)
+	query := r.db.Table(tableName).Where(fmt.Sprintf("%s = ?", fieldNames[0]), val)
 	for _, fieldName := range fieldNames[1:] {
 		query = query.Or(fmt.Sprintf("%s = ?", fieldName), val)
 	}
