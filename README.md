@@ -1,42 +1,42 @@
 # fiber-skeleton
 
-## 前言
+## Preface
 
-我从去年开始参与 [Goravel](https://github.com/goravel/goravel) 的开发，在这一年多的时间里学到了很多新东西，我认为一个优秀的脚手架应满足以下几点：
+I started to participate in the development of [Goravel](https://github.com/goravel/goravel) last year. I have learned a lot of new things in this year. I think an excellent skeleton should meet the following points:
 
-* 目录简单（只包含 CURD 应用所需的最小目录结构）
-* 代码简洁（只包含 CURD 应用所需的最小代码量）
-* 功能完备（从表单验证到 ORM 等 CURD 应用所需的功能都具备）
-* 易于拓展（在 CURD 的基础上可以快速拓展）
-* 优雅重启（支持开发环境的 air 热重启和线上环境的优雅重启）
+* Simple directory (only contains the minimum directory structure required for CURD application)
+* Concise code (only contains the minimum amount of code required for CURD application)
+* Complete functions (from form validation to ORM and other functions required by CURD application)
+* Easy to expand (can be expanded quickly based on CURD)
+* Graceful restart (supports air hot restart of development environment and graceful restart of online environment)
 
-Goravel 是一个非常容易上手的优秀框架，但其完全复制 Laravel 的设计导致了它是一个重量级框架，不符合以上设计理念。因此便有了本脚手架。
+Goravel is an excellent framework that is very easy to use, but its design that completely copies Laravel makes it a heavyweight framework, which does not meet the above design concepts. Therefore, this skeleton was created.
 
-和 [chi-skeleton](https://github.com/go-rat/chi-skeleton) 不同，此脚手架使用了速度奇快的 [Fiber](https://gofiber.io/) 框架，通常建议使用此脚手架。
+Unlike [chi-skeleton](https://github.com/go-rat/chi-skeleton), this skeleton uses the incredibly fast [Fiber](https://gofiber.io/) framework, which is generally recommended.
 
-## 设计
+## Design
 
-按以上设计理念，最终本脚手架的目录结构如下：
+According to the above design concept, the final directory structure of this skeleton is as follows:
 
-* cmd 目录存放应用的入口文件，每个应用一个文件
-* config 目录存放配置文件，可以有多种配置文件
-* internal 目录存放应用的各种代码
-* mocks 目录存放生成的 mock 代码，用于测试
-* pkg 目录存放可以被应用重复使用的一些包
-* storage 目录存放应用运行时产生的文件
-* web 目录存放应用的前端代码
-* go.mod 和 go.sum 用于管理依赖
+* The cmd directory stores the entry file of the application, one file for each application
+* The config directory stores configuration files, which can have multiple configuration files
+* The internal directory stores various codes of the application
+* The mocks directory stores the generated mock code for testing
+* The pkg directory stores some packages that can be reused by the application
+* The storage directory stores files generated when the application is running
+* The web directory stores the front-end code of the application
+* go.mod and go.sum are used to manage dependencies
 
-其中 internal 目录参考了 [Kratos](https://go-kratos.dev/) 的设计，将应用分为 biz、data 和 service 三层，分别负责业务逻辑、数据访问和服务层。
+The internal directory refers to the design of [Kratos](https://go-kratos.dev/), dividing the application into three layers: biz, data, and service, which are responsible for business logic, data access, and service layers respectively.
 
 ## TODO
 
-* [x] 支持 protobuf
-* [x] 代码生成工具
+* [x] support protobuf
+* [x] code generation tool
 
-## 致谢
+## Thanks
 
-本项目的开发中参考了以下项目，特此感谢：
+The development of this project refers to the following projects, I would like to express my gratitude:
 
 * [Standard Go Project Layout](https://github.com/golang-standards/project-layout)
 * [Kratos](https://go-kratos.dev/)
