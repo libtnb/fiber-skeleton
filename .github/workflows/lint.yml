@@ -9,7 +9,7 @@ permissions:
 jobs:
   golangci:
     name: golanci-lint
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -25,7 +25,7 @@ jobs:
           version: latest
           args: --timeout=30m ./...
   govulncheck:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
