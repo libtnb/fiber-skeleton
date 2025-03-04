@@ -14,34 +14,34 @@ import (
 
 // SuccessResponse 通用成功响应
 type SuccessResponse struct {
-	Message string `json:"message"`
-	Data    any    `json:"data"`
+	Msg  string `json:"msg"`
+	Data any    `json:"data"`
 }
 
 // ErrorResponse 通用错误响应
 type ErrorResponse struct {
-	Message string `json:"message"`
+	Msg string `json:"msg"`
 }
 
 // Success 响应成功
 func Success(c *fiber.Ctx, data any) error {
 	return c.JSON(&SuccessResponse{
-		Message: "success",
-		Data:    data,
+		Msg:  "success",
+		Data: data,
 	})
 }
 
 // Error 响应错误
 func Error(c *fiber.Ctx, code int, format string, args ...any) error {
 	return c.Status(code).JSON(&ErrorResponse{
-		Message: fmt.Sprintf(format, args...),
+		Msg: fmt.Sprintf(format, args...),
 	})
 }
 
 // ErrorSystem 响应系统错误
 func ErrorSystem(c *fiber.Ctx) error {
 	return c.Status(http.StatusInternalServerError).JSON(&ErrorResponse{
-		Message: http.StatusText(http.StatusInternalServerError),
+		Msg: http.StatusText(http.StatusInternalServerError),
 	})
 }
 
