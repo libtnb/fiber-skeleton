@@ -3,7 +3,6 @@ app:
   version: "1.0.0"
   key: "a-long-string-with-32-characters"
   debug: true
-
 http:
   debug: true
   prefork: false
@@ -11,10 +10,6 @@ http:
   bodyLimit: 4096
   headerLimit: 4096
   reduceMemoryUsage: true
-
 database:
   debug: true
-  host: "localhost"
-  port: 5432
-  user: "root"
-  password: ""
+  path: "go-web-app.db"
