@@ -10,6 +10,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          cache: true
+          go-version: 'stable'
       - name: Install Mockery
         run: |
           go install github.com/vektra/mockery/v2@latest
