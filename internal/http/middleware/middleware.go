@@ -29,7 +29,9 @@ func NewMiddlewares(conf *koanf.Koanf) *Middlewares {
 // Globals is a collection of global middleware that will be applied to every request.
 func (r *Middlewares) Globals(app *fiber.App) []fiber.Handler {
 	return []fiber.Handler{
-		recover.New(),
+		recover.New(recover.Config{
+			EnableStackTrace: true,
+		}),
 		cors.New(),
 		compress.New(),
 		etag.New(),
