@@ -10,7 +10,7 @@ require (
 	github.com/glebarez/sqlite v1.11.0
 	github.com/go-gormigrate/gormigrate/v2 v2.1.4
 	github.com/go-rat/utils v1.1.4
-	github.com/gofiber/contrib/websocket v1.3.3
+	github.com/gofiber/contrib/websocket v1.3.4
 	github.com/gofiber/fiber/v2 v2.52.6
 	github.com/google/wire v0.6.0
 	github.com/gookit/validate v1.5.4
