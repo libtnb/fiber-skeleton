@@ -18,8 +18,8 @@ github.com/glebarez/sqlite v1.11.0 h1:wSG0irqzP6VurnMEpFGer5Li19RpIRi2qvQz++w0GM
 github.com/glebarez/sqlite v1.11.0/go.mod h1:h8/o8j5wiAsqSPoWELDUdJXhjAhsVliSn7bWZjOhrgQ=
 github.com/go-gormigrate/gormigrate/v2 v2.1.4 h1:KOPEt27qy1cNzHfMZbp9YTmEuzkY4F4wrdsJW9WFk1U=
 github.com/go-gormigrate/gormigrate/v2 v2.1.4/go.mod h1:y/6gPAH6QGAgP1UfHMiXcqGeJ88/GRQbfCReE1JJD5Y=
-github.com/go-rat/utils v1.1.4 h1:tjlX6IWHhA/VvEBVbLGjzA96dcFSdMU5quetUHY2uqs=
-github.com/go-rat/utils v1.1.4/go.mod h1:SUy4Xw44VkZvo2FaURgiIiJlL6Kukll85fVKMp/50+8=
+github.com/go-rat/utils v1.1.5 h1:nB5qNU4TxqG9BJe7PdeDzznmh6lk+GIWb7hZcvAY4FQ=
+github.com/go-rat/utils v1.1.5/go.mod h1:SUy4Xw44VkZvo2FaURgiIiJlL6Kukll85fVKMp/50+8=
 github.com/go-viper/mapstructure/v2 v2.2.1 h1:ZAaOCxANMuZx5RCeg0mBdEZk7DZasvvZIxtHqx8aGss=
 github.com/go-viper/mapstructure/v2 v2.2.1/go.mod h1:oJDH3BJKyqBA2TXFhDsKDGDTlndYOZ6rGS0BRZIxGhM=
 github.com/gofiber/contrib/websocket v1.3.4 h1:tWeBdbJ8q0WFQXariLN4dBIbGH9KBU75s0s7YXplOSg=
