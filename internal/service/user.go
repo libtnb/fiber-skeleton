@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 
 	"github.com/go-rat/fiber-skeleton/internal/biz"
 	"github.com/go-rat/fiber-skeleton/internal/http/request"
@@ -17,7 +17,7 @@ func NewUserService(user biz.UserRepo) *UserService {
 	}
 }
 
-func (r *UserService) List(c *fiber.Ctx) error {
+func (r *UserService) List(c fiber.Ctx) error {
 	req, err := Bind[request.Paginate](c)
 	if err != nil {
 		return Error(c, fiber.StatusUnprocessableEntity, "%v", err)
@@ -33,7 +33,7 @@ func (r *UserService) List(c *fiber.Ctx) error {
 	})
 }
 
-func (r *UserService) Get(c *fiber.Ctx) error {
+func (r *UserService) Get(c fiber.Ctx) error {
 	req, err := Bind[request.UserID](c)
 	if err != nil {
 		return Error(c, fiber.StatusUnprocessableEntity, "%v", err)
@@ -47,7 +47,7 @@ func (r *UserService) Get(c *fiber.Ctx) error {
 	return Success(c, user)
 }
 
-func (r *UserService) Create(c *fiber.Ctx) error {
+func (r *UserService) Create(c fiber.Ctx) error {
 	req, err := Bind[request.UserAdd](c)
 	if err != nil {
 		return Error(c, fiber.StatusUnprocessableEntity, "%v", err)
@@ -62,7 +62,7 @@ func (r *UserService) Create(c *fiber.Ctx) error {
 	return Success(c, user)
 }
 
-func (r *UserService) Update(c *fiber.Ctx) error {
+func (r *UserService) Update(c fiber.Ctx) error {
 	req, err := Bind[request.UserUpdate](c)
 	if err != nil {
 		return Error(c, fiber.StatusUnprocessableEntity, "%v", err)
@@ -78,7 +78,7 @@ func (r *UserService) Update(c *fiber.Ctx) error {
 	return Success(c, user)
 }
 
-func (r *UserService) Delete(c *fiber.Ctx) error {
+func (r *UserService) Delete(c fiber.Ctx) error {
 	req, err := Bind[request.UserID](c)
 	if err != nil {
 		return Error(c, fiber.StatusUnprocessableEntity, "%v", err)

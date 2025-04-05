@@ -12,7 +12,7 @@ import (
 
 	"github.com/cloudflare/tableflip"
 	"github.com/go-gormigrate/gormigrate/v2"
-	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v3"
 	"github.com/gookit/validate"
 	"github.com/knadh/koanf/v2"
 	"github.com/robfig/cron/v3"
@@ -85,7 +85,7 @@ func (r *App) runServer() error {
 	}(ln)
 
 	go func() {
-		if err = r.router.Listener(ln); err != nil {
+		if err = r.router.Listener(ln, r.listenConfig()); err != nil {
 			log.Println("[HTTP] server error:", err)
 		}
 	}()
@@ -107,5 +107,19 @@ func (r *App) runServer() error {
 // runServerFallback fallback for windows
 func (r *App) runServerFallback() error {
 	fmt.Println("[HTTP] listening and serving on", r.conf.MustString("http.address"))
-	return r.router.Listen(r.conf.MustString("http.address"))
+	return r.router.Listen(r.conf.MustString("http.address"), r.listenConfig())
+}
+
+func (r *App) listenConfig() fiber.ListenConfig {
+	// prefork not support dual stack
+	network := fiber.NetworkTCP
+	if r.conf.Bool("http.prefork") {
+		network = fiber.NetworkTCP4
+	}
+	return fiber.ListenConfig{
+		ListenerNetwork:       network,
+		EnablePrefork:         r.conf.Bool("http.prefork"),
+		EnablePrintRoutes:     r.conf.Bool("http.debug"),
+		DisableStartupMessage: !r.conf.Bool("http.debug"),
+	}
 }
