@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"log"
+	"net"
 	"os"
 	"os/signal"
 	"runtime"
@@ -79,7 +80,9 @@ func (r *App) runServer() error {
 	if err != nil {
 		return err
 	}
-	defer ln.Close()
+	defer func(ln net.Listener) {
+		_ = ln.Close()
+	}(ln)
 
 	go func() {
 		if err = r.router.Listener(ln); err != nil {
