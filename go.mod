@@ -12,7 +12,7 @@ require (
 	github.com/gofiber/fiber/v3 v3.0.0-beta.4.0.20250403123159-551570326cbd
 	github.com/google/wire v0.6.0
 	github.com/gookit/validate v1.5.4
-	github.com/knadh/koanf/parsers/yaml v0.1.0
+	github.com/knadh/koanf/parsers/yaml v1.0.0
 	github.com/knadh/koanf/providers/file v1.2.0
 	github.com/knadh/koanf/v2 v2.2.0
 	github.com/ncruces/go-sqlite3 v0.25.0
