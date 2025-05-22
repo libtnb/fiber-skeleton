@@ -6,11 +6,11 @@ import (
 )
 
 type User struct {
-	ID        uint                               `gorm:"primaryKey" json:"id"`
-	Name      string                             `json:"name"`
-	CreatedAt carbon.LayoutType[carbon.DateTime] `json:"created_at"`
-	UpdatedAt carbon.LayoutType[carbon.DateTime] `json:"updated_at"`
-	DeletedAt gorm.DeletedAt                     `json:"-"`
+	ID        uint            `gorm:"primaryKey" json:"id"`
+	Name      string          `json:"name"`
+	CreatedAt carbon.DateTime `json:"created_at"`
+	UpdatedAt carbon.DateTime `json:"updated_at"`
+	DeletedAt gorm.DeletedAt  `json:"-"`
 }
 
 type UserRepo interface {
