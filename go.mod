@@ -2,11 +2,11 @@ module github.com/go-rat/fiber-skeleton
 
 go 1.24.0
 
-toolchain go1.24.2
+toolchain go1.24.3
 
 require (
 	github.com/cloudflare/tableflip v1.2.3
-	github.com/dromara/carbon/v2 v2.6.3
+	github.com/dromara/carbon/v2 v2.6.6
 	github.com/go-gormigrate/gormigrate/v2 v2.1.4
 	github.com/go-rat/utils v1.1.5
 	github.com/gofiber/fiber/v3 v3.0.0-beta.4.0.20250403123159-551570326cbd
@@ -15,14 +15,14 @@ require (
 	github.com/knadh/koanf/parsers/yaml v1.0.0
 	github.com/knadh/koanf/providers/file v1.2.0
 	github.com/knadh/koanf/v2 v2.2.0
-	github.com/ncruces/go-sqlite3 v0.25.1
+	github.com/ncruces/go-sqlite3 v0.25.2
 	github.com/ncruces/go-sqlite3/gormlite v0.24.0
 	github.com/orandin/slog-gorm v1.4.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/stretchr/testify v1.10.0
-	github.com/urfave/cli/v3 v3.2.0
+	github.com/urfave/cli/v3 v3.3.3
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
-	gorm.io/gorm v1.26.0
+	gorm.io/gorm v1.26.1
 )
 
 require (
@@ -53,9 +53,9 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.60.0 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
-	golang.org/x/crypto v0.37.0 // indirect
+	golang.org/x/crypto v0.38.0 // indirect
 	golang.org/x/net v0.38.0 // indirect
-	golang.org/x/sys v0.32.0 // indirect
-	golang.org/x/text v0.24.0 // indirect
+	golang.org/x/sys v0.33.0 // indirect
+	golang.org/x/text v0.25.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
