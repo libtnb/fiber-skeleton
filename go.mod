@@ -11,7 +11,7 @@ require (
 	github.com/go-rat/utils v1.1.5
 	github.com/gofiber/fiber/v3 v3.0.0-beta.4.0.20250403123159-551570326cbd
 	github.com/google/wire v0.6.0
-	github.com/gookit/validate v1.5.4
+	github.com/gookit/validate v1.5.5
 	github.com/knadh/koanf/parsers/yaml v1.0.0
 	github.com/knadh/koanf/providers/file v1.2.0
 	github.com/knadh/koanf/v2 v2.2.0
