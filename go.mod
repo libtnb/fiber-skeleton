@@ -2,7 +2,7 @@ module github.com/go-rat/fiber-skeleton
 
 go 1.24.0
 
-toolchain go1.24.3
+toolchain go1.24.4
 
 require (
 	github.com/cloudflare/tableflip v1.2.3
