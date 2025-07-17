@@ -15,7 +15,7 @@ require (
 	github.com/knadh/koanf/parsers/yaml v1.1.0
 	github.com/knadh/koanf/providers/file v1.2.0
 	github.com/knadh/koanf/v2 v2.2.2
-	github.com/ncruces/go-sqlite3 v0.26.3
+	github.com/ncruces/go-sqlite3 v0.27.0
 	github.com/ncruces/go-sqlite3/gormlite v0.24.0
 	github.com/orandin/slog-gorm v1.4.0
 	github.com/robfig/cron/v3 v3.0.1
@@ -54,9 +54,9 @@ require (
 	github.com/valyala/fasthttp v1.60.0 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	go.yaml.in/yaml/v3 v3.0.3 // indirect
-	golang.org/x/crypto v0.39.0 // indirect
-	golang.org/x/net v0.38.0 // indirect
-	golang.org/x/sys v0.33.0 // indirect
-	golang.org/x/text v0.26.0 // indirect
+	golang.org/x/crypto v0.40.0 // indirect
+	golang.org/x/net v0.41.0 // indirect
+	golang.org/x/sys v0.34.0 // indirect
+	golang.org/x/text v0.27.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
