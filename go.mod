@@ -1,4 +1,4 @@
-module github.com/go-rat/fiber-skeleton
+module github.com/libtnb/fiber-skeleton
 
 go 1.24.0
 
@@ -8,7 +8,7 @@ require (
 	github.com/cloudflare/tableflip v1.2.3
 	github.com/dromara/carbon/v2 v2.6.11
 	github.com/go-gormigrate/gormigrate/v2 v2.1.4
-	github.com/go-rat/utils v1.1.5
+	github.com/libtnb/utils v1.1.5
 	github.com/gofiber/fiber/v3 v3.0.0-beta.5
 	github.com/google/wire v0.6.0
 	github.com/gookit/validate v1.5.5

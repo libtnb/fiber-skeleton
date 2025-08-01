@@ -7,12 +7,12 @@
 package main
 
 import (
-	"github.com/go-rat/fiber-skeleton/internal/app"
-	"github.com/go-rat/fiber-skeleton/internal/bootstrap"
-	"github.com/go-rat/fiber-skeleton/internal/data"
-	"github.com/go-rat/fiber-skeleton/internal/http/middleware"
-	"github.com/go-rat/fiber-skeleton/internal/route"
-	"github.com/go-rat/fiber-skeleton/internal/service"
+	"github.com/libtnb/fiber-skeleton/internal/app"
+	"github.com/libtnb/fiber-skeleton/internal/bootstrap"
+	"github.com/libtnb/fiber-skeleton/internal/data"
+	"github.com/libtnb/fiber-skeleton/internal/http/middleware"
+	"github.com/libtnb/fiber-skeleton/internal/route"
+	"github.com/libtnb/fiber-skeleton/internal/service"
 )
 
 import (

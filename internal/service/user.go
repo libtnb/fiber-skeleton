@@ -3,8 +3,8 @@ package service
 import (
 	"github.com/gofiber/fiber/v3"
 
-	"github.com/go-rat/fiber-skeleton/internal/biz"
-	"github.com/go-rat/fiber-skeleton/internal/http/request"
+	"github.com/libtnb/fiber-skeleton/internal/biz"
+	"github.com/libtnb/fiber-skeleton/internal/http/request"
 )
 
 type UserService struct {

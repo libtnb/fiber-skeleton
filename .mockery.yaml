@@ -6,6 +6,6 @@ outpkg: "{{.PackageName}}"
 filename: "{{.InterfaceName}}.go"
 all: True
 packages:
-  github.com/go-rat/fiber-skeleton/internal/biz:
+  github.com/libtnb/fiber-skeleton/internal/biz:
     config:
       recursive: True

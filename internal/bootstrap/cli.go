@@ -5,7 +5,7 @@ import (
 
 	"github.com/urfave/cli/v3"
 
-	"github.com/go-rat/fiber-skeleton/internal/route"
+	"github.com/libtnb/fiber-skeleton/internal/route"
 )
 
 func NewCli(cmd *route.Cli) *cli.Command {

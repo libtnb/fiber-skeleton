@@ -3,7 +3,7 @@ package route
 import (
 	"github.com/gofiber/fiber/v3"
 
-	"github.com/go-rat/fiber-skeleton/internal/service"
+	"github.com/libtnb/fiber-skeleton/internal/service"
 )
 
 type Http struct {

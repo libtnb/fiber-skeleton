@@ -1,7 +1,7 @@
 package bootstrap
 
 import (
-	"github.com/go-rat/utils/crypt"
+	"github.com/libtnb/utils/crypt"
 	"github.com/knadh/koanf/v2"
 )
 

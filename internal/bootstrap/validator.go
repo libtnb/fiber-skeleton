@@ -5,7 +5,7 @@ import (
 	"github.com/gookit/validate/locales/zhcn"
 	"gorm.io/gorm"
 
-	"github.com/go-rat/fiber-skeleton/internal/http/rule"
+	"github.com/libtnb/fiber-skeleton/internal/http/rule"
 )
 
 // NewValidator just for register global rules

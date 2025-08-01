@@ -5,7 +5,7 @@ import (
 
 	"github.com/urfave/cli/v3"
 
-	"github.com/go-rat/fiber-skeleton/internal/service"
+	"github.com/libtnb/fiber-skeleton/internal/service"
 )
 
 type Cli struct {

@@ -3,7 +3,7 @@ package data
 import (
 	"gorm.io/gorm"
 
-	"github.com/go-rat/fiber-skeleton/internal/biz"
+	"github.com/libtnb/fiber-skeleton/internal/biz"
 )
 
 type userRepo struct {

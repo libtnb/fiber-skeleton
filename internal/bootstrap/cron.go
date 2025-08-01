@@ -6,7 +6,7 @@ import (
 	"github.com/knadh/koanf/v2"
 	"github.com/robfig/cron/v3"
 
-	pkgcron "github.com/go-rat/fiber-skeleton/pkg/cron"
+	pkgcron "github.com/libtnb/fiber-skeleton/pkg/cron"
 )
 
 func NewCron(conf *koanf.Koanf, log *slog.Logger) *cron.Cron {
