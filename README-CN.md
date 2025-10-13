@@ -1,17 +1,5 @@
 # fiber-skeleton
 
-## 前言
-
-我从去年开始参与 [Goravel](https://github.com/goravel/goravel) 的开发，在这一年多的时间里学到了很多新东西，我认为一个优秀的脚手架应满足以下几点：
-
-* 目录简单（只包含 CURD 应用所需的最小目录结构）
-* 代码简洁（只包含 CURD 应用所需的最小代码量）
-* 功能完备（从表单验证到 ORM 等 CURD 应用所需的功能都具备）
-* 易于拓展（在 CURD 的基础上可以快速拓展）
-* 优雅重启（支持开发环境的 air 热重启和线上环境的优雅重启）
-
-Goravel 是一个非常容易上手的优秀框架，但其完全复制 Laravel 的设计导致了它是一个重量级框架，不符合以上设计理念。因此便有了本脚手架。
-
 和 [chi-skeleton](https://github.com/libtnb/chi-skeleton) 不同，此脚手架使用了速度奇快的 [Fiber](https://gofiber.io/) 框架，通常建议使用此脚手架。
 
 ## 设计
