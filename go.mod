@@ -4,7 +4,7 @@ go 1.25.0
 
 require (
 	github.com/cloudflare/tableflip v1.2.3
-	github.com/dromara/carbon/v2 v2.6.13
+	github.com/dromara/carbon/v2 v2.6.14
 	github.com/go-gormigrate/gormigrate/v2 v2.1.5
 	github.com/gofiber/fiber/v3 v3.0.0-rc.2
 	github.com/google/wire v0.7.0
