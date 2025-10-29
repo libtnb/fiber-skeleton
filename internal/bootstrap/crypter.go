@@ -1,8 +1,8 @@
 package bootstrap
 
 import (
-	"github.com/libtnb/utils/crypt"
 	"github.com/knadh/koanf/v2"
+	"github.com/libtnb/utils/crypt"
 )
 
 func NewCrypter(conf *koanf.Koanf) (crypt.Crypter, error) {

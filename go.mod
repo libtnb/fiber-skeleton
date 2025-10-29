@@ -6,6 +6,7 @@ require (
 	github.com/cloudflare/tableflip v1.2.3
 	github.com/dromara/carbon/v2 v2.6.14
 	github.com/go-gormigrate/gormigrate/v2 v2.1.5
+	github.com/gofiber/contrib/websocket v1.3.5-0.20251028211230-7b9760088504
 	github.com/gofiber/fiber/v3 v3.0.0-rc.2
 	github.com/google/wire v0.7.0
 	github.com/gookit/validate v1.5.6
@@ -26,6 +27,7 @@ require (
 require (
 	github.com/andybalholm/brotli v1.2.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/fasthttp/websocket v1.5.12 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.4.0 // indirect
 	github.com/gofiber/schema v1.6.0 // indirect
@@ -44,11 +46,12 @@ require (
 	github.com/ncruces/julianday v1.0.0 // indirect
 	github.com/philhofer/fwd v1.2.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/savsgio/gotils v0.0.0-20250924091648-bce9a52d7761 // indirect
 	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/tetratelabs/wazero v1.9.0 // indirect
 	github.com/tinylib/msgp v1.4.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.65.0 // indirect
+	github.com/valyala/fasthttp v1.66.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/crypto v0.43.0 // indirect
 	golang.org/x/net v0.45.0 // indirect

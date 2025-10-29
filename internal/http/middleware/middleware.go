@@ -1,6 +1,8 @@
 package middleware
 
 import (
+	"encoding/base64"
+
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/compress"
 	"github.com/gofiber/fiber/v3/middleware/cors"
@@ -39,7 +41,7 @@ func (r *Middlewares) Globals(app *fiber.App) []fiber.Handler {
 		requestid.New(),
 		logger.New(),
 		encryptcookie.New(encryptcookie.Config{
-			Key: r.conf.String("app.key"),
+			Key: base64.StdEncoding.EncodeToString(r.conf.Bytes("app.key")),
 		}),
 	}
 }
