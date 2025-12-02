@@ -62,8 +62,8 @@ github.com/mitchellh/copystructure v1.2.0 h1:vpKXTN4ewci03Vljg/q9QvCGUDttBOGBIa1
 github.com/mitchellh/copystructure v1.2.0/go.mod h1:qLl+cE2AmVv+CoeAwDPye/v+N2HKCj9FbZEVFJRxO9s=
 github.com/mitchellh/reflectwalk v1.0.2 h1:G2LzWKi524PWgd3mLHV8Y5k7s6XUvT0Gef6zxSIeXaQ=
 github.com/mitchellh/reflectwalk v1.0.2/go.mod h1:mSTlrgnPZtwu0c4WaC2kGObEpuNDbx0jmZXqmk4esnw=
-github.com/ncruces/go-sqlite3 v0.30.2 h1:1GVbHAkKAOwjJd3JYl8ldrYROudfZUOah7oXPD7VZbQ=
-github.com/ncruces/go-sqlite3 v0.30.2/go.mod h1:AxKu9sRxkludimFocbktlY6LiYSkxiI5gTA8r+os/Nw=
+github.com/ncruces/go-sqlite3 v0.30.3 h1:X/CgWW9GzmIAkEPrifhKqf0cC15DuOVxAJaHFTTAURQ=
+github.com/ncruces/go-sqlite3 v0.30.3/go.mod h1:AxKu9sRxkludimFocbktlY6LiYSkxiI5gTA8r+os/Nw=
 github.com/ncruces/go-sqlite3/gormlite v0.30.2 h1:FZ8mic14xTatssTkHCrelh9nPeFdXuzgMoNGkfuFbBU=
 github.com/ncruces/go-sqlite3/gormlite v0.30.2/go.mod h1:W9WLBbqrrOIh2dqFZkeC/xKALG2LDIHY91jowahOdtI=
 github.com/ncruces/julianday v1.0.0 h1:fH0OKwa7NWvniGQtxdJRxAgkBMolni2BjDHaWTxqt7M=
