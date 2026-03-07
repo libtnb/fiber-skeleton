@@ -21,7 +21,6 @@ jobs:
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v9
         with:
-          install-mode: "goinstall"
           version: latest
           args: --timeout=30m ./...
   govulncheck:
