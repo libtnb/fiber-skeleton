@@ -4,6 +4,8 @@ on:
     branches:
       - main
   pull_request:
+permissions:
+  contents: read
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -30,12 +32,8 @@ jobs:
           GOARCH: ${{ matrix.goarch }}
         run: |
           LDFLAGS="-s -w --extldflags '-static'"
-          go build -ldflags "${LDFLAGS}" -o app-${{ matrix.goarch }} ./cmd/app
-          go build -ldflags "${LDFLAGS}" -o cli-${{ matrix.goarch }} ./cmd/cli
-      - name: Compress ${{ matrix.goarch }}
-        run: |
-          upx --best --lzma app-${{ matrix.goarch }}
-          upx --best --lzma cli-${{ matrix.goarch }}
+          go build -trimpath -buildvcs=false -ldflags "${LDFLAGS}" -o app-${{ matrix.goarch }} ./cmd/app
+          go build -trimpath -buildvcs=false -ldflags "${LDFLAGS}" -o cli-${{ matrix.goarch }} ./cmd/cli
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
