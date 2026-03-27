@@ -34,6 +34,8 @@ _cgo_export.*
 *.log
 *.sqlite
 *.db
+*.db-shm
+*.db-wal
 config/config.yml
 
 # 临时文件
