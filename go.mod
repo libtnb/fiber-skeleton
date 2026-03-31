@@ -9,7 +9,7 @@ require (
 	github.com/gofiber/contrib/v3/websocket v1.1.0
 	github.com/gofiber/fiber/v3 v3.1.0
 	github.com/google/wire v0.7.0
-	github.com/gookit/validate v1.5.6
+	github.com/gookit/validate v1.5.7
 	github.com/knadh/koanf/parsers/yaml v1.1.0
 	github.com/knadh/koanf/providers/file v1.2.1
 	github.com/knadh/koanf/v2 v2.3.4
@@ -34,7 +34,7 @@ require (
 	github.com/gofiber/utils/v2 v2.0.2 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gookit/filter v1.2.3 // indirect
-	github.com/gookit/goutil v0.7.1 // indirect
+	github.com/gookit/goutil v0.7.4 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/klauspost/compress v1.18.4 // indirect
