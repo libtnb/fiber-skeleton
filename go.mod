@@ -6,7 +6,7 @@ require (
 	github.com/cloudflare/tableflip v1.2.3
 	github.com/dromara/carbon/v2 v2.6.16
 	github.com/go-gormigrate/gormigrate/v2 v2.1.5
-	github.com/gofiber/contrib/v3/websocket v1.1.1
+	github.com/gofiber/contrib/v3/websocket v1.1.2
 	github.com/gofiber/fiber/v3 v3.1.0
 	github.com/google/wire v0.7.0
 	github.com/gookit/validate v1.5.7
@@ -30,7 +30,7 @@ require (
 	github.com/fasthttp/websocket v1.5.12 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.4.0 // indirect
-	github.com/gofiber/schema v1.7.0 // indirect
+	github.com/gofiber/schema v1.7.1 // indirect
 	github.com/gofiber/utils/v2 v2.0.3 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gookit/filter v1.2.3 // indirect
