@@ -5,8 +5,8 @@ go 1.25.0
 require (
 	github.com/cloudflare/tableflip v1.2.3
 	github.com/dromara/carbon/v2 v2.6.16
-	github.com/go-gormigrate/gormigrate/v2 v2.1.5
-	github.com/gofiber/contrib/v3/websocket v1.1.5
+	github.com/go-gormigrate/gormigrate/v2 v2.1.6
+	github.com/gofiber/contrib/v3/websocket v1.2.0
 	github.com/gofiber/fiber/v3 v3.3.0
 	github.com/google/wire v0.7.0
 	github.com/gookit/validate v1.5.7
@@ -54,7 +54,7 @@ require (
 	github.com/valyala/fasthttp v1.71.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/crypto v0.52.0 // indirect
-	golang.org/x/net v0.54.0 // indirect
+	golang.org/x/net v0.55.0 // indirect
 	golang.org/x/sys v0.45.0 // indirect
 	golang.org/x/text v0.37.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
