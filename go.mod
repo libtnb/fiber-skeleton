@@ -9,7 +9,7 @@ require (
 	github.com/gofiber/contrib/v3/websocket v1.2.0
 	github.com/gofiber/fiber/v3 v3.3.0
 	github.com/google/wire v0.7.0
-	github.com/gookit/validate v1.6.0
+	github.com/gookit/validate/v2 v2.0.1
 	github.com/knadh/koanf/parsers/yaml v1.1.0
 	github.com/knadh/koanf/providers/file v1.2.1
 	github.com/knadh/koanf/v2 v2.3.5

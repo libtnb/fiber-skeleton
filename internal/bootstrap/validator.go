@@ -1,8 +1,8 @@
 package bootstrap
 
 import (
-	"github.com/gookit/validate"
-	"github.com/gookit/validate/locales/zhcn"
+	"github.com/gookit/validate/v2"
+	"github.com/gookit/validate/v2/locales/zhcn"
 	"gorm.io/gorm"
 
 	"github.com/libtnb/fiber-skeleton/internal/http/rule"
