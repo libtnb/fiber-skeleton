@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v3"
-	"github.com/gookit/validate"
+	"github.com/gookit/validate/v2"
 
 	"github.com/libtnb/fiber-skeleton/internal/http/request"
 )
