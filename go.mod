@@ -7,7 +7,7 @@ require (
 	github.com/dromara/carbon/v2 v2.6.16
 	github.com/go-gormigrate/gormigrate/v2 v2.1.6
 	github.com/gofiber/contrib/v3/websocket v1.2.1
-	github.com/gofiber/fiber/v3 v3.3.0
+	github.com/gofiber/fiber/v3 v3.4.0
 	github.com/google/wire v0.7.0
 	github.com/gookit/validate v1.6.0
 	github.com/knadh/koanf/parsers/yaml v1.1.0
@@ -24,20 +24,20 @@ require (
 )
 
 require (
-	github.com/andybalholm/brotli v1.2.1 // indirect
+	github.com/andybalholm/brotli v1.2.2 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/fasthttp/websocket v1.5.12 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.4.0 // indirect
 	github.com/gofiber/schema v1.8.0 // indirect
-	github.com/gofiber/utils/v2 v2.1.0 // indirect
+	github.com/gofiber/utils/v2 v2.1.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gookit/filter v1.2.3 // indirect
 	github.com/gookit/goutil v0.7.6 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
-	github.com/klauspost/compress v1.18.6 // indirect
+	github.com/klauspost/compress v1.19.0 // indirect
 	github.com/knadh/koanf/maps v0.1.2 // indirect
 	github.com/mattn/go-colorable v0.1.15 // indirect
 	github.com/mattn/go-isatty v0.0.22 // indirect
@@ -51,7 +51,7 @@ require (
 	github.com/stretchr/objx v0.5.3 // indirect
 	github.com/tinylib/msgp v1.6.4 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.71.0 // indirect
+	github.com/valyala/fasthttp v1.72.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/crypto v0.53.0 // indirect
 	golang.org/x/net v0.56.0 // indirect
