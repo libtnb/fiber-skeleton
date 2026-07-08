@@ -8,7 +8,7 @@ permissions:
   contents: read
 jobs:
   golangci:
-    name: golanci-lint
+    name: golangci-lint
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

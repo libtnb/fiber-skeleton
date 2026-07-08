@@ -1,11 +1,10 @@
-with-expecter: True
-disable-version-string: True
-dir: mocks/{{ replaceAll .InterfaceDirRelative "internal" "" }}
-mockname: "{{.InterfaceName}}"
-outpkg: "{{.PackageName}}"
+template: testify
+dir: mocks/{{.SrcPackageName}}
+structname: "{{.InterfaceName}}"
+pkgname: "{{.SrcPackageName}}"
 filename: "{{.InterfaceName}}.go"
-all: True
 packages:
   github.com/libtnb/fiber-skeleton/internal/biz:
     config:
-      recursive: True
+      all: true
+      recursive: true

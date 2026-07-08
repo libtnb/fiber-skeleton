@@ -1,0 +1,75 @@
+package data
+
+import (
+	"context"
+
+	"github.com/samber/do/v2"
+	"gorm.io/gorm"
+
+	"{{.Module}}/internal/biz"
+)
+
+type {{.Camel}}Repo struct {
+	db *gorm.DB
+}
+
+func New{{.Pascal}}Repo(i do.Injector) (biz.{{.Pascal}}Repo, error) {
+	return &{{.Camel}}Repo{
+		db: do.MustInvoke[*Data](i).DB,
+	}, nil
+}
+
+func (r *{{.Camel}}Repo) List(ctx context.Context, page, limit uint) ([]*biz.{{.Pascal}}, int64, error) {
+	var total int64
+	if err := r.db.WithContext(ctx).Model(&biz.{{.Pascal}}{}).Count(&total).Error; err != nil {
+		return nil, 0, err
+	}
+
+	var list []*biz.{{.Pascal}}
+	if err := r.db.WithContext(ctx).Offset(int((page - 1) * limit)).Limit(int(limit)).Find(&list).Error; err != nil {
+		return nil, 0, err
+	}
+
+	return list, total, nil
+}
+
+func (r *{{.Camel}}Repo) Get(ctx context.Context, id uint) (*biz.{{.Pascal}}, error) {
+	{{.Camel}} := new(biz.{{.Pascal}})
+	if err := r.db.WithContext(ctx).First({{.Camel}}, id).Error; err != nil {
+		return nil, wrapErr(err)
+	}
+
+	return {{.Camel}}, nil
+}
+
+func (r *{{.Camel}}Repo) Create(ctx context.Context, {{.Camel}} *biz.{{.Pascal}}) error {
+	return r.db.WithContext(ctx).Create({{.Camel}}).Error
+}
+
+// Update is read-modify-write: it keeps CreatedAt intact and reports a
+// missing row instead of upserting.
+func (r *{{.Camel}}Repo) Update(ctx context.Context, {{.Camel}} *biz.{{.Pascal}}) (*biz.{{.Pascal}}, error) {
+	existing := new(biz.{{.Pascal}})
+	if err := r.db.WithContext(ctx).First(existing, {{.Camel}}.ID).Error; err != nil {
+		return nil, wrapErr(err)
+	}
+
+	existing.Name = {{.Camel}}.Name
+	if err := r.db.WithContext(ctx).Save(existing).Error; err != nil {
+		return nil, err
+	}
+
+	return existing, nil
+}
+
+func (r *{{.Camel}}Repo) Delete(ctx context.Context, id uint) error {
+	result := r.db.WithContext(ctx).Delete(&biz.{{.Pascal}}{}, id)
+	if result.Error != nil {
+		return result.Error
+	}
+	if result.RowsAffected == 0 {
+		return biz.ErrNotFound
+	}
+
+	return nil
+}

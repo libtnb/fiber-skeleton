@@ -15,7 +15,7 @@ jobs:
       fail-fast: true
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Setup Go
@@ -23,15 +23,14 @@ jobs:
         with:
           cache: true
           go-version: 'stable'
-      - name: Install dependencies
-        run: go mod tidy
       - name: Build ${{ matrix.goarch }}
         env:
           CGO_ENABLED: 0
           GOOS: linux
           GOARCH: ${{ matrix.goarch }}
         run: |
-          LDFLAGS="-s -w --extldflags '-static'"
+          VERSION=$(git describe --tags --always)
+          LDFLAGS="-s -w -X main.version=${VERSION} --extldflags '-static'"
           go build -trimpath -buildvcs=false -ldflags "${LDFLAGS}" -o app-${{ matrix.goarch }} ./cmd/app
           go build -trimpath -buildvcs=false -ldflags "${LDFLAGS}" -o cli-${{ matrix.goarch }} ./cmd/cli
       - name: Upload artifact

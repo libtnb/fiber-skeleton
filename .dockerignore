@@ -1,0 +1,9 @@
+.git
+.github
+.idea
+bin
+storage
+web
+config/config.yml
+*.db
+coverage.out

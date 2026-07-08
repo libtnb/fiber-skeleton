@@ -2,9 +2,33 @@
 
 Unlike [chi-skeleton](https://github.com/libtnb/chi-skeleton), this skeleton uses the incredibly fast [Fiber](https://gofiber.io/) framework, which is generally recommended.
 
-## Design
+## Features
 
-According to the above design concept, the final directory structure of this skeleton is as follows:
+- **Fiber v3** with sensible server hardening (timeouts, body/header limits) and a global middleware stack
+- **Dependency injection** via [samber/do](https://github.com/samber/do): lazy generic container, reverse-order shutdown of resources, health checks feeding `/readyz` — and no code generation
+- **Strongly-typed configuration** ([koanf](https://github.com/knadh/koanf)) with `APP_*` environment overrides, validated at startup
+- **Graceful shutdown** on SIGINT/SIGTERM (drains requests and cron jobs) and **zero-downtime upgrades** on SIGHUP ([graceful](https://github.com/libtnb/graceful))
+- **Structured logging** with [slog](https://pkg.go.dev/log/slog) on a rotating file writer ([logrotate](https://github.com/libtnb/logrotate)), stdout, or both
+- **Request binding + validation** ([validator](https://github.com/libtnb/validator)) with a boolean rule DSL, i18n messages and custom database rules ([gormrules](https://github.com/libtnb/validator/tree/main/contrib/gormrules))
+- **Scheduled jobs** ([cron](https://github.com/libtnb/cron)) with panic recovery, overlap skipping and a dedicated `internal/job` package
+- **GORM + SQLite** (swap in MySQL/PostgreSQL freely) with versioned migrations ([migrate](https://github.com/libtnb/migrate)): schema as Go code, automatic rollbacks, `migrate status`/`rollback` commands
+- **Code generator** (`cmd/gen`) that scaffolds a full CRUD module in one command
+- **OpenAPI 3.1 docs from validate tags** — schemas and constraints generated from the validator rules, served with a Scalar UI at `/docs`
+- **Tests included**: handler tests against a mocked repo ([mockery](https://github.com/vektra/mockery)), validate-tag linting, SQL rule tests
+
+## Quick start
+
+Requires Go 1.25+.
+
+```bash
+git clone https://github.com/libtnb/fiber-skeleton my-app && cd my-app
+make init   # copies config/config.example.yml to config/config.yml
+make run    # or `make dev` for hot reload via air
+```
+
+The API listens on `:3000` by default: `curl localhost:3000/users`.
+
+## Design
 
 * The cmd directory stores the entry file of the application, one file for each application
 * The config directory stores configuration files, which can have multiple configuration files
@@ -15,12 +39,77 @@ According to the above design concept, the final directory structure of this ske
 * The web directory stores the front-end code of the application
 * go.mod and go.sum are used to manage dependencies
 
-The internal directory refers to the design of [Kratos](https://go-kratos.dev/), dividing the application into three layers: biz, data, and service, which are responsible for business logic, data access, and service layers respectively.
+The internal directory follows the three-layer design of [Kratos](https://go-kratos.dev/):
 
-## TODO
+* **biz** holds domain models, repository interfaces and **usecases** — transport-independent business logic
+* **data** implements the repositories against the database
+* **service** adapts HTTP: binds/validates requests, delegates to usecases, shapes responses
 
-* [x] support protobuf
-* [x] code generation tool
+Because usecases are transport-independent, the HTTP handlers, the CLI commands (`internal/command`) and the cron jobs (`internal/job`) all share the same business logic instead of each talking to the database on their own.
+
+Wiring follows a contribution model: every package exposes a `Package` list of lazy providers, and transports (routes, CLI commands, jobs) are registered under naming conventions (`routes:*`, `commands:*`, `jobs:*`) that assemblers collect at startup — adding a module never touches shared files beyond one line per Package list.
+
+## Configuration
+
+`config/config.yml` is loaded first (override the path with `APP_CONFIG`), then any `APP_*` environment variable wins over the file. A double underscore separates nesting levels:
+
+```bash
+APP_HTTP__ADDRESS=:8080 APP_LOG__OUTPUT=stdout ./app
+```
+
+Configuration is parsed into a struct and validated at startup — a missing key or a bad value fails fast instead of panicking mid-request.
+
+## Scheduled jobs
+
+Add jobs in `internal/job`: one `JobFn` contribution per job, registered with one `do.LazyNamed` line in the package's `Package` list. Specs support an optional seconds field, `@every 30s` descriptors and per-entry timezones. Jobs receive a `context.Context` that is cancelled on shutdown; panics are recovered and overlapping runs are skipped.
+
+## Code generation
+
+```bash
+make gen name=article    # or: go run ./cmd/gen article
+```
+
+generates the biz entity + repo interface, data repository, service handlers, route contribution, request structs and a migration for a new module, then prints the remaining wiring: one line per Package list.
+
+## Development
+
+```bash
+make help       # list all targets
+make generate   # regenerate mocks after changing interfaces
+make lint       # golangci-lint
+make test       # go test -race with coverage
+make build      # static binaries in bin/ with the version injected
+```
+
+A `Dockerfile` is included; mount `config/` and `storage/` when running.
+
+## OpenAPI documentation
+
+Every documented endpoint declares `Request`/`Response` samples in its route
+contribution; schemas, parameters and constraints are generated from the very
+same `validate` tags that enforce them ([validator/contrib/openapi](https://github.com/libtnb/validator/tree/main/contrib/openapi)) — `min:3 && max:255` becomes `minLength`/`maxLength`, `in:a,b` becomes an enum, and the two can never drift apart. With `http.docs: true` the app serves the OpenAPI 3.1 document at `/openapi.json` and a [Scalar](https://github.com/scalar/scalar) UI at `/docs`.
+
+## Observability
+
+- `/healthz` (liveness) and `/readyz` (readiness, pings the DB) are wired for containers and load balancers; the Dockerfile ships a matching `HEALTHCHECK`.
+- Access logs and application logs share one slog logger, one format and one `request_id`, so a request can be traced across both.
+- Set `http.debug_address` (e.g. `127.0.0.1:6060`) to serve `net/http/pprof` and `expvar` on a **separate private port** — profiling in production without exposing it on the API port.
+- Errors returned by handlers and by the framework itself (404, 405, 413, panics) all leave through one handler in the same JSON shape; 5xx details go to the log, not the client.
+
+## Serving a frontend
+
+Put your built frontend under `web/` and serve it with fiber's static middleware in `bootstrap/http.go`:
+
+```go
+r.Get("/*", static.New("./web/dist"))
+```
+
+## Graceful lifecycle
+
+| Signal | Behavior |
+|---|---|
+| SIGINT / SIGTERM | stop accepting connections, drain in-flight requests and cron jobs (30s cap), close DB and log writer |
+| SIGHUP (non-Windows) | zero-downtime binary upgrade via [graceful](https://github.com/libtnb/graceful) |
 
 ## Credits
 

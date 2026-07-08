@@ -1,3 +1,3 @@
 # web
 
-web 目录存放应用的前端代码。
+The web directory stores the front-end code of the application.

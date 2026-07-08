@@ -1,0 +1,40 @@
+name: Release
+on:
+  push:
+    tags:
+      - 'v*'
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        goos: [ linux, darwin ]
+        goarch: [ amd64, arm64 ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          cache: true
+          go-version: 'stable'
+      - name: Build
+        env:
+          CGO_ENABLED: 0
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+        run: |
+          VERSION=$(git describe --tags --always)
+          LDFLAGS="-s -w -X main.version=${VERSION}"
+          go build -trimpath -buildvcs=false -ldflags "${LDFLAGS}" -o app-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/app
+          go build -trimpath -buildvcs=false -ldflags "${LDFLAGS}" -o cli-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/cli
+          tar -czf app-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz app-${{ matrix.goos }}-${{ matrix.goarch }} cli-${{ matrix.goos }}-${{ matrix.goarch }} config/config.example.yml
+      - name: Upload to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: app-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz
+          generate_release_notes: true

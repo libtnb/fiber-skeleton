@@ -3,24 +3,22 @@ package route
 import (
 	"github.com/gofiber/contrib/v3/websocket"
 	"github.com/gofiber/fiber/v3"
+	"github.com/samber/do/v2"
 )
 
-type Ws struct{}
-
-func NewWs() *Ws {
-	return &Ws{}
-}
-
-func (r *Ws) Register(router fiber.Router) {
-	router.Get("/ws", websocket.New(func(c *websocket.Conn) {
-		for {
-			_, msg, err := c.ReadMessage()
-			if err != nil {
-				return
+// WsRoutes contributes a websocket echo endpoint.
+func WsRoutes(i do.Injector) (Endpoints, error) {
+	return Endpoints{
+		{Method: fiber.MethodGet, Path: "/ws", Handler: websocket.New(func(c *websocket.Conn) {
+			for {
+				_, msg, err := c.ReadMessage()
+				if err != nil {
+					return
+				}
+				if err = c.WriteMessage(websocket.TextMessage, msg); err != nil {
+					return
+				}
 			}
-			if err = c.WriteMessage(websocket.TextMessage, msg); err != nil {
-				return
-			}
-		}
-	}))
+		})},
+	}, nil
 }

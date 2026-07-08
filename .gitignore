@@ -1,7 +1,7 @@
-# `go test -c` 生成的二进制文件
+# binaries produced by `go test -c`
 *.test
 
-# go coverage 工具
+# go coverage tooling
 *.out
 *.prof
 *.cgo1.go
@@ -10,17 +10,16 @@ _cgo_defun.c
 _cgo_gotypes.go
 _cgo_export.*
 
-# 编译文件
+# compiled artifacts
 *.com
 *.class
 *.dll
 *.exe
 *.o
 *.so
-# 在此添加你的项目名（如果需要）
+# add your binary name here if needed
 
-# 压缩包
-# Git 自带压缩,如果这些压缩包里有代码,建议解压后 commit
+# archives (git compresses on its own; unpack code before committing)
 *.7z
 *.dmg
 *.gz
@@ -30,7 +29,7 @@ _cgo_export.*
 *.tar
 *.zip
 
-# 日志文件和数据库及配置
+# logs, databases and local config
 *.log
 *.sqlite
 *.db
@@ -38,11 +37,11 @@ _cgo_export.*
 *.db-wal
 config/config.yml
 
-# 临时文件
+# temporary files
 tmp/
 .tmp/
 
-# 系统生成文件
+# OS generated files
 .DS_Store
 .DS_Store?
 .AppleDouble
@@ -57,7 +56,7 @@ Thumbs.db
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
 
-# IDE 和编辑器
+# IDEs and editors
 .idea/
 /go_build_*
 out/
@@ -66,3 +65,6 @@ out/
 *.sublime*
 __debug_bin
 .project
+
+# build output
+bin/

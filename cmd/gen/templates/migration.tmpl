@@ -1,0 +1,14 @@
+package migration
+
+import "github.com/libtnb/migrate"
+
+func init() {
+	migrate.Add("{{.Date}}_create_{{.Table}}", func(s *migrate.Schema) {
+		s.Create("{{.Table}}", func(t *migrate.Table) {
+			t.ID()
+			t.String("name")
+			t.Timestamps()
+			t.SoftDeletes()
+		})
+	})
+}

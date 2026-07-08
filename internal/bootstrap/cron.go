@@ -3,20 +3,24 @@ package bootstrap
 import (
 	"log/slog"
 
-	"github.com/knadh/koanf/v2"
-	"github.com/robfig/cron/v3"
+	"github.com/libtnb/cron"
+	"github.com/libtnb/cron/wrap"
+	"github.com/samber/do/v2"
 
-	pkgcron "github.com/libtnb/fiber-skeleton/pkg/cron"
+	"github.com/libtnb/fiber-skeleton/internal/job"
 )
 
-func NewCron(conf *koanf.Koanf, log *slog.Logger) *cron.Cron {
-	logger := pkgcron.NewLogger(log, conf.Bool("app.debug"))
-
-	return cron.New(
-		cron.WithParser(cron.NewParser(
-			cron.SecondOptional|cron.Minute|cron.Hour|cron.Dom|cron.Month|cron.Dow|cron.Descriptor,
-		)),
-		cron.WithLogger(logger),
-		cron.WithChain(cron.Recover(logger), cron.SkipIfStillRunning(logger)),
+// NewCron builds the scheduler and registers every job contribution on it.
+func NewCron(i do.Injector) (*cron.Cron, error) {
+	c := cron.New(
+		cron.WithLogger(do.MustInvoke[*slog.Logger](i)),
+		cron.WithSecondsField(),
+		cron.WithChain(wrap.SkipIfRunning()),
 	)
+
+	if err := job.Register(i, c); err != nil {
+		return nil, err
+	}
+
+	return c, nil
 }

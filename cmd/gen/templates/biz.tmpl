@@ -1,0 +1,61 @@
+package biz
+
+import (
+	"context"
+
+	"github.com/dromara/carbon/v2"
+	"gorm.io/gorm"
+)
+
+type {{.Pascal}} struct {
+	ID        uint            `gorm:"primaryKey" json:"id"`
+	Name      string          `json:"name"`
+	CreatedAt carbon.DateTime `json:"created_at"`
+	UpdatedAt carbon.DateTime `json:"updated_at"`
+	DeletedAt gorm.DeletedAt  `json:"-"`
+}
+
+// {{.Pascal}}Repo is the persistence boundary; a missing row is ErrNotFound.
+type {{.Pascal}}Repo interface {
+	List(ctx context.Context, page, limit uint) ([]*{{.Pascal}}, int64, error)
+	Get(ctx context.Context, id uint) (*{{.Pascal}}, error)
+	Create(ctx context.Context, {{.Camel}} *{{.Pascal}}) error
+	Update(ctx context.Context, {{.Camel}} *{{.Pascal}}) (*{{.Pascal}}, error)
+	Delete(ctx context.Context, id uint) error
+}
+
+// {{.Pascal}}Usecase holds transport-independent {{.Snake}} business logic.
+type {{.Pascal}}Usecase struct {
+	repo {{.Pascal}}Repo
+}
+
+func New{{.Pascal}}Usecase(repo {{.Pascal}}Repo) *{{.Pascal}}Usecase {
+	return &{{.Pascal}}Usecase{
+		repo: repo,
+	}
+}
+
+func (uc *{{.Pascal}}Usecase) List(ctx context.Context, page, limit uint) ([]*{{.Pascal}}, int64, error) {
+	return uc.repo.List(ctx, page, limit)
+}
+
+func (uc *{{.Pascal}}Usecase) Get(ctx context.Context, id uint) (*{{.Pascal}}, error) {
+	return uc.repo.Get(ctx, id)
+}
+
+func (uc *{{.Pascal}}Usecase) Create(ctx context.Context, name string) (*{{.Pascal}}, error) {
+	{{.Camel}} := &{{.Pascal}}{Name: name}
+	if err := uc.repo.Create(ctx, {{.Camel}}); err != nil {
+		return nil, err
+	}
+
+	return {{.Camel}}, nil
+}
+
+func (uc *{{.Pascal}}Usecase) Update(ctx context.Context, id uint, name string) (*{{.Pascal}}, error) {
+	return uc.repo.Update(ctx, &{{.Pascal}}{ID: id, Name: name})
+}
+
+func (uc *{{.Pascal}}Usecase) Delete(ctx context.Context, id uint) error {
+	return uc.repo.Delete(ctx, id)
+}

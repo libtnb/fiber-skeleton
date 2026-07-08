@@ -1,0 +1,91 @@
+package service
+
+import (
+	"github.com/gofiber/fiber/v3"
+
+	"{{.Module}}/internal/biz"
+	"{{.Module}}/internal/request"
+)
+
+// {{.Pascal}}Service adapts HTTP to the {{.Snake}} usecase: bind, validate, delegate, respond.
+type {{.Pascal}}Service struct {
+	{{.Camel}} *biz.{{.Pascal}}Usecase
+}
+
+func New{{.Pascal}}Service({{.Camel}} *biz.{{.Pascal}}Usecase) *{{.Pascal}}Service {
+	return &{{.Pascal}}Service{
+		{{.Camel}}: {{.Camel}},
+	}
+}
+
+func (r *{{.Pascal}}Service) List(c fiber.Ctx) error {
+	req, err := Bind[request.Paginate](c)
+	if err != nil {
+		return Error(c, fiber.StatusUnprocessableEntity, "%v", err)
+	}
+
+	items, total, err := r.{{.Camel}}.List(c.Context(), req.Page, req.Limit)
+	if err != nil {
+		return ErrorFrom(c, err)
+	}
+
+	return Success(c, map[string]any{
+		"total": total,
+		"items": items,
+	})
+}
+
+func (r *{{.Pascal}}Service) Get(c fiber.Ctx) error {
+	req, err := Bind[request.{{.Pascal}}ID](c)
+	if err != nil {
+		return Error(c, fiber.StatusUnprocessableEntity, "%v", err)
+	}
+
+	{{.Camel}}, err := r.{{.Camel}}.Get(c.Context(), req.ID)
+	if err != nil {
+		return ErrorFrom(c, err)
+	}
+
+	return Success(c, {{.Camel}})
+}
+
+func (r *{{.Pascal}}Service) Create(c fiber.Ctx) error {
+	req, err := Bind[request.{{.Pascal}}Add](c)
+	if err != nil {
+		return Error(c, fiber.StatusUnprocessableEntity, "%v", err)
+	}
+
+	{{.Camel}}, err := r.{{.Camel}}.Create(c.Context(), req.Name)
+	if err != nil {
+		return ErrorFrom(c, err)
+	}
+
+	return Success(c, {{.Camel}})
+}
+
+func (r *{{.Pascal}}Service) Update(c fiber.Ctx) error {
+	req, err := Bind[request.{{.Pascal}}Update](c)
+	if err != nil {
+		return Error(c, fiber.StatusUnprocessableEntity, "%v", err)
+	}
+
+	{{.Camel}}, err := r.{{.Camel}}.Update(c.Context(), req.ID, req.Name)
+	if err != nil {
+		return ErrorFrom(c, err)
+	}
+
+	return Success(c, {{.Camel}})
+}
+
+func (r *{{.Pascal}}Service) Delete(c fiber.Ctx) error {
+	req, err := Bind[request.{{.Pascal}}ID](c)
+	if err != nil {
+		return Error(c, fiber.StatusUnprocessableEntity, "%v", err)
+	}
+
+	if err = r.{{.Camel}}.Delete(c.Context(), req.ID); err != nil {
+		return ErrorFrom(c, err)
+	}
+
+	return Success(c, nil)
+}

@@ -1,3 +1,3 @@
 # pkg
 
-pkg 目录存放可以被应用重复使用的一些包。
+The pkg directory stores packages that can be reused by the application.

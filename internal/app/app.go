@@ -1,125 +1,75 @@
 package app
 
 import (
+	"context"
+	_ "expvar" // registers /debug/vars on the default mux
 	"fmt"
-	"log"
 	"net"
-	"os"
-	"os/signal"
-	"runtime"
-	"syscall"
+	"net/http"
+	_ "net/http/pprof" // registers /debug/pprof on the default mux
 	"time"
 
-	"github.com/cloudflare/tableflip"
-	"github.com/go-gormigrate/gormigrate/v2"
 	"github.com/gofiber/fiber/v3"
-	"github.com/gookit/validate"
-	"github.com/knadh/koanf/v2"
-	"github.com/robfig/cron/v3"
+	"github.com/libtnb/cron"
+	"github.com/libtnb/graceful"
+	"github.com/libtnb/migrate"
+	"github.com/samber/do/v2"
+
+	"github.com/libtnb/fiber-skeleton/internal/config"
 )
 
 type App struct {
-	conf     *koanf.Koanf
+	conf     *config.Config
 	router   *fiber.App
-	migrator *gormigrate.Gormigrate
+	migrator *migrate.Migrator
 	cron     *cron.Cron
 }
 
-func NewApp(conf *koanf.Koanf, router *fiber.App, migrator *gormigrate.Gormigrate, cron *cron.Cron, _ *validate.Validation) *App {
+func NewApp(i do.Injector) (*App, error) {
 	return &App{
-		conf:     conf,
-		router:   router,
-		migrator: migrator,
-		cron:     cron,
-	}
+		conf:     do.MustInvoke[*config.Config](i),
+		router:   do.MustInvoke[*fiber.App](i),
+		migrator: do.MustInvoke[*migrate.Migrator](i),
+		cron:     do.MustInvoke[*cron.Cron](i),
+	}, nil
 }
 
+// Run migrates the database, then hands the lifecycle to graceful:
+// SIGINT/SIGTERM drains everything, SIGHUP hot-upgrades the binary.
 func (r *App) Run() error {
-	// migrate database
-	if err := r.migrator.Migrate(); err != nil {
+	if err := r.migrator.Up(context.Background()); err != nil {
 		return err
 	}
 	fmt.Println("[DB] database migrated")
 
-	// start cron scheduler
-	r.cron.Start()
-	fmt.Println("[CRON] cron scheduler started")
-
-	// run http server
-	if runtime.GOOS != "windows" {
-		return r.runServer()
+	g := graceful.New(
+		graceful.WithUpgrade(),
+		graceful.WithShutdownTimeout(30*time.Second),
+	)
+	// pprof/expvar live on http.DefaultServeMux, served on a private port
+	if addr := r.conf.HTTP.DebugAddress; addr != "" {
+		g.Listen("debug", addr, &http.Server{})
 	}
+	g.Add("cron", r.cron.Start, r.cron.Stop)
+	g.Listen("http", r.conf.HTTP.Address, fiberServer{app: r.router, conf: r.conf})
 
-	return r.runServerFallback()
+	fmt.Println("[HTTP] listening and serving on", r.conf.HTTP.Address)
+	return g.Run()
 }
 
-// runServer graceful run server
-func (r *App) runServer() error {
-	upg, err := tableflip.New(tableflip.Options{})
-	if err != nil {
-		return err
-	}
-	defer upg.Stop()
-
-	// By prefixing PID to log, easy to interrupt from another process.
-	log.SetPrefix(fmt.Sprintf("[PID %d]", os.Getpid()))
-
-	// Listen for the process signal to trigger the tableflip upgrade.
-	go func() {
-		sig := make(chan os.Signal, 1)
-		signal.Notify(sig, syscall.SIGHUP)
-		for range sig {
-			if err = upg.Upgrade(); err != nil {
-				log.Println("[Graceful] upgrade failed:", err)
-			}
-		}
-	}()
-
-	fmt.Println("[HTTP] listening and serving on", r.conf.MustString("http.address"))
-	ln, err := upg.Listen("tcp", r.conf.MustString("http.address"))
-	if err != nil {
-		return err
-	}
-	defer func(ln net.Listener) {
-		_ = ln.Close()
-	}(ln)
-
-	go func() {
-		if err = r.router.Listener(ln, r.listenConfig()); err != nil {
-			log.Println("[HTTP] server error:", err)
-		}
-	}()
-
-	// tableflip ready
-	if err = upg.Ready(); err != nil {
-		return err
-	}
-
-	fmt.Println("[Graceful] ready for upgrade")
-	<-upg.Exit()
-
-	// Make sure to set a deadline on exiting the process
-	// after upg.Exit() is closed. No new upgrades can be
-	// performed if the parent doesn't exit.
-	return r.router.ShutdownWithTimeout(60 * time.Second)
+// fiberServer adapts *fiber.App to graceful.Server.
+type fiberServer struct {
+	app  *fiber.App
+	conf *config.Config
 }
 
-// runServerFallback fallback for windows
-func (r *App) runServerFallback() error {
-	fmt.Println("[HTTP] listening and serving on", r.conf.MustString("http.address"))
-	return r.router.Listen(r.conf.MustString("http.address"), r.listenConfig())
+func (s fiberServer) Serve(ln net.Listener) error {
+	return s.app.Listener(ln, fiber.ListenConfig{
+		EnablePrintRoutes:     s.conf.HTTP.Debug,
+		DisableStartupMessage: !s.conf.HTTP.Debug,
+	})
 }
 
-func (r *App) listenConfig() fiber.ListenConfig {
-	// prefork not support dual stack
-	network := fiber.NetworkTCP
-	if r.conf.Bool("http.prefork") {
-		network = fiber.NetworkTCP4
-	}
-	return fiber.ListenConfig{
-		ListenerNetwork:       network,
-		EnablePrefork:         r.conf.Bool("http.prefork"),
-		EnablePrintRoutes:     r.conf.Bool("http.debug"),
-		DisableStartupMessage: !r.conf.Bool("http.debug"),
-	}
+func (s fiberServer) Shutdown(ctx context.Context) error {
+	return s.app.ShutdownWithContext(ctx)
 }

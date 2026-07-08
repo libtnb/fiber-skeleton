@@ -1,3 +1,3 @@
 # cmd
 
-cmd 目录存放应用的入口文件。
+The cmd directory stores the entry file of each application, one file per application.

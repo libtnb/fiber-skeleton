@@ -4,14 +4,15 @@ import (
 	"github.com/gofiber/fiber/v3"
 
 	"github.com/libtnb/fiber-skeleton/internal/biz"
-	"github.com/libtnb/fiber-skeleton/internal/http/request"
+	"github.com/libtnb/fiber-skeleton/internal/request"
 )
 
+// UserService adapts HTTP to the user usecase: bind, validate, delegate, respond.
 type UserService struct {
-	user biz.UserRepo
+	user *biz.UserUsecase
 }
 
-func NewUserService(user biz.UserRepo) *UserService {
+func NewUserService(user *biz.UserUsecase) *UserService {
 	return &UserService{
 		user: user,
 	}
@@ -22,14 +23,15 @@ func (r *UserService) List(c fiber.Ctx) error {
 	if err != nil {
 		return Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 	}
-	users, total, err := r.user.List(req.Page, req.Limit)
+
+	users, total, err := r.user.List(c.Context(), req.Page, req.Limit)
 	if err != nil {
-		return ErrorSystem(c)
+		return ErrorFrom(c, err)
 	}
 
-	return Success(c, map[string]any{
-		"total": total,
-		"items": users,
+	return Success(c, Page[*biz.User]{
+		Total: total,
+		Items: users,
 	})
 }
 
@@ -39,9 +41,9 @@ func (r *UserService) Get(c fiber.Ctx) error {
 		return Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 	}
 
-	user, err := r.user.Get(req.ID)
+	user, err := r.user.Get(c.Context(), req.ID)
 	if err != nil {
-		return ErrorSystem(c)
+		return ErrorFrom(c, err)
 	}
 
 	return Success(c, user)
@@ -53,10 +55,9 @@ func (r *UserService) Create(c fiber.Ctx) error {
 		return Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 	}
 
-	user := new(biz.User)
-	user.Name = req.Name
-	if err = r.user.Save(user); err != nil {
-		return ErrorSystem(c)
+	user, err := r.user.Create(c.Context(), req.Name)
+	if err != nil {
+		return ErrorFrom(c, err)
 	}
 
 	return Success(c, user)
@@ -68,11 +69,9 @@ func (r *UserService) Update(c fiber.Ctx) error {
 		return Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 	}
 
-	user := new(biz.User)
-	user.ID = req.ID
-	user.Name = req.Name
-	if err = r.user.Save(user); err != nil {
-		return ErrorSystem(c)
+	user, err := r.user.Update(c.Context(), req.ID, req.Name)
+	if err != nil {
+		return ErrorFrom(c, err)
 	}
 
 	return Success(c, user)
@@ -84,8 +83,8 @@ func (r *UserService) Delete(c fiber.Ctx) error {
 		return Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 	}
 
-	if err = r.user.Delete(req.ID); err != nil {
-		return ErrorSystem(c)
+	if err = r.user.Delete(c.Context(), req.ID); err != nil {
+		return ErrorFrom(c, err)
 	}
 
 	return Success(c, nil)

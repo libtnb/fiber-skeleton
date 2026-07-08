@@ -1,3 +1,3 @@
 # config
 
-config 目录存放应用使用的各种配置文件。
+The config directory stores the configuration files used by the application.
