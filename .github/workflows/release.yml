@@ -34,7 +34,7 @@ jobs:
           go build -trimpath -buildvcs=false -ldflags "${LDFLAGS}" -o cli-${{ matrix.goos }}-${{ matrix.goarch }} ./cmd/cli
           tar -czf app-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz app-${{ matrix.goos }}-${{ matrix.goarch }} cli-${{ matrix.goos }}-${{ matrix.goarch }} config/config.example.yml
       - name: Upload to release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: app-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz
           generate_release_notes: true
