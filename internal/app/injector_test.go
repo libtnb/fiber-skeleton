@@ -4,15 +4,15 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/libtnb/migrate"
+	"github.com/go-rio/migrate"
 	"github.com/samber/do/v2"
 	"github.com/stretchr/testify/require"
+	"github.com/urfave/cli/v3"
 
 	"github.com/libtnb/fiber-skeleton/internal/app"
-	"github.com/libtnb/fiber-skeleton/internal/command"
-	"github.com/libtnb/fiber-skeleton/internal/job"
-	"github.com/libtnb/fiber-skeleton/internal/registry"
-	"github.com/libtnb/fiber-skeleton/internal/route"
+	"github.com/libtnb/fiber-skeleton/internal/bootstrap"
+	"github.com/libtnb/fiber-skeleton/internal/pkg/registry"
+	"github.com/libtnb/fiber-skeleton/internal/server"
 )
 
 // TestContainer builds the full object graph, catching wiring mistakes
@@ -35,17 +35,17 @@ func TestContainer(t *testing.T) {
 
 	// every named contribution must carry a known prefix: a typo like
 	// "route:user" would otherwise be dropped silently
-	require.NoError(t, registry.Verify(injector, route.RoutePrefix, command.Prefix, job.Prefix))
+	require.NoError(t, registry.Verify(injector, registry.RoutePrefix, registry.CommandPrefix, registry.JobPrefix, registry.SubscriberPrefix))
 
-	routes, err := registry.Collect[route.Endpoints](injector, route.RoutePrefix)
+	routes, err := registry.Collect[server.Endpoints](injector, registry.RoutePrefix)
 	require.NoError(t, err)
 	require.NotEmpty(t, routes)
 
-	commands, err := command.Commands(injector)
+	commands, err := registry.Collect[*cli.Command](injector, registry.CommandPrefix)
 	require.NoError(t, err)
 	require.NotEmpty(t, commands)
 
-	jobs, err := registry.Collect[job.JobFn](injector, job.Prefix)
+	jobs, err := registry.Collect[bootstrap.JobFn](injector, registry.JobPrefix)
 	require.NoError(t, err)
 	require.NotEmpty(t, jobs)
 

@@ -9,25 +9,32 @@ import (
 	_ "net/http/pprof" // registers /debug/pprof on the default mux
 	"time"
 
+	"github.com/go-rio/migrate"
 	"github.com/gofiber/fiber/v3"
 	"github.com/libtnb/cron"
 	"github.com/libtnb/graceful"
-	"github.com/libtnb/migrate"
 	"github.com/samber/do/v2"
 
-	"github.com/libtnb/fiber-skeleton/internal/config"
+	"github.com/libtnb/fiber-skeleton/internal/conf"
+	"github.com/libtnb/fiber-skeleton/internal/pkg/event"
+	"github.com/libtnb/fiber-skeleton/internal/pkg/registry"
 )
 
 type App struct {
-	conf     *config.Config
+	conf     *conf.Config
 	router   *fiber.App
 	migrator *migrate.Migrator
 	cron     *cron.Cron
 }
 
 func NewApp(i do.Injector) (*App, error) {
+	// activate every subscriber so its handlers are on the bus before serving
+	if _, err := registry.Collect[event.Subscription](i, registry.SubscriberPrefix); err != nil {
+		return nil, err
+	}
+
 	return &App{
-		conf:     do.MustInvoke[*config.Config](i),
+		conf:     do.MustInvoke[*conf.Config](i),
 		router:   do.MustInvoke[*fiber.App](i),
 		migrator: do.MustInvoke[*migrate.Migrator](i),
 		cron:     do.MustInvoke[*cron.Cron](i),
@@ -60,7 +67,7 @@ func (r *App) Run() error {
 // fiberServer adapts *fiber.App to graceful.Server.
 type fiberServer struct {
 	app  *fiber.App
-	conf *config.Config
+	conf *conf.Config
 }
 
 func (s fiberServer) Serve(ln net.Listener) error {

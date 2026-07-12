@@ -5,30 +5,23 @@ import (
 	"strings"
 
 	"github.com/libtnb/validator"
-	"github.com/libtnb/validator/contrib/gormrules"
 	"github.com/libtnb/validator/translations"
 	"github.com/samber/do/v2"
 
-	"github.com/libtnb/fiber-skeleton/internal/config"
-	"github.com/libtnb/fiber-skeleton/internal/data"
+	"github.com/libtnb/fiber-skeleton/internal/conf"
 )
 
-// NewValidator builds the validator behind service.Bind: localized messages,
-// wire-name field reporting and the database rules.
 func NewValidator(i do.Injector) (*validator.Validator, error) {
-	conf := do.MustInvoke[*config.Config](i)
+	config := do.MustInvoke[*conf.Config](i)
 
 	opts := []validator.Option{
 		validator.WithTagNameFunc(fieldName),
 	}
-	if messages := localeMessages(conf.App.Locale); messages != nil {
+	if messages := localeMessages(config.App.Locale); messages != nil {
 		opts = append(opts, validator.WithTranslation(messages))
 	}
 
-	v := validator.NewValidator(opts...)
-	gormrules.Register(v, do.MustInvoke[*data.Data](i).DB)
-
-	return v, nil
+	return validator.NewValidator(opts...), nil
 }
 
 // fieldName reports fields in error messages by the name the client sent.

@@ -3,59 +3,68 @@ package data
 import (
 	"context"
 
+	"github.com/go-rio/rio"
 	"github.com/samber/do/v2"
-	"gorm.io/gorm"
 
-	"{{.Module}}/internal/biz"
+	"{{.Module}}/internal/{{.Snake}}/biz"
 )
 
 type {{.Camel}}Repo struct {
-	db *gorm.DB
+	db *rio.DB
 }
 
 func New{{.Pascal}}Repo(i do.Injector) (biz.{{.Pascal}}Repo, error) {
 	return &{{.Camel}}Repo{
-		db: do.MustInvoke[*Data](i).DB,
+		db: do.MustInvoke[*rio.DB](i),
 	}, nil
 }
 
 func (r *{{.Camel}}Repo) List(ctx context.Context, page, limit uint) ([]*biz.{{.Pascal}}, int64, error) {
-	var total int64
-	if err := r.db.WithContext(ctx).Model(&biz.{{.Pascal}}{}).Count(&total).Error; err != nil {
+	total, err := rio.From[biz.{{.Pascal}}]().Count(ctx, r.db)
+	if err != nil {
 		return nil, 0, err
 	}
 
-	var list []*biz.{{.Pascal}}
-	if err := r.db.WithContext(ctx).Offset(int((page - 1) * limit)).Limit(int(limit)).Find(&list).Error; err != nil {
+	list, err := rio.From[biz.{{.Pascal}}]().
+		Offset(int((page - 1) * limit)).
+		Limit(int(limit)).
+		OrderBy("id").
+		All(ctx, r.db)
+	if err != nil {
 		return nil, 0, err
 	}
 
-	return list, total, nil
+	{{.Camel}}s := make([]*biz.{{.Pascal}}, len(list))
+	for i := range list {
+		{{.Camel}}s[i] = &list[i]
+	}
+
+	return {{.Camel}}s, total, nil
 }
 
 func (r *{{.Camel}}Repo) Get(ctx context.Context, id uint) (*biz.{{.Pascal}}, error) {
-	{{.Camel}} := new(biz.{{.Pascal}})
-	if err := r.db.WithContext(ctx).First({{.Camel}}, id).Error; err != nil {
-		return nil, wrapErr(err)
+	{{.Camel}}, err := rio.Find[biz.{{.Pascal}}](ctx, r.db, id)
+	if err != nil {
+		return nil, err
 	}
 
 	return {{.Camel}}, nil
 }
 
 func (r *{{.Camel}}Repo) Create(ctx context.Context, {{.Camel}} *biz.{{.Pascal}}) error {
-	return r.db.WithContext(ctx).Create({{.Camel}}).Error
+	return rio.Insert(ctx, r.db, {{.Camel}})
 }
 
 // Update is read-modify-write: it keeps CreatedAt intact and reports a
 // missing row instead of upserting.
 func (r *{{.Camel}}Repo) Update(ctx context.Context, {{.Camel}} *biz.{{.Pascal}}) (*biz.{{.Pascal}}, error) {
-	existing := new(biz.{{.Pascal}})
-	if err := r.db.WithContext(ctx).First(existing, {{.Camel}}.ID).Error; err != nil {
-		return nil, wrapErr(err)
+	existing, err := rio.Find[biz.{{.Pascal}}](ctx, r.db, {{.Camel}}.ID)
+	if err != nil {
+		return nil, err
 	}
 
 	existing.Name = {{.Camel}}.Name
-	if err := r.db.WithContext(ctx).Save(existing).Error; err != nil {
+	if err := rio.Update(ctx, r.db, existing); err != nil {
 		return nil, err
 	}
 
@@ -63,12 +72,12 @@ func (r *{{.Camel}}Repo) Update(ctx context.Context, {{.Camel}} *biz.{{.Pascal}}
 }
 
 func (r *{{.Camel}}Repo) Delete(ctx context.Context, id uint) error {
-	result := r.db.WithContext(ctx).Delete(&biz.{{.Pascal}}{}, id)
-	if result.Error != nil {
-		return result.Error
+	n, err := rio.From[biz.{{.Pascal}}]().Where("id = ?", id).DeleteAll(ctx, r.db)
+	if err != nil {
+		return err
 	}
-	if result.RowsAffected == 0 {
-		return biz.ErrNotFound
+	if n == 0 {
+		return rio.ErrNotFound
 	}
 
 	return nil

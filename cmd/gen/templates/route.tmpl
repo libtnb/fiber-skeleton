@@ -1,33 +1,32 @@
-package route
+package service
 
 import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/samber/do/v2"
 
-	"{{.Module}}/internal/biz"
-	"{{.Module}}/internal/request"
-	"{{.Module}}/internal/service"
+	"{{.Module}}/internal/pkg/transport"
+	"{{.Module}}/internal/server"
+	"{{.Module}}/internal/{{.Snake}}/biz"
 )
 
-// {{.Pascal}}Routes contributes the {{.Snake}} endpoints.
-func {{.Pascal}}Routes(i do.Injector) (Endpoints, error) {
-	{{.Camel}} := do.MustInvoke[*service.{{.Pascal}}Service](i)
+func {{.Pascal}}Routes(i do.Injector) (server.Endpoints, error) {
+	{{.Camel}} := do.MustInvoke[*{{.Pascal}}Service](i)
 
-	return Endpoints{
+	return server.Endpoints{
 		{Method: fiber.MethodGet, Path: "/{{.Route}}", Handler: {{.Camel}}.List,
 			Summary: "List {{.Table}}", Tags: []string{"{{.Snake}}"},
-			Request: request.Paginate{}, Response: service.Envelope[service.Page[*biz.{{.Pascal}}]]{}},
+			Request: transport.Paginate{}, Response: transport.Envelope[transport.Page[*biz.{{.Pascal}}]]{}},
 		{Method: fiber.MethodPost, Path: "/{{.Route}}", Handler: {{.Camel}}.Create,
 			Summary: "Create a {{.Snake}}", Tags: []string{"{{.Snake}}"},
-			Request: request.{{.Pascal}}Add{}, Response: service.Envelope[biz.{{.Pascal}}]{}},
+			Request: {{.Pascal}}Add{}, Response: transport.Envelope[biz.{{.Pascal}}]{}},
 		{Method: fiber.MethodGet, Path: "/{{.Route}}/:id", Handler: {{.Camel}}.Get,
 			Summary: "Get a {{.Snake}}", Tags: []string{"{{.Snake}}"},
-			Request: request.{{.Pascal}}ID{}, Response: service.Envelope[biz.{{.Pascal}}]{}},
+			Request: {{.Pascal}}ID{}, Response: transport.Envelope[biz.{{.Pascal}}]{}},
 		{Method: fiber.MethodPut, Path: "/{{.Route}}/:id", Handler: {{.Camel}}.Update,
 			Summary: "Update a {{.Snake}}", Tags: []string{"{{.Snake}}"},
-			Request: request.{{.Pascal}}Update{}, Response: service.Envelope[biz.{{.Pascal}}]{}},
+			Request: {{.Pascal}}Update{}, Response: transport.Envelope[biz.{{.Pascal}}]{}},
 		{Method: fiber.MethodDelete, Path: "/{{.Route}}/:id", Handler: {{.Camel}}.Delete,
 			Summary: "Delete a {{.Snake}}", Tags: []string{"{{.Snake}}"},
-			Request: request.{{.Pascal}}ID{}},
+			Request: {{.Pascal}}ID{}},
 	}, nil
 }

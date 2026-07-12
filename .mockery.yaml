@@ -4,7 +4,15 @@ structname: "{{.InterfaceName}}"
 pkgname: "{{.SrcPackageName}}"
 filename: "{{.InterfaceName}}.go"
 packages:
-  github.com/libtnb/fiber-skeleton/internal/biz:
+  github.com/libtnb/fiber-skeleton/internal:
     config:
-      all: true
       recursive: true
+      all: true
+      exclude-subpkg-regex:
+        - "/pkg(/|$)"
+        - "/data$"
+        - "/service$"
+        - "/server$"
+        - "/bootstrap$"
+        - "/conf$"
+        - "/app$"

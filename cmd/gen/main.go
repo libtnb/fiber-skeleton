@@ -64,12 +64,13 @@ func run() error {
 	}
 
 	files := map[string]string{
-		"biz.tmpl":       filepath.Join("internal", "biz", m.Snake+".go"),
-		"data.tmpl":      filepath.Join("internal", "data", m.Snake+".go"),
-		"service.tmpl":   filepath.Join("internal", "service", m.Snake+".go"),
-		"route.tmpl":     filepath.Join("internal", "route", m.Snake+".go"),
-		"request.tmpl":   filepath.Join("internal", "request", m.Snake+".go"),
-		"migration.tmpl": filepath.Join("internal", "migration", "v"+m.Date+"_"+m.Snake+".go"),
+		"biz.tmpl":       filepath.Join("internal", m.Snake, "biz", m.Snake+".go"),
+		"data.tmpl":      filepath.Join("internal", m.Snake, "data", m.Snake+".go"),
+		"migration.tmpl": filepath.Join("internal", m.Snake, "data", "migration.go"),
+		"service.tmpl":   filepath.Join("internal", m.Snake, "service", "service.go"),
+		"request.tmpl":   filepath.Join("internal", m.Snake, "service", "request.go"),
+		"route.tmpl":     filepath.Join("internal", m.Snake, "service", "route.go"),
+		"module.tmpl":    filepath.Join("internal", m.Snake, m.Snake+".go"),
 	}
 
 	// refuse to overwrite anything: check all targets before writing any
@@ -87,13 +88,12 @@ func run() error {
 	}
 
 	fmt.Printf(`
-Next steps — add one line to each Package list:
-  1. internal/biz/biz.go:       registry.Lazy(New%[1]sUsecase),
-  2. internal/data/data.go:     do.Lazy(New%[1]sRepo),
-  3. internal/service/service.go: registry.Lazy(New%[1]sService),
-  4. internal/route/route.go:   do.LazyNamed(RoutePrefix+"%[2]s", %[1]sRoutes),
-  then run "make generate" to refresh mocks
-`, m.Pascal, m.Snake)
+Next steps:
+  1. internal/app/injector.go: import "%[2]s/internal/%[1]s" and add
+     "%[1]s.Package," to the business modules list.
+  2. run "make generate" — mockery auto-discovers the new biz package and
+     writes its repo mock under mocks/biz (no .mockery.yaml edit needed).
+`, m.Snake, m.Module)
 
 	return nil
 }
@@ -124,6 +124,10 @@ func render(src, dst string, m module) error {
 	code, err := format.Source(buf.Bytes())
 	if err != nil {
 		return fmt.Errorf("format %s: %w", dst, err)
+	}
+
+	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
+		return err
 	}
 
 	f, err := os.OpenFile(dst, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o644)
