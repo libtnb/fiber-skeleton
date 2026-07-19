@@ -2,9 +2,7 @@ package data
 
 import "github.com/go-rio/migrate"
 
-// The {{.Snake}} module owns its schema: the migration is registered at init
-// time, compiled into the binary and run by the migrator like every other
-// module's.
+// The module owns its schema; init registers it with the migrator.
 func init() {
 	migrate.Add("{{.Date}}_create_{{.Table}}", func(s *migrate.Schema) {
 		s.Create("{{.Table}}", func(t *migrate.Table) {

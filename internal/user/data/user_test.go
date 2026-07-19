@@ -1,7 +1,6 @@
 package data
 
 import (
-	"context"
 	"path/filepath"
 	"testing"
 
@@ -13,8 +12,7 @@ import (
 	"github.com/libtnb/fiber-skeleton/internal/user/biz"
 )
 
-// newTestRepo returns a repo bound to a throwaway, fully migrated SQLite database,
-// so the repo is exercised against the real rio driver and the real schema, not a mock.
+// newTestRepo binds the repo to a throwaway, fully migrated SQLite database.
 func newTestRepo(t *testing.T) *userRepo {
 	t.Helper()
 
@@ -31,7 +29,7 @@ func newTestRepo(t *testing.T) *userRepo {
 
 func TestUserRepo_CRUD(t *testing.T) {
 	repo := newTestRepo(t)
-	ctx := context.Background()
+	ctx := t.Context()
 
 	user := &biz.User{Name: "alice"}
 	require.NoError(t, repo.Create(ctx, user))
@@ -54,16 +52,24 @@ func TestUserRepo_CRUD(t *testing.T) {
 	require.Equal(t, user.CreatedAt.Unix(), updated.CreatedAt.Unix())
 }
 
+func TestUserRepo_Create_DuplicateName(t *testing.T) {
+	repo := newTestRepo(t)
+	ctx := t.Context()
+
+	require.NoError(t, repo.Create(ctx, &biz.User{Name: "alice"}))
+	require.ErrorIs(t, repo.Create(ctx, &biz.User{Name: "alice"}), biz.ErrNameTaken)
+}
+
 func TestUserRepo_Get_NotFound(t *testing.T) {
 	repo := newTestRepo(t)
 
-	_, err := repo.Get(context.Background(), 404)
+	_, err := repo.Get(t.Context(), 404)
 	require.ErrorIs(t, err, rio.ErrNotFound)
 }
 
 func TestUserRepo_Delete_SoftDeletesAndReports(t *testing.T) {
 	repo := newTestRepo(t)
-	ctx := context.Background()
+	ctx := t.Context()
 
 	user := &biz.User{Name: "carol"}
 	require.NoError(t, repo.Create(ctx, user))
@@ -73,6 +79,8 @@ func TestUserRepo_Delete_SoftDeletesAndReports(t *testing.T) {
 	_, err := repo.Get(ctx, user.ID)
 	require.ErrorIs(t, err, rio.ErrNotFound)
 
-	// Deleting a missing row reports ErrNotFound rather than succeeding.
 	require.ErrorIs(t, repo.Delete(ctx, user.ID), rio.ErrNotFound)
+
+	// soft-deleting released the name
+	require.NoError(t, repo.Create(ctx, &biz.User{Name: "carol"}))
 }

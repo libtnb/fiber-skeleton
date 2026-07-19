@@ -7,3 +7,7 @@ web
 config/config.yml
 *.db
 coverage.out
+mocks
+/app
+/cli
+/gen

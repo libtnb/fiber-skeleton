@@ -7,7 +7,6 @@ import (
 	"net/http"
 
 	"github.com/gofiber/fiber/v3"
-	"github.com/libtnb/validator"
 	"github.com/libtnb/validator/contrib/openapi"
 	"github.com/samber/do/v2"
 
@@ -15,11 +14,8 @@ import (
 	"github.com/libtnb/fiber-skeleton/internal/pkg/registry"
 )
 
-// Package wires the HTTP server: the router, its middleware, the probes and
-// the websocket endpoint.
+// Package wires the HTTP server.
 var Package = do.Package(
-	do.Lazy(NewMiddlewares),
-	do.Lazy(NewHealthService),
 	do.Lazy(NewRouter),
 	do.LazyNamed(registry.RoutePrefix+"health", HealthRoutes),
 	do.LazyNamed(registry.RoutePrefix+"ws", WsRoutes),
@@ -27,10 +23,6 @@ var Package = do.Package(
 
 func NewRouter(i do.Injector) (*fiber.App, error) {
 	config := do.MustInvoke[*conf.Config](i)
-	middlewares := do.MustInvoke[*Middlewares](i)
-
-	// handlers reach this instance through transport.Bind / validator.Default
-	validator.SetDefault(do.MustInvoke[*validator.Validator](i))
 
 	r := fiber.New(fiber.Config{
 		AppName:           config.App.Name,
@@ -42,12 +34,11 @@ func NewRouter(i do.Injector) (*fiber.App, error) {
 		ReduceMemoryUsage: config.HTTP.ReduceMemoryUsage,
 		// every framework-level error (404, 405, 413, panics) leaves as JSON
 		ErrorHandler: errorHandler,
-		// swap in a faster JSON codec here if it ever shows up in profiles
-		JSONEncoder: json.Marshal,
-		JSONDecoder: json.Unmarshal,
+		JSONEncoder:  json.Marshal,
+		JSONDecoder:  json.Unmarshal,
 	})
 
-	for _, handler := range middlewares.Globals(r) {
+	for _, handler := range globalMiddlewares(config, do.MustInvoke[*slog.Logger](i)) {
 		r.Use(handler)
 	}
 

@@ -11,21 +11,19 @@ import (
 	"github.com/libtnb/validator"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
 
 	"github.com/libtnb/fiber-skeleton/internal/user/biz"
 	"github.com/libtnb/fiber-skeleton/internal/user/service"
-	mocksbiz "github.com/libtnb/fiber-skeleton/mocks/biz"
+	mocksbiz "github.com/libtnb/fiber-skeleton/mocks/user/biz"
 )
 
-// newTestApp wires the service against a mocked repo (through a real usecase)
-// and a real validator, so tests exercise binding, validation and error
-// mapping end to end.
+// newTestApp wires the service against a mocked repo and a real validator.
 func newTestApp(t *testing.T) (*fiber.App, *mocksbiz.UserRepo) {
 	t.Helper()
 
-	validator.SetDefault(validator.NewValidator())
 	repo := mocksbiz.NewUserRepo(t)
-	user := service.NewUserService(biz.NewUserUsecase(repo))
+	user := service.NewUserService(biz.NewUserUsecase(repo), validator.NewValidator())
 
 	app := fiber.New()
 	app.Get("/users", user.List)
@@ -39,16 +37,16 @@ func newTestApp(t *testing.T) (*fiber.App, *mocksbiz.UserRepo) {
 
 func TestUserList(t *testing.T) {
 	app, repo := newTestApp(t)
-	repo.EXPECT().List(mock.Anything, uint(1), uint(10)).
+	repo.EXPECT().List(mock.Anything, 1, 10).
 		Return([]*biz.User{{ID: 1, Name: "alice"}}, int64(1), nil)
 
 	resp, err := app.Test(httptest.NewRequest(fiber.MethodGet, "/users", nil))
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fiber.StatusOK, resp.StatusCode)
 
 	b, err := io.ReadAll(resp.Body)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Contains(t, string(b), "alice")
 }
 
@@ -59,7 +57,7 @@ func TestUserGet(t *testing.T) {
 
 	resp, err := app.Test(httptest.NewRequest(fiber.MethodGet, "/users/1", nil))
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fiber.StatusOK, resp.StatusCode)
 }
 
@@ -70,7 +68,7 @@ func TestUserGet_NotFoundMapsTo404(t *testing.T) {
 
 	resp, err := app.Test(httptest.NewRequest(fiber.MethodGet, "/users/9", nil))
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fiber.StatusNotFound, resp.StatusCode)
 }
 
@@ -85,12 +83,10 @@ func TestUserCreate(t *testing.T) {
 	req.Header.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 	resp, err := app.Test(req)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fiber.StatusOK, resp.StatusCode)
 }
 
-// a taken name surfaces as the oops code user.name_taken, which ErrorFrom maps
-// to 409 — the handler itself no longer special-cases the error.
 func TestUserCreate_NameTakenMapsToConflict(t *testing.T) {
 	app, repo := newTestApp(t)
 	repo.EXPECT().ExistsName(mock.Anything, "alice").Return(true, nil)
@@ -99,7 +95,7 @@ func TestUserCreate_NameTakenMapsToConflict(t *testing.T) {
 	req.Header.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 	resp, err := app.Test(req)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fiber.StatusConflict, resp.StatusCode)
 }
 
@@ -110,7 +106,7 @@ func TestUserCreate_RejectsShortName(t *testing.T) {
 	req.Header.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 	resp, err := app.Test(req)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fiber.StatusUnprocessableEntity, resp.StatusCode)
 }
 
@@ -124,7 +120,7 @@ func TestUserUpdate_NotFoundMapsTo404(t *testing.T) {
 	req.Header.Set(fiber.HeaderContentType, fiber.MIMEApplicationJSON)
 	resp, err := app.Test(req)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fiber.StatusNotFound, resp.StatusCode)
 }
 
@@ -134,6 +130,6 @@ func TestUserDelete(t *testing.T) {
 
 	resp, err := app.Test(httptest.NewRequest(fiber.MethodDelete, "/users/1", nil))
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fiber.StatusOK, resp.StatusCode)
 }

@@ -1,5 +1,6 @@
 template: testify
-dir: mocks/{{.SrcPackageName}}
+# one mock package per module, so same-named interfaces cannot collide
+dir: mocks/{{.InterfaceDirRelative | trimPrefix "internal/"}}
 structname: "{{.InterfaceName}}"
 pkgname: "{{.SrcPackageName}}"
 filename: "{{.InterfaceName}}.go"

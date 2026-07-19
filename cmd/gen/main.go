@@ -37,7 +37,7 @@ type module struct {
 
 func main() {
 	if err := run(); err != nil {
-		fmt.Fprintln(os.Stderr, "gen:", err)
+		_, _ = fmt.Fprintln(os.Stderr, "gen:", err)
 		os.Exit(1)
 	}
 }
@@ -92,7 +92,7 @@ Next steps:
   1. internal/app/injector.go: import "%[2]s/internal/%[1]s" and add
      "%[1]s.Package," to the business modules list.
   2. run "make generate" — mockery auto-discovers the new biz package and
-     writes its repo mock under mocks/biz (no .mockery.yaml edit needed).
+     writes its repo mock under mocks/%[1]s/biz (no .mockery.yaml edit needed).
 `, m.Snake, m.Module)
 
 	return nil
@@ -126,11 +126,11 @@ func render(src, dst string, m module) error {
 		return fmt.Errorf("format %s: %w", dst, err)
 	}
 
-	if err := os.MkdirAll(filepath.Dir(dst), 0o755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(dst), 0o750); err != nil {
 		return err
 	}
 
-	f, err := os.OpenFile(dst, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o644)
+	f, err := os.OpenFile(dst, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o600) //nolint:gosec // dst is namePattern-sanitized
 	if err != nil {
 		return err
 	}

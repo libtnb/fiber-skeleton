@@ -14,24 +14,11 @@ import (
 	"github.com/gofiber/fiber/v3/middleware/helmet"
 	"github.com/gofiber/fiber/v3/middleware/recover"
 	"github.com/gofiber/fiber/v3/middleware/requestid"
-	"github.com/samber/do/v2"
 
 	"github.com/libtnb/fiber-skeleton/internal/conf"
 )
 
-type Middlewares struct {
-	conf *conf.Config
-	log  *slog.Logger
-}
-
-func NewMiddlewares(i do.Injector) (*Middlewares, error) {
-	return &Middlewares{
-		conf: do.MustInvoke[*conf.Config](i),
-		log:  do.MustInvoke[*slog.Logger](i),
-	}, nil
-}
-
-func (r *Middlewares) Globals(app *fiber.App) []fiber.Handler {
+func globalMiddlewares(config *conf.Config, log *slog.Logger) []fiber.Handler {
 	handlers := []fiber.Handler{
 		recover.New(recover.Config{
 			EnableStackTrace: true,
@@ -39,9 +26,9 @@ func (r *Middlewares) Globals(app *fiber.App) []fiber.Handler {
 	}
 
 	// CORS only when origins are explicitly allowed; empty = same-origin
-	if len(r.conf.HTTP.CorsOrigins) > 0 {
+	if len(config.HTTP.CorsOrigins) > 0 {
 		handlers = append(handlers, cors.New(cors.Config{
-			AllowOrigins: r.conf.HTTP.CorsOrigins,
+			AllowOrigins: config.HTTP.CorsOrigins,
 		}))
 	}
 
@@ -50,15 +37,15 @@ func (r *Middlewares) Globals(app *fiber.App) []fiber.Handler {
 		etag.New(),
 		helmet.New(),
 		requestid.New(),
-		r.accessLog(),
+		accessLog(log),
 		encryptcookie.New(encryptcookie.Config{
-			Key: base64.StdEncoding.EncodeToString([]byte(r.conf.App.Key)),
+			Key: base64.StdEncoding.EncodeToString([]byte(config.App.Key)),
 		}),
 	)
 }
 
 // accessLog writes one structured line per request through the app logger.
-func (r *Middlewares) accessLog() fiber.Handler {
+func accessLog(log *slog.Logger) fiber.Handler {
 	return func(c fiber.Ctx) error {
 		// probes are noise
 		if c.Path() == "/healthz" || c.Path() == "/readyz" {
@@ -77,7 +64,7 @@ func (r *Middlewares) accessLog() fiber.Handler {
 			status = fiber.StatusInternalServerError
 		}
 
-		r.log.LogAttrs(c.Context(), slog.LevelInfo, "http request",
+		log.LogAttrs(c.Context(), slog.LevelInfo, "http request",
 			slog.String("method", c.Method()),
 			slog.String("path", c.Path()),
 			slog.Int("status", status),

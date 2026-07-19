@@ -287,7 +287,7 @@ func (_c *UserRepo_Get_Call) RunAndReturn(run func(ctx context.Context, id uint)
 }
 
 // List provides a mock function for the type UserRepo
-func (_mock *UserRepo) List(ctx context.Context, page uint, limit uint) ([]*biz.User, int64, error) {
+func (_mock *UserRepo) List(ctx context.Context, page int, limit int) ([]*biz.User, int64, error) {
 	ret := _mock.Called(ctx, page, limit)
 
 	if len(ret) == 0 {
@@ -297,22 +297,22 @@ func (_mock *UserRepo) List(ctx context.Context, page uint, limit uint) ([]*biz.
 	var r0 []*biz.User
 	var r1 int64
 	var r2 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, uint, uint) ([]*biz.User, int64, error)); ok {
+	if returnFunc, ok := ret.Get(0).(func(context.Context, int, int) ([]*biz.User, int64, error)); ok {
 		return returnFunc(ctx, page, limit)
 	}
-	if returnFunc, ok := ret.Get(0).(func(context.Context, uint, uint) []*biz.User); ok {
+	if returnFunc, ok := ret.Get(0).(func(context.Context, int, int) []*biz.User); ok {
 		r0 = returnFunc(ctx, page, limit)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]*biz.User)
 		}
 	}
-	if returnFunc, ok := ret.Get(1).(func(context.Context, uint, uint) int64); ok {
+	if returnFunc, ok := ret.Get(1).(func(context.Context, int, int) int64); ok {
 		r1 = returnFunc(ctx, page, limit)
 	} else {
 		r1 = ret.Get(1).(int64)
 	}
-	if returnFunc, ok := ret.Get(2).(func(context.Context, uint, uint) error); ok {
+	if returnFunc, ok := ret.Get(2).(func(context.Context, int, int) error); ok {
 		r2 = returnFunc(ctx, page, limit)
 	} else {
 		r2 = ret.Error(2)
@@ -327,25 +327,25 @@ type UserRepo_List_Call struct {
 
 // List is a helper method to define mock.On call
 //   - ctx context.Context
-//   - page uint
-//   - limit uint
+//   - page int
+//   - limit int
 func (_e *UserRepo_Expecter) List(ctx any, page any, limit any) *UserRepo_List_Call {
 	return &UserRepo_List_Call{Call: _e.mock.On("List", ctx, page, limit)}
 }
 
-func (_c *UserRepo_List_Call) Run(run func(ctx context.Context, page uint, limit uint)) *UserRepo_List_Call {
+func (_c *UserRepo_List_Call) Run(run func(ctx context.Context, page int, limit int)) *UserRepo_List_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
 			arg0 = args[0].(context.Context)
 		}
-		var arg1 uint
+		var arg1 int
 		if args[1] != nil {
-			arg1 = args[1].(uint)
+			arg1 = args[1].(int)
 		}
-		var arg2 uint
+		var arg2 int
 		if args[2] != nil {
-			arg2 = args[2].(uint)
+			arg2 = args[2].(int)
 		}
 		run(
 			arg0,
@@ -361,7 +361,7 @@ func (_c *UserRepo_List_Call) Return(users []*biz.User, n int64, err error) *Use
 	return _c
 }
 
-func (_c *UserRepo_List_Call) RunAndReturn(run func(ctx context.Context, page uint, limit uint) ([]*biz.User, int64, error)) *UserRepo_List_Call {
+func (_c *UserRepo_List_Call) RunAndReturn(run func(ctx context.Context, page int, limit int) ([]*biz.User, int64, error)) *UserRepo_List_Call {
 	_c.Call.Return(run)
 	return _c
 }

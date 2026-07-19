@@ -1,5 +1,4 @@
-// Package {{.Snake}} is the {{.Snake}} module's assembly: it wires the module's
-// biz, data and service layers and registers its route contribution.
+// Package {{.Snake}} is the {{.Snake}} module's assembly.
 package {{.Snake}}
 
 import (
@@ -14,6 +13,6 @@ import (
 var Package = do.Package(
 	do.Lazy(data.New{{.Pascal}}Repo),
 	registry.Lazy(biz.New{{.Pascal}}Usecase),
-	registry.Lazy(service.New{{.Pascal}}Service),
+	registry.Lazy2(service.New{{.Pascal}}Service),
 	do.LazyNamed(registry.RoutePrefix+"{{.Snake}}", service.{{.Pascal}}Routes),
 )

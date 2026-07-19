@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/gofiber/fiber/v3"
+	"github.com/libtnb/validator"
 
 	"{{.Module}}/internal/pkg/transport"
 	"{{.Module}}/internal/{{.Snake}}/biz"
@@ -9,17 +10,19 @@ import (
 
 // {{.Pascal}}Service adapts HTTP to the {{.Snake}} usecase: bind, validate, delegate, respond.
 type {{.Pascal}}Service struct {
-	{{.Camel}} *biz.{{.Pascal}}Usecase
+	{{.Camel}}  *biz.{{.Pascal}}Usecase
+	validate *validator.Validator
 }
 
-func New{{.Pascal}}Service({{.Camel}} *biz.{{.Pascal}}Usecase) *{{.Pascal}}Service {
+func New{{.Pascal}}Service({{.Camel}} *biz.{{.Pascal}}Usecase, validate *validator.Validator) *{{.Pascal}}Service {
 	return &{{.Pascal}}Service{
-		{{.Camel}}: {{.Camel}},
+		{{.Camel}}:  {{.Camel}},
+		validate: validate,
 	}
 }
 
 func (r *{{.Pascal}}Service) List(c fiber.Ctx) error {
-	req, err := transport.Bind[transport.Paginate](c)
+	req, err := transport.Bind[transport.Paginate](c, r.validate)
 	if err != nil {
 		return transport.Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 	}
@@ -36,7 +39,7 @@ func (r *{{.Pascal}}Service) List(c fiber.Ctx) error {
 }
 
 func (r *{{.Pascal}}Service) Get(c fiber.Ctx) error {
-	req, err := transport.Bind[{{.Pascal}}ID](c)
+	req, err := transport.Bind[{{.Pascal}}ID](c, r.validate)
 	if err != nil {
 		return transport.Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 	}
@@ -50,7 +53,7 @@ func (r *{{.Pascal}}Service) Get(c fiber.Ctx) error {
 }
 
 func (r *{{.Pascal}}Service) Create(c fiber.Ctx) error {
-	req, err := transport.Bind[{{.Pascal}}Add](c)
+	req, err := transport.Bind[{{.Pascal}}Add](c, r.validate)
 	if err != nil {
 		return transport.Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 	}
@@ -64,7 +67,7 @@ func (r *{{.Pascal}}Service) Create(c fiber.Ctx) error {
 }
 
 func (r *{{.Pascal}}Service) Update(c fiber.Ctx) error {
-	req, err := transport.Bind[{{.Pascal}}Update](c)
+	req, err := transport.Bind[{{.Pascal}}Update](c, r.validate)
 	if err != nil {
 		return transport.Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 	}
@@ -78,7 +81,7 @@ func (r *{{.Pascal}}Service) Update(c fiber.Ctx) error {
 }
 
 func (r *{{.Pascal}}Service) Delete(c fiber.Ctx) error {
-	req, err := transport.Bind[{{.Pascal}}ID](c)
+	req, err := transport.Bind[{{.Pascal}}ID](c, r.validate)
 	if err != nil {
 		return transport.Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 	}
@@ -87,5 +90,5 @@ func (r *{{.Pascal}}Service) Delete(c fiber.Ctx) error {
 		return transport.ErrorFrom(c, err)
 	}
 
-	return transport.Success(c, nil)
+	return transport.Success[any](c, nil)
 }

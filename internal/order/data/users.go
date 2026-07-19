@@ -11,10 +11,8 @@ import (
 	userbiz "github.com/libtnb/fiber-skeleton/internal/user/biz"
 )
 
-// users adapts the user module's public usecase to the order module's Users
-// port. It is order's anti-corruption layer: order reaches user only through
-// its published usecase, never its tables. To split user into its own service,
-// replace this file with an RPC client — order/biz stays unchanged.
+// users adapts the user module's public usecase to the Users port; replace
+// this file with an RPC client to split user into its own service.
 type users struct {
 	uc *userbiz.UserUsecase
 }

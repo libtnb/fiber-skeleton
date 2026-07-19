@@ -1,7 +1,6 @@
 package data
 
 import (
-	"context"
 	"path/filepath"
 	"testing"
 
@@ -29,7 +28,7 @@ func newTestRepo(t *testing.T) *orderRepo {
 
 func TestOrderRepo_CRUD(t *testing.T) {
 	repo := newTestRepo(t)
-	ctx := context.Background()
+	ctx := t.Context()
 
 	order := &biz.Order{UserID: 7, Amount: 1299}
 	require.NoError(t, repo.Create(ctx, order))

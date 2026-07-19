@@ -6,7 +6,6 @@ app:
   # 32-byte secret behind cookie encryption and the crypter, generate yours:
   #   openssl rand -base64 24 | head -c 32
   key: "a-long-string-with-32-characters"
-  debug: true
   # validator messages: zh_Hans | zh_Hant | ja | ko | es | ru, default English
   locale: "en"
 http:
@@ -30,7 +29,7 @@ log:
   path: "storage/logs/app.log"
 database:
   debug: true
-  path: "go-web-app.db"
+  path: "storage/database.db"
   # pool knobs matter once you swap in MySQL/PostgreSQL; 0 = driver default
   max_open_conns: 0
   max_idle_conns: 0

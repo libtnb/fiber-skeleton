@@ -16,9 +16,9 @@ jobs:
         uses: actions/setup-go@v7
         with:
           cache: true
-          go-version: 'stable'
+          go-version-file: go.mod
       - name: Generate Mocks
-        run: go run github.com/vektra/mockery/v3@v3.7.1
+        run: go tool mockery
       - name: Verify mocks are up to date
         run: |
           git add -N mocks

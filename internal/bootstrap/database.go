@@ -11,9 +11,8 @@ import (
 	"github.com/libtnb/fiber-skeleton/internal/conf"
 )
 
-// Data owns the database handle so the container can close it on shutdown and
-// ping it for /readyz. Modules never depend on this type: they inject the plain
-// *rio.DB that ProvideDB hands out.
+// Data owns the database handle for shutdown and /readyz; modules inject the
+// plain *rio.DB instead.
 type Data struct {
 	DB *rio.DB
 }
@@ -45,8 +44,7 @@ func NewData(i do.Injector) (*Data, error) {
 	return &Data{DB: db}, nil
 }
 
-// ProvideDB exposes the plain handle for the modules' data layers, so they
-// depend on rio, not on this boot package.
+// ProvideDB exposes the plain handle for the data layers.
 func ProvideDB(i do.Injector) (*rio.DB, error) {
 	return do.MustInvoke[*Data](i).DB, nil
 }
@@ -59,8 +57,7 @@ func (d *Data) HealthCheck(ctx context.Context) error {
 	return d.DB.Unwrap().PingContext(ctx)
 }
 
-// slogHook logs statement execution through the app logger: failures always,
-// and — when database debug is on — every statement at debug level.
+// slogHook logs failed statements always, all statements when debug is on.
 type slogHook struct {
 	log     *slog.Logger
 	verbose bool

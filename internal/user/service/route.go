@@ -5,14 +5,13 @@ import (
 	"github.com/samber/do/v2"
 
 	"github.com/libtnb/fiber-skeleton/internal/pkg/transport"
-	"github.com/libtnb/fiber-skeleton/internal/server"
 	"github.com/libtnb/fiber-skeleton/internal/user/biz"
 )
 
-func UserRoutes(i do.Injector) (server.Endpoints, error) {
+func UserRoutes(i do.Injector) (transport.Endpoints, error) {
 	user := do.MustInvoke[*UserService](i)
 
-	return server.Endpoints{
+	return transport.Endpoints{
 		{Method: fiber.MethodGet, Path: "/users", Handler: user.List,
 			Summary: "List users", Tags: []string{"user"},
 			Request: transport.Paginate{}, Response: transport.Envelope[transport.Page[*biz.User]]{}},

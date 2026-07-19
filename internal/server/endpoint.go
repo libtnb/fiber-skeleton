@@ -1,11 +1,9 @@
-// Package server assembles the HTTP layer: it collects every module's route
-// contributions, builds the fiber app and the OpenAPI document, and serves the
-// non-domain endpoints (probes, websocket).
+// Package server assembles the HTTP layer from the modules' route
+// contributions and serves the non-domain endpoints.
 package server
 
 import (
 	"regexp"
-	"runtime/debug"
 	"time"
 
 	"github.com/gofiber/fiber/v3"
@@ -13,32 +11,15 @@ import (
 	"github.com/samber/do/v2"
 
 	"github.com/libtnb/fiber-skeleton/internal/pkg/registry"
+	"github.com/libtnb/fiber-skeleton/internal/pkg/transport"
 )
 
-// Endpoint declares one HTTP endpoint: how to serve it and, through the
-// Request/Response samples, how to document it. Endpoints without either
-// stay out of the OpenAPI document (probes, websockets).
-type Endpoint struct {
-	Method  string
-	Path    string
-	Handler fiber.Handler
-	Summary string
-	Tags    []string
-	// Request documents parameters and body: uri tags become path
-	// parameters, query tags query parameters, json tags the body —
-	// constraints are read from the validate tags.
-	Request any
-	// Response documents the response body; Status defaults to 200.
-	Response any
-	Status   int
-}
-
-// Endpoints is a module's contribution to the HTTP router.
-type Endpoints []Endpoint
+// Version is the build version, injected by main; the OpenAPI document carries it.
+type Version string
 
 // HTTP registers every "routes:*" contribution on r.
 func HTTP(i do.Injector, r fiber.Router) error {
-	groups, err := registry.Collect[Endpoints](i, registry.RoutePrefix)
+	groups, err := registry.Collect[transport.Endpoints](i, registry.RoutePrefix)
 	if err != nil {
 		return err
 	}
@@ -55,11 +36,15 @@ var pathParams = regexp.MustCompile(`:([A-Za-z0-9_]+)`)
 
 // SpecJSON assembles the OpenAPI 3.1 document from every documented endpoint.
 func SpecJSON(i do.Injector, title string) ([]byte, error) {
-	g := openapi.New(title, buildVersion(),
+	version := "dev"
+	if v, err := do.Invoke[Version](i); err == nil && v != "" {
+		version = string(v)
+	}
+	g := openapi.New(title, version,
 		openapi.WithType(time.Time{}, &openapi.Schema{Type: "string", Format: "date-time"}),
 	)
 
-	groups, err := registry.Collect[Endpoints](i, registry.RoutePrefix)
+	groups, err := registry.Collect[transport.Endpoints](i, registry.RoutePrefix)
 	if err != nil {
 		return nil, err
 	}
@@ -82,13 +67,4 @@ func SpecJSON(i do.Injector, title string) ([]byte, error) {
 	}
 
 	return g.JSON()
-}
-
-func buildVersion() string {
-	if info, ok := debug.ReadBuildInfo(); ok {
-		if v := info.Main.Version; v != "" && v != "(devel)" {
-			return v
-		}
-	}
-	return "dev"
 }

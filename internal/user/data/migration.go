@@ -2,8 +2,7 @@ package data
 
 import "github.com/go-rio/migrate"
 
-// The user module owns its schema: the migration is registered at init time,
-// compiled into the binary and run by the migrator like every other module's.
+// The module owns its schema; init registers it with the migrator.
 func init() {
 	migrate.Add("20260101000000_create_users", func(s *migrate.Schema) {
 		s.Create("users", func(t *migrate.Table) {
@@ -11,6 +10,8 @@ func init() {
 			t.String("name")
 			t.Timestamps()
 			t.SoftDeletes()
+			// live rows cannot share a name; a soft-deleted row releases it
+			t.Unique("name").Where("deleted_at IS NULL")
 		})
 	})
 }

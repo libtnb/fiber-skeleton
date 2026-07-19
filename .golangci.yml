@@ -1,11 +1,70 @@
 version: "2"
 
 linters:
+  # standard (errcheck, govet, ineffassign, staticcheck, unused) plus every
+  # low-noise linter that catches real bugs; style-taste linters stay off
   default: standard
+  enable:
+    # bugs and correctness
+    - asasalint
+    - bidichk
+    - bodyclose
+    - contextcheck
+    - copyloopvar
+    - durationcheck
+    - errchkjson
+    - errorlint
+    - exhaustive
+    - fatcontext
+    - forcetypeassert
+    - gocheckcompilerdirectives
+    - gosec
+    - loggercheck
+    - makezero
+    - nilerr
+    - nilnesserr
+    - noctx
+    - reassign
+    - recvcheck
+    - rowserrcheck
+    - sqlclosecheck
+    - unparam
+    # simplification and consistency
+    - dupword
+    - exptostd
+    - goconst
+    - gocritic
+    - intrange
+    - mirror
+    - misspell
+    - nakedret
+    - nolintlint
+    - nosprintfhostport
+    - perfsprint
+    - predeclared
+    - sloglint
+    - unconvert
+    - usestdlibvars
+    - usetesting
+    - whitespace
+    # tests
+    - testifylint
+    - thelper
+    - tparallel
+  settings:
+    exhaustive:
+      default-signifies-exhaustive: true
+    goconst:
+      ignore-string-values: '.+' # flag repeated numbers only; strings in tests and messages repeat by nature
   exclusions:
     generated: lax
     paths:
       - mocks
+    rules:
+      # httptest.NewRequest without a context is idiomatic in handler tests
+      - path: _test\.go
+        linters:
+          - noctx
 
 formatters:
   enable:

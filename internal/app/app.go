@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net"
 	"net/http"
-	_ "net/http/pprof" // registers /debug/pprof on the default mux
+	_ "net/http/pprof" //nolint:gosec // private debug listener only
 	"time"
 
 	"github.com/go-rio/migrate"
@@ -28,7 +28,7 @@ type App struct {
 }
 
 func NewApp(i do.Injector) (*App, error) {
-	// activate every subscriber so its handlers are on the bus before serving
+	// subscribers must be on the bus before serving
 	if _, err := registry.Collect[event.Subscription](i, registry.SubscriberPrefix); err != nil {
 		return nil, err
 	}
@@ -41,8 +41,7 @@ func NewApp(i do.Injector) (*App, error) {
 	}, nil
 }
 
-// Run migrates the database, then hands the lifecycle to graceful:
-// SIGINT/SIGTERM drains everything, SIGHUP hot-upgrades the binary.
+// Run migrates the database, then hands the lifecycle to graceful.
 func (r *App) Run() error {
 	if err := r.migrator.Up(context.Background()); err != nil {
 		return err
@@ -55,7 +54,7 @@ func (r *App) Run() error {
 	)
 	// pprof/expvar live on http.DefaultServeMux, served on a private port
 	if addr := r.conf.HTTP.DebugAddress; addr != "" {
-		g.Listen("debug", addr, &http.Server{})
+		g.Listen("debug", addr, &http.Server{ReadHeaderTimeout: 10 * time.Second})
 	}
 	g.Add("cron", r.cron.Start, r.cron.Stop)
 	g.Listen("http", r.conf.HTTP.Address, fiberServer{app: r.router, conf: r.conf})

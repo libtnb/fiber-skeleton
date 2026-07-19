@@ -6,8 +6,8 @@ import (
 
 // Paginate caps page*limit well below integer overflow.
 type Paginate struct {
-	Page  uint `json:"page" form:"page" query:"page" validate:"number && min:1 && max:1000000"`
-	Limit uint `json:"limit" form:"limit" query:"limit" validate:"number && min:1 && max:1000"`
+	Page  int `json:"page" form:"page" query:"page" validate:"number && min:1 && max:1000000"`
+	Limit int `json:"limit" form:"limit" query:"limit" validate:"number && min:1 && max:1000"`
 }
 
 // Prepare fills defaults before validation runs.
@@ -21,8 +21,7 @@ func (r *Paginate) Prepare(c fiber.Ctx) error {
 	return nil
 }
 
-// WithPrepare runs after binding and before validation: fill defaults or
-// normalize values. Authorization belongs in middleware or usecases.
+// WithPrepare runs between binding and validation: fill defaults, normalize.
 type WithPrepare interface {
 	Prepare(c fiber.Ctx) error
 }

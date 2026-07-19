@@ -1,8 +1,6 @@
-// Package registry collects same-kind contributions (routes, commands,
-// jobs) registered under a naming convention, do's stand-in for value groups.
-// Each module registers its routes/commands/jobs as named providers under one
-// of the prefixes below; the server, CLI and scheduler collect them without
-// knowing which module they came from.
+// Package registry collects same-kind contributions (routes, commands, jobs)
+// registered under the naming conventions below — do's stand-in for value
+// groups.
 package registry
 
 import (
@@ -13,8 +11,7 @@ import (
 	"github.com/samber/do/v2"
 )
 
-// Contribution prefixes; a module names its providers with these so the
-// assemblers can gather them.
+// Contribution prefixes.
 const (
 	RoutePrefix      = "routes:"
 	CommandPrefix    = "commands:"
@@ -22,8 +19,7 @@ const (
 	SubscriberPrefix = "subscribers:"
 )
 
-// Collect resolves every service whose name starts with prefix, sorted by
-// name for deterministic order.
+// Collect resolves every service under prefix, sorted for determinism.
 func Collect[T any](i do.Injector, prefix string) ([]T, error) {
 	var names []string
 	for _, desc := range i.ListProvidedServices() {
@@ -45,9 +41,8 @@ func Collect[T any](i do.Injector, prefix string) ([]T, error) {
 	return out, nil
 }
 
-// Verify fails on named contributions whose prefix matches none of the known
-// ones — a typo like "route:user" would otherwise be silently dropped.
-// Unnamed services (type-derived names, no colon) are ignored.
+// Verify fails on contributions whose prefix matches none of the known ones —
+// a typo like "route:user" would otherwise be dropped silently.
 func Verify(i do.Injector, prefixes ...string) error {
 	for _, desc := range i.ListProvidedServices() {
 		name := desc.Service
@@ -69,8 +64,7 @@ func Verify(i do.Injector, prefixes ...string) error {
 	return nil
 }
 
-// Lazy adapts a plain single-dependency constructor into a lazy provider
-// entry, keeping constructors container-free.
+// Lazy adapts a container-free one-dependency constructor into a provider.
 func Lazy[T, D any](ctor func(D) T) func(do.Injector) {
 	return do.Lazy(func(i do.Injector) (T, error) {
 		return ctor(do.MustInvoke[D](i)), nil

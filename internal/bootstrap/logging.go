@@ -1,7 +1,5 @@
-// Package bootstrap holds the boot-time wiring: the providers that are built
-// once at startup and assembled into the container — the logger, crypter,
-// validator, scheduler and migrator. Business modules never import it; it is
-// the composition layer beneath them.
+// Package bootstrap provides the boot-time infrastructure; business modules
+// never import it.
 package bootstrap
 
 import (
@@ -16,8 +14,7 @@ import (
 	"github.com/libtnb/fiber-skeleton/internal/conf"
 )
 
-// Logger owns the rotating writer so the container can close it on shutdown;
-// inject *slog.Logger everywhere else.
+// Logger owns the rotating writer; inject *slog.Logger everywhere else.
 type Logger struct {
 	*slog.Logger
 	close func() error

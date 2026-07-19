@@ -20,15 +20,18 @@ func NewOrderRepo(i do.Injector) (biz.OrderRepo, error) {
 	}, nil
 }
 
-func (r *orderRepo) List(ctx context.Context, page, limit uint) ([]*biz.Order, int64, error) {
+func (r *orderRepo) List(ctx context.Context, page, limit int) ([]*biz.Order, int64, error) {
+	if page < 1 { // guard the callers that skip HTTP validation
+		page = 1
+	}
 	total, err := rio.From[biz.Order]().Count(ctx, r.db)
 	if err != nil {
 		return nil, 0, oops.In("order").Wrapf(err, "count orders")
 	}
 
 	list, err := rio.From[biz.Order]().
-		Offset(int((page-1)*limit)).
-		Limit(int(limit)).
+		Offset((page-1)*limit).
+		Limit(limit).
 		OrderBy("id").
 		All(ctx, r.db)
 	if err != nil {

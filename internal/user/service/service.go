@@ -1,27 +1,29 @@
-// Package service adapts HTTP and CLI to the user usecase: bind, validate,
-// delegate, respond. It owns the module's request DTOs, route and command
-// contributions.
+// Package service adapts HTTP and CLI to the usecase: bind, validate,
+// delegate, respond.
 package service
 
 import (
 	"github.com/gofiber/fiber/v3"
+	"github.com/libtnb/validator"
 
 	"github.com/libtnb/fiber-skeleton/internal/pkg/transport"
 	"github.com/libtnb/fiber-skeleton/internal/user/biz"
 )
 
 type UserService struct {
-	user *biz.UserUsecase
+	user     *biz.UserUsecase
+	validate *validator.Validator
 }
 
-func NewUserService(user *biz.UserUsecase) *UserService {
+func NewUserService(user *biz.UserUsecase, validate *validator.Validator) *UserService {
 	return &UserService{
-		user: user,
+		user:     user,
+		validate: validate,
 	}
 }
 
 func (r *UserService) List(c fiber.Ctx) error {
-	req, err := transport.Bind[transport.Paginate](c)
+	req, err := transport.Bind[transport.Paginate](c, r.validate)
 	if err != nil {
 		return transport.Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 	}
@@ -38,7 +40,7 @@ func (r *UserService) List(c fiber.Ctx) error {
 }
 
 func (r *UserService) Get(c fiber.Ctx) error {
-	req, err := transport.Bind[UserID](c)
+	req, err := transport.Bind[UserID](c, r.validate)
 	if err != nil {
 		return transport.Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 	}
@@ -52,7 +54,7 @@ func (r *UserService) Get(c fiber.Ctx) error {
 }
 
 func (r *UserService) Create(c fiber.Ctx) error {
-	req, err := transport.Bind[UserAdd](c)
+	req, err := transport.Bind[UserAdd](c, r.validate)
 	if err != nil {
 		return transport.Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 	}
@@ -66,7 +68,7 @@ func (r *UserService) Create(c fiber.Ctx) error {
 }
 
 func (r *UserService) Update(c fiber.Ctx) error {
-	req, err := transport.Bind[UserUpdate](c)
+	req, err := transport.Bind[UserUpdate](c, r.validate)
 	if err != nil {
 		return transport.Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 	}
@@ -80,7 +82,7 @@ func (r *UserService) Update(c fiber.Ctx) error {
 }
 
 func (r *UserService) Delete(c fiber.Ctx) error {
-	req, err := transport.Bind[UserID](c)
+	req, err := transport.Bind[UserID](c, r.validate)
 	if err != nil {
 		return transport.Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 	}
@@ -89,5 +91,5 @@ func (r *UserService) Delete(c fiber.Ctx) error {
 		return transport.ErrorFrom(c, err)
 	}
 
-	return transport.Success(c, nil)
+	return transport.Success[any](c, nil)
 }

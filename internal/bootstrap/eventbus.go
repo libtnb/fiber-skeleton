@@ -10,11 +10,8 @@ import (
 	"github.com/libtnb/fiber-skeleton/internal/pkg/event"
 )
 
-// inProcessBus dispatches synchronously in the caller's goroutine. Handler
-// errors are logged and do not abort the remaining handlers or fail Publish: a
-// domain event is a fact that already happened, not a request that can be
-// rejected. Swap this implementation for a Kafka/NATS one — publishers and
-// subscribers depend on event.Bus, not on this type.
+// inProcessBus dispatches synchronously; handler errors are logged, never
+// returned — an event is a fact, not a rejectable request.
 type inProcessBus struct {
 	mu       sync.RWMutex
 	log      *slog.Logger

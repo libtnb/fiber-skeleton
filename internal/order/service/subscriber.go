@@ -10,10 +10,8 @@ import (
 	"github.com/libtnb/fiber-skeleton/internal/pkg/event"
 )
 
-// NewOrderPlacedLogger subscribes a handler that records placed orders — a
-// stand-in for sending a confirmation or updating analytics, decoupled from
-// the order flow. Building it (the app collects subscribers at startup)
-// registers the handler on the bus.
+// NewOrderPlacedLogger records placed orders — a stand-in for a confirmation
+// mail or analytics update.
 func NewOrderPlacedLogger(i do.Injector) (event.Subscription, error) {
 	bus := do.MustInvoke[event.Bus](i)
 	log := do.MustInvoke[*slog.Logger](i)

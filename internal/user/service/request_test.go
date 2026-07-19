@@ -10,9 +10,8 @@ import (
 	"github.com/libtnb/fiber-skeleton/internal/user/service"
 )
 
-// TestCheckRules catches unknown rules, DSL syntax errors and bad static
-// arguments in validate tags at test time instead of at request time.
-// Register custom rules (exists, not_exists) here if a request uses them.
+// TestCheckRules catches invalid validate tags at test time; register custom
+// rules here if a request uses them.
 func TestCheckRules(t *testing.T) {
 	v := validator.NewValidator()
 

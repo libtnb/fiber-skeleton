@@ -15,14 +15,14 @@ type {{.Pascal}} struct {
 
 // {{.Pascal}}Repo is the persistence boundary; a missing row is ErrNotFound.
 type {{.Pascal}}Repo interface {
-	List(ctx context.Context, page, limit uint) ([]*{{.Pascal}}, int64, error)
+	List(ctx context.Context, page, limit int) ([]*{{.Pascal}}, int64, error)
 	Get(ctx context.Context, id uint) (*{{.Pascal}}, error)
 	Create(ctx context.Context, {{.Camel}} *{{.Pascal}}) error
 	Update(ctx context.Context, {{.Camel}} *{{.Pascal}}) (*{{.Pascal}}, error)
 	Delete(ctx context.Context, id uint) error
 }
 
-// {{.Pascal}}Usecase holds transport-independent {{.Snake}} business logic.
+// {{.Pascal}}Usecase is shared by HTTP, CLI and jobs.
 type {{.Pascal}}Usecase struct {
 	repo {{.Pascal}}Repo
 }
@@ -33,7 +33,7 @@ func New{{.Pascal}}Usecase(repo {{.Pascal}}Repo) *{{.Pascal}}Usecase {
 	}
 }
 
-func (uc *{{.Pascal}}Usecase) List(ctx context.Context, page, limit uint) ([]*{{.Pascal}}, int64, error) {
+func (uc *{{.Pascal}}Usecase) List(ctx context.Context, page, limit int) ([]*{{.Pascal}}, int64, error) {
 	return uc.repo.List(ctx, page, limit)
 }
 

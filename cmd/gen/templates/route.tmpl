@@ -5,14 +5,13 @@ import (
 	"github.com/samber/do/v2"
 
 	"{{.Module}}/internal/pkg/transport"
-	"{{.Module}}/internal/server"
 	"{{.Module}}/internal/{{.Snake}}/biz"
 )
 
-func {{.Pascal}}Routes(i do.Injector) (server.Endpoints, error) {
+func {{.Pascal}}Routes(i do.Injector) (transport.Endpoints, error) {
 	{{.Camel}} := do.MustInvoke[*{{.Pascal}}Service](i)
 
-	return server.Endpoints{
+	return transport.Endpoints{
 		{Method: fiber.MethodGet, Path: "/{{.Route}}", Handler: {{.Camel}}.List,
 			Summary: "List {{.Table}}", Tags: []string{"{{.Snake}}"},
 			Request: transport.Paginate{}, Response: transport.Envelope[transport.Page[*biz.{{.Pascal}}]]{}},

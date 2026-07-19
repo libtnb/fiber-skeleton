@@ -1,9 +1,10 @@
-// Package service adapts HTTP to the order usecase and owns the module's
-// request DTOs, route contribution and event subscribers.
+// Package service adapts HTTP to the usecase: bind, validate, delegate,
+// respond.
 package service
 
 import (
 	"github.com/gofiber/fiber/v3"
+	"github.com/libtnb/validator"
 
 	"github.com/libtnb/fiber-skeleton/internal/order/biz"
 	"github.com/libtnb/fiber-skeleton/internal/pkg/transport"
@@ -11,17 +12,19 @@ import (
 
 // OrderService adapts HTTP to the order usecase: bind, validate, delegate, respond.
 type OrderService struct {
-	order *biz.OrderUsecase
+	order    *biz.OrderUsecase
+	validate *validator.Validator
 }
 
-func NewOrderService(order *biz.OrderUsecase) *OrderService {
+func NewOrderService(order *biz.OrderUsecase, validate *validator.Validator) *OrderService {
 	return &OrderService{
-		order: order,
+		order:    order,
+		validate: validate,
 	}
 }
 
 func (r *OrderService) List(c fiber.Ctx) error {
-	req, err := transport.Bind[transport.Paginate](c)
+	req, err := transport.Bind[transport.Paginate](c, r.validate)
 	if err != nil {
 		return transport.Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 	}
@@ -38,7 +41,7 @@ func (r *OrderService) List(c fiber.Ctx) error {
 }
 
 func (r *OrderService) Get(c fiber.Ctx) error {
-	req, err := transport.Bind[OrderID](c)
+	req, err := transport.Bind[OrderID](c, r.validate)
 	if err != nil {
 		return transport.Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 	}
@@ -52,7 +55,7 @@ func (r *OrderService) Get(c fiber.Ctx) error {
 }
 
 func (r *OrderService) Create(c fiber.Ctx) error {
-	req, err := transport.Bind[OrderCreate](c)
+	req, err := transport.Bind[OrderCreate](c, r.validate)
 	if err != nil {
 		return transport.Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 	}
@@ -66,7 +69,7 @@ func (r *OrderService) Create(c fiber.Ctx) error {
 }
 
 func (r *OrderService) Delete(c fiber.Ctx) error {
-	req, err := transport.Bind[OrderID](c)
+	req, err := transport.Bind[OrderID](c, r.validate)
 	if err != nil {
 		return transport.Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 	}
@@ -75,5 +78,5 @@ func (r *OrderService) Delete(c fiber.Ctx) error {
 		return transport.ErrorFrom(c, err)
 	}
 
-	return transport.Success(c, nil)
+	return transport.Success[any](c, nil)
 }

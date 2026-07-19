@@ -15,8 +15,7 @@ import (
 	"github.com/knadh/koanf/v2"
 )
 
-// APP_-prefixed env vars override file values; "__" separates nesting
-// levels: APP_HTTP__READ_TIMEOUT=30s -> http.read_timeout.
+// APP_HTTP__READ_TIMEOUT=30s overrides http.read_timeout.
 const envPrefix = "APP_"
 
 // exampleKey ships in config.example.yml and must never be used in production.
@@ -32,8 +31,7 @@ type Config struct {
 type App struct {
 	Name string `koanf:"name"`
 	// Key is the 32-byte secret behind cookie encryption and the crypter.
-	Key   string `koanf:"key"`
-	Debug bool   `koanf:"debug"`
+	Key string `koanf:"key"`
 	// Locale selects validator messages (zh_Hans, zh_Hant, ja, ko, es, ru); default English.
 	Locale string `koanf:"locale"`
 }
@@ -74,8 +72,7 @@ type Database struct {
 	ConnMaxLifetime time.Duration `koanf:"conn_max_lifetime"`
 }
 
-// Load reads $APP_CONFIG (default config/config.yml), applies APP_*
-// overrides and validates the result.
+// Load reads $APP_CONFIG (default config/config.yml), then env overrides.
 func Load() (*Config, error) {
 	path := os.Getenv("APP_CONFIG")
 	if path == "" {

@@ -7,11 +7,8 @@ import (
 	"github.com/libtnb/validator"
 )
 
-// Bind binds and validates the request against the validator installed via
-// validator.SetDefault.
-func Bind[T any](c fiber.Ctx) (*T, error) {
-	v := validator.Default()
-
+// Bind binds and validates the request against the given validator.
+func Bind[T any](c fiber.Ctx, v *validator.Validator) (*T, error) {
 	req := new(T)
 
 	switch c.Method() {

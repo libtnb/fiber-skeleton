@@ -14,8 +14,7 @@ import (
 // version is injected at build time: -ldflags "-X main.version=v1.2.3".
 var version = "dev"
 
-// Errors go to stderr directly: slog.SetDefault redirects the log package
-// to the app logger, whose writer is already closed by the deferred Shutdown.
+// Errors go to stderr: the app logger's writer is already closed here.
 func main() {
 	if err := run(); err != nil {
 		fmt.Fprintln(os.Stderr, "Error:", err)
@@ -26,9 +25,8 @@ func main() {
 func run() error {
 	fmt.Println("[APP] version", version)
 
-	injector := app.NewInjector()
-	// closes the database, the log writer and every other shutdownable
-	// service in reverse dependency order
+	injector := app.NewInjector(version)
+	// closes every shutdownable service in reverse dependency order
 	defer func() { _ = injector.Shutdown() }()
 
 	application, err := do.Invoke[*app.App](injector)

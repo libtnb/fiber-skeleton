@@ -6,7 +6,7 @@ separate codegen step. When `http.docs` is enabled (see
 
 - `GET /openapi.json` — the OpenAPI 3.1 document, built from every endpoint's
   `Request`/`Response` samples and their `validate` tags
-  (see `internal/server/endpoint.go`).
+  (see `internal/pkg/transport/endpoint.go`).
 - `GET /docs` — a browsable UI for that document.
 
 To document a new endpoint, set its `Request`/`Response` types on the module's

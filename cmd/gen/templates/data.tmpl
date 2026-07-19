@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-rio/rio"
 	"github.com/samber/do/v2"
+	"github.com/samber/oops"
 
 	"{{.Module}}/internal/{{.Snake}}/biz"
 )
@@ -19,19 +20,19 @@ func New{{.Pascal}}Repo(i do.Injector) (biz.{{.Pascal}}Repo, error) {
 	}, nil
 }
 
-func (r *{{.Camel}}Repo) List(ctx context.Context, page, limit uint) ([]*biz.{{.Pascal}}, int64, error) {
+func (r *{{.Camel}}Repo) List(ctx context.Context, page, limit int) ([]*biz.{{.Pascal}}, int64, error) {
 	total, err := rio.From[biz.{{.Pascal}}]().Count(ctx, r.db)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, oops.In("{{.Snake}}").Wrapf(err, "count {{.Table}}")
 	}
 
 	list, err := rio.From[biz.{{.Pascal}}]().
-		Offset(int((page - 1) * limit)).
-		Limit(int(limit)).
+		Offset((page - 1) * limit).
+		Limit(limit).
 		OrderBy("id").
 		All(ctx, r.db)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, oops.In("{{.Snake}}").Wrapf(err, "list {{.Table}}")
 	}
 
 	{{.Camel}}s := make([]*biz.{{.Pascal}}, len(list))
@@ -45,27 +46,30 @@ func (r *{{.Camel}}Repo) List(ctx context.Context, page, limit uint) ([]*biz.{{.
 func (r *{{.Camel}}Repo) Get(ctx context.Context, id uint) (*biz.{{.Pascal}}, error) {
 	{{.Camel}}, err := rio.Find[biz.{{.Pascal}}](ctx, r.db, id)
 	if err != nil {
-		return nil, err
+		return nil, oops.In("{{.Snake}}").Wrapf(err, "get {{.Snake}} %d", id)
 	}
 
 	return {{.Camel}}, nil
 }
 
 func (r *{{.Camel}}Repo) Create(ctx context.Context, {{.Camel}} *biz.{{.Pascal}}) error {
-	return rio.Insert(ctx, r.db, {{.Camel}})
+	if err := rio.Insert(ctx, r.db, {{.Camel}}); err != nil {
+		return oops.In("{{.Snake}}").Wrapf(err, "create {{.Snake}}")
+	}
+
+	return nil
 }
 
-// Update is read-modify-write: it keeps CreatedAt intact and reports a
-// missing row instead of upserting.
+// Update is read-modify-write: keeps CreatedAt, reports missing rows.
 func (r *{{.Camel}}Repo) Update(ctx context.Context, {{.Camel}} *biz.{{.Pascal}}) (*biz.{{.Pascal}}, error) {
 	existing, err := rio.Find[biz.{{.Pascal}}](ctx, r.db, {{.Camel}}.ID)
 	if err != nil {
-		return nil, err
+		return nil, oops.In("{{.Snake}}").Wrapf(err, "get {{.Snake}} %d", {{.Camel}}.ID)
 	}
 
 	existing.Name = {{.Camel}}.Name
 	if err := rio.Update(ctx, r.db, existing); err != nil {
-		return nil, err
+		return nil, oops.In("{{.Snake}}").Wrapf(err, "update {{.Snake}} %d", {{.Camel}}.ID)
 	}
 
 	return existing, nil
@@ -74,10 +78,10 @@ func (r *{{.Camel}}Repo) Update(ctx context.Context, {{.Camel}} *biz.{{.Pascal}}
 func (r *{{.Camel}}Repo) Delete(ctx context.Context, id uint) error {
 	n, err := rio.From[biz.{{.Pascal}}]().Where("id = ?", id).DeleteAll(ctx, r.db)
 	if err != nil {
-		return err
+		return oops.In("{{.Snake}}").Wrapf(err, "delete {{.Snake}} %d", id)
 	}
 	if n == 0 {
-		return rio.ErrNotFound
+		return oops.In("{{.Snake}}").Wrap(rio.ErrNotFound)
 	}
 
 	return nil

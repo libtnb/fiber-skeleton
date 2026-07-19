@@ -8,7 +8,8 @@ RUN CGO_ENABLED=0 go build -trimpath -buildvcs=false -ldflags "-s -w -X main.ver
  && CGO_ENABLED=0 go build -trimpath -buildvcs=false -ldflags "-s -w -X main.version=${VERSION}" -o /out/cli ./cmd/cli
 
 FROM alpine:3
-RUN adduser -D -u 1000 app
+RUN apk add --no-cache ca-certificates \
+ && adduser -D -u 1000 app
 WORKDIR /app
 COPY --from=build /out/app /out/cli ./
 RUN mkdir -p config storage/logs && chown -R app:app /app

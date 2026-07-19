@@ -16,7 +16,7 @@ jobs:
         uses: actions/setup-go@v7
         with:
           cache: true
-          go-version: 'stable'
+          go-version-file: go.mod
       - name: Run tests
         run: go test -v -race -coverprofile="coverage.out" ./...
       - name: Verify generator output

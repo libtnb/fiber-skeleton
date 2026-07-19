@@ -1,5 +1,4 @@
-// Package user is the user module's assembly: the do.Package that wires its
-// biz, data and service layers and registers its route and command contributions.
+// Package user is the user module's assembly.
 package user
 
 import (
@@ -14,7 +13,7 @@ import (
 var Package = do.Package(
 	do.Lazy(data.NewUserRepo),
 	registry.Lazy(biz.NewUserUsecase),
-	registry.Lazy(service.NewUserService),
+	registry.Lazy2(service.NewUserService),
 	do.LazyNamed(registry.RoutePrefix+"user", service.UserRoutes),
 	do.LazyNamed(registry.CommandPrefix+"user", service.UserCommand),
 )

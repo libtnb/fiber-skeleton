@@ -13,8 +13,8 @@ import (
 )
 
 // NewInjector assembles every package of the application.
-func NewInjector() do.Injector {
-	return do.NewWithOpts(&do.InjectorOpts{
+func NewInjector(version string) do.Injector {
+	i := do.NewWithOpts(&do.InjectorOpts{
 		// keeps /readyz bounded even when a dependency hangs
 		HealthCheckGlobalTimeout: 5 * time.Second,
 	},
@@ -33,4 +33,7 @@ func NewInjector() do.Injector {
 		do.Lazy(NewApp),
 		do.Lazy(NewCli),
 	)
+
+	do.ProvideValue(i, server.Version(version))
+	return i
 }

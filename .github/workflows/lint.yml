@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-go@v7
         with:
           cache: true
-          go-version: 'stable'
+          go-version-file: go.mod
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v9
         with:
@@ -29,4 +29,4 @@ jobs:
       - name: Run Govulncheck
         uses: golang/govulncheck-action@v1
         with:
-          go-version-input: stable
+          go-version-file: go.mod
