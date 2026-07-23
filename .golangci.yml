@@ -55,7 +55,9 @@ linters:
     exhaustive:
       default-signifies-exhaustive: true
     goconst:
-      ignore-string-values: '.+' # flag repeated numbers only; strings in tests and messages repeat by nature
+      # flag repeated numbers only; strings in tests and messages repeat by nature
+      ignore-string-values:
+        - '.+'
   exclusions:
     generated: lax
     paths:
