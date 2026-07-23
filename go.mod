@@ -20,7 +20,7 @@ require (
 	github.com/libtnb/utils v1.2.2
 	github.com/libtnb/validator v0.4.1
 	github.com/libtnb/validator/contrib/openapi v0.2.0
-	github.com/samber/do/v2 v2.0.0
+	github.com/samber/do/v2 v2.1.0
 	github.com/samber/oops v1.23.0
 	github.com/stretchr/testify v1.11.1
 	github.com/urfave/cli/v3 v3.10.1
