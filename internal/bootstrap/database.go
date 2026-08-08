@@ -22,7 +22,6 @@ func NewData(config *conf.Config, log *slog.Logger) (*Data, func() error, error)
 	db, err := sqlite.Open(
 		"file:"+config.Database.Path+"?_txlock=immediate&_pragma=busy_timeout(10000)&_pragma=journal_mode(WAL)",
 		rio.WithQueryHook(newSlogHook(log, config.Database.Debug)),
-		rio.WithStmtCache(),
 	)
 	if err != nil {
 		return nil, nil, err

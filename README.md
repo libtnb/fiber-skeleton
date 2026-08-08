@@ -121,11 +121,6 @@ var userByNameQuery = rio.From[biz.User]().Where("name = ?").Must()
 exists, err := userByNameQuery.Exists(ctx, db, name)
 ```
 
-The SQLite bootstrap enables `rio.WithStmtCache()` and `DB.Close` releases the
-cached statements before closing the database. If the driver is later replaced
-with a transaction- or statement-mode pooler that cannot safely retain prepared
-statements, remove or adapt this option as part of that driver migration.
-
 ## Observability
 
 - `/healthz` (liveness) and `/readyz` (readiness, pings the DB) are wired for containers and load balancers; the Dockerfile ships a matching `HEALTHCHECK`.
