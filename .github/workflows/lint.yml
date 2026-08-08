@@ -19,10 +19,7 @@ jobs:
           cache: true
           go-version-file: go.mod
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v9
-        with:
-          version: latest
-          args: --timeout=30m ./...
+        run: make lint
   govulncheck:
     runs-on: ubuntu-latest
     steps:

@@ -13,10 +13,8 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/libtnb/cron"
 	"github.com/libtnb/graceful"
-	"github.com/samber/do/v2"
 
 	"github.com/libtnb/fiber-skeleton/internal/conf"
-	"github.com/libtnb/fiber-skeleton/internal/pkg/event"
 	"github.com/libtnb/fiber-skeleton/internal/pkg/registry"
 )
 
@@ -27,18 +25,19 @@ type App struct {
 	cron     *cron.Cron
 }
 
-func NewApp(i do.Injector) (*App, error) {
-	// subscribers must be on the bus before serving
-	if _, err := registry.Collect[event.Subscription](i, registry.SubscriberPrefix); err != nil {
-		return nil, err
-	}
-
+func NewApp(
+	config *conf.Config,
+	router *fiber.App,
+	migrator *migrate.Migrator,
+	scheduler *cron.Cron,
+	_ registry.Subscriptions,
+) *App {
 	return &App{
-		conf:     do.MustInvoke[*conf.Config](i),
-		router:   do.MustInvoke[*fiber.App](i),
-		migrator: do.MustInvoke[*migrate.Migrator](i),
-		cron:     do.MustInvoke[*cron.Cron](i),
-	}, nil
+		conf:     config,
+		router:   router,
+		migrator: migrator,
+		cron:     scheduler,
+	}
 }
 
 // Run migrates the database, then hands the lifecycle to graceful.

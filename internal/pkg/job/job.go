@@ -3,5 +3,5 @@ package job
 
 import "github.com/libtnb/cron"
 
-// Fn is a module's scheduler contribution, registered under registry.JobPrefix.
+// Fn is a module's scheduler contribution assembled by wire.
 type Fn func(c *cron.Cron) error

@@ -6,9 +6,9 @@ import (
 
 	"github.com/go-rio/rio"
 	"github.com/go-rio/sqlite"
-	"github.com/samber/do/v2"
 
 	"github.com/libtnb/fiber-skeleton/internal/conf"
+	"github.com/libtnb/fiber-skeleton/internal/pkg/registry"
 )
 
 // Data owns the database handle for shutdown and /readyz; modules inject the
@@ -18,16 +18,14 @@ type Data struct {
 }
 
 // NewData opens the database (swap SQLite for MySQL/PostgreSQL freely).
-func NewData(i do.Injector) (*Data, error) {
-	config := do.MustInvoke[*conf.Config](i)
-	log := do.MustInvoke[*slog.Logger](i)
-
+func NewData(config *conf.Config, log *slog.Logger) (*Data, func() error, error) {
 	db, err := sqlite.Open(
 		"file:"+config.Database.Path+"?_txlock=immediate&_pragma=busy_timeout(10000)&_pragma=journal_mode(WAL)",
 		rio.WithQueryHook(newSlogHook(log, config.Database.Debug)),
+		rio.WithStmtCache(),
 	)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	sqlDB := db.Unwrap()
@@ -41,20 +39,20 @@ func NewData(i do.Injector) (*Data, error) {
 		sqlDB.SetConnMaxLifetime(config.Database.ConnMaxLifetime)
 	}
 
-	return &Data{DB: db}, nil
+	return &Data{DB: db}, db.Close, nil
 }
 
 // ProvideDB exposes the plain handle for the data layers.
-func ProvideDB(i do.Injector) (*rio.DB, error) {
-	return do.MustInvoke[*Data](i).DB, nil
-}
-
-func (d *Data) Shutdown() error {
-	return d.DB.Close()
+func ProvideDB(data *Data) *rio.DB {
+	return data.DB
 }
 
 func (d *Data) HealthCheck(ctx context.Context) error {
 	return d.DB.Unwrap().PingContext(ctx)
+}
+
+func DatabaseHealthCheck(data *Data) registry.HealthCheck {
+	return registry.HealthCheck{Name: "database", Check: data.HealthCheck}
 }
 
 // slogHook logs failed statements always, all statements when debug is on.

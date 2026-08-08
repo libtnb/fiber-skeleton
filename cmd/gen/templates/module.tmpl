@@ -1,18 +1,21 @@
+//go:build wireinject
+
 // Package {{.Snake}} is the {{.Snake}} module's assembly.
 package {{.Snake}}
 
 import (
-	"github.com/samber/do/v2"
+	"github.com/libtnb/wire"
 
-	"{{.Module}}/internal/pkg/registry"
 	"{{.Module}}/internal/{{.Snake}}/biz"
 	"{{.Module}}/internal/{{.Snake}}/data"
 	"{{.Module}}/internal/{{.Snake}}/service"
+	"{{.Module}}/internal/pkg/registry"
 )
 
-var Package = do.Package(
-	do.Lazy(data.New{{.Pascal}}Repo),
-	registry.Lazy(biz.New{{.Pascal}}Usecase),
-	registry.Lazy2(service.New{{.Pascal}}Service),
-	do.LazyNamed(registry.RoutePrefix+"{{.Snake}}", service.{{.Pascal}}Routes),
-)
+var Module = wire.New().
+	Provide(data.New{{.Pascal}}Repo).
+	Provide(biz.New{{.Pascal}}Usecase).
+	Provide(service.New{{.Pascal}}Service).
+	Multibind[registry.Routes]().
+	Contribute[registry.Routes](service.{{.Pascal}}Routes).
+	Export[registry.Routes]()

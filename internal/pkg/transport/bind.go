@@ -32,7 +32,10 @@ func Bind[T any](c fiber.Ctx, v *validator.Validator) (*T, error) {
 		}
 	}
 
-	vd := v.Struct(req)
+	vd, err := v.Struct(req)
+	if err != nil {
+		return nil, err
+	}
 	if hook, ok := any(req).(WithRules); ok {
 		for field, expr := range hook.Rules(c) {
 			if err := vd.AddRules(field, expr); err != nil {
@@ -55,13 +58,11 @@ func Bind[T any](c fiber.Ctx, v *validator.Validator) (*T, error) {
 		}
 	}
 
-	vd.Validate(c.Context())
-	if vd.Fails() {
-		return nil, errors.New(vd.Errors().One())
-	}
-
-	// write filtered values (trim, lower, ...) back into the request struct
-	if err := vd.SafeBind(req); err != nil {
+	// ValidateAs validates and atomically writes filtered values back.
+	if err := vd.ValidateAs(c.Context(), req); err != nil {
+		if fields, ok := validator.AsErrors(err); ok {
+			return nil, errors.New(fields.One())
+		}
 		return nil, err
 	}
 

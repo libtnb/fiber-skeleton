@@ -23,7 +23,7 @@ func newTestApp(t *testing.T) (*fiber.App, *mocksbiz.UserRepo) {
 	t.Helper()
 
 	repo := mocksbiz.NewUserRepo(t)
-	user := service.NewUserService(biz.NewUserUsecase(repo), validator.NewValidator())
+	user := service.NewUserService(biz.NewUserUsecase(repo), validator.MustNew())
 
 	app := fiber.New()
 	app.Get("/users", user.List)

@@ -17,6 +17,8 @@ jobs:
         with:
           cache: true
           go-version-file: go.mod
+      - name: Verify Wire output
+        run: go tool wire check ./...
       - name: Run tests
         run: go test -v -race -coverprofile="coverage.out" ./...
       - name: Verify generator output

@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/go-rio/rio"
-	"github.com/samber/do/v2"
 	"github.com/samber/oops"
 
 	"github.com/libtnb/fiber-skeleton/internal/order/biz"
@@ -14,25 +13,28 @@ type orderRepo struct {
 	db *rio.DB
 }
 
-func NewOrderRepo(i do.Injector) (biz.OrderRepo, error) {
-	return &orderRepo{
-		db: do.MustInvoke[*rio.DB](i),
-	}, nil
+var (
+	ordersQuery        = rio.From[biz.Order]().Must()
+	orderedOrdersQuery = rio.From[biz.Order]().OrderBy("id").Must()
+	orderByIDQuery     = rio.From[biz.Order]().Where("id = ?").Must()
+)
+
+func NewOrderRepo(db *rio.DB) biz.OrderRepo {
+	return &orderRepo{db: db}
 }
 
 func (r *orderRepo) List(ctx context.Context, page, limit int) ([]*biz.Order, int64, error) {
 	if page < 1 { // guard the callers that skip HTTP validation
 		page = 1
 	}
-	total, err := rio.From[biz.Order]().Count(ctx, r.db)
+	total, err := ordersQuery.Count(ctx, r.db)
 	if err != nil {
 		return nil, 0, oops.In("order").Wrapf(err, "count orders")
 	}
 
-	list, err := rio.From[biz.Order]().
+	list, err := orderedOrdersQuery.
 		Offset((page-1)*limit).
 		Limit(limit).
-		OrderBy("id").
 		All(ctx, r.db)
 	if err != nil {
 		return nil, 0, oops.In("order").Wrapf(err, "list orders")
@@ -64,7 +66,7 @@ func (r *orderRepo) Create(ctx context.Context, order *biz.Order) error {
 }
 
 func (r *orderRepo) Delete(ctx context.Context, id uint) error {
-	n, err := rio.From[biz.Order]().Where("id = ?", id).DeleteAll(ctx, r.db)
+	n, err := orderByIDQuery.DeleteAll(ctx, r.db, id)
 	if err != nil {
 		return oops.In("order").Wrapf(err, "delete order %d", id)
 	}

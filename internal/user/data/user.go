@@ -5,7 +5,6 @@ import (
 	"errors"
 
 	"github.com/go-rio/rio"
-	"github.com/samber/do/v2"
 	"github.com/samber/oops"
 
 	"github.com/libtnb/fiber-skeleton/internal/user/biz"
@@ -15,25 +14,29 @@ type userRepo struct {
 	db *rio.DB
 }
 
-func NewUserRepo(i do.Injector) (biz.UserRepo, error) {
-	return &userRepo{
-		db: do.MustInvoke[*rio.DB](i),
-	}, nil
+var (
+	usersQuery        = rio.From[biz.User]().Must()
+	orderedUsersQuery = rio.From[biz.User]().OrderBy("id").Must()
+	userByNameQuery   = rio.From[biz.User]().Where("name = ?").Must()
+	userByIDQuery     = rio.From[biz.User]().Where("id = ?").Must()
+)
+
+func NewUserRepo(db *rio.DB) biz.UserRepo {
+	return &userRepo{db: db}
 }
 
 func (r *userRepo) List(ctx context.Context, page, limit int) ([]*biz.User, int64, error) {
 	if page < 1 { // guard the callers that skip HTTP validation
 		page = 1
 	}
-	total, err := rio.From[biz.User]().Count(ctx, r.db)
+	total, err := usersQuery.Count(ctx, r.db)
 	if err != nil {
 		return nil, 0, oops.In("user").Wrapf(err, "count users")
 	}
 
-	list, err := rio.From[biz.User]().
+	list, err := orderedUsersQuery.
 		Offset((page-1)*limit).
 		Limit(limit).
-		OrderBy("id").
 		All(ctx, r.db)
 	if err != nil {
 		return nil, 0, oops.In("user").Wrapf(err, "list users")
@@ -57,7 +60,7 @@ func (r *userRepo) Get(ctx context.Context, id uint) (*biz.User, error) {
 }
 
 func (r *userRepo) ExistsName(ctx context.Context, name string) (bool, error) {
-	exists, err := rio.From[biz.User]().Where("name = ?", name).Exists(ctx, r.db)
+	exists, err := userByNameQuery.Exists(ctx, r.db, name)
 	if err != nil {
 		return false, oops.In("user").Wrapf(err, "check name %q", name)
 	}
@@ -92,7 +95,7 @@ func (r *userRepo) Update(ctx context.Context, user *biz.User) (*biz.User, error
 }
 
 func (r *userRepo) Delete(ctx context.Context, id uint) error {
-	n, err := rio.From[biz.User]().Where("id = ?", id).DeleteAll(ctx, r.db)
+	n, err := userByIDQuery.DeleteAll(ctx, r.db, id)
 	if err != nil {
 		return oops.In("user").Wrapf(err, "delete user %d", id)
 	}

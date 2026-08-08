@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/go-rio/rio"
-	"github.com/samber/do/v2"
 	"github.com/samber/oops"
 
 	"{{.Module}}/internal/{{.Snake}}/biz"
@@ -14,22 +13,25 @@ type {{.Camel}}Repo struct {
 	db *rio.DB
 }
 
-func New{{.Pascal}}Repo(i do.Injector) (biz.{{.Pascal}}Repo, error) {
-	return &{{.Camel}}Repo{
-		db: do.MustInvoke[*rio.DB](i),
-	}, nil
+var (
+	{{.Camel}}sQuery        = rio.From[biz.{{.Pascal}}]().Must()
+	ordered{{.Pascal}}sQuery = rio.From[biz.{{.Pascal}}]().OrderBy("id").Must()
+	{{.Camel}}ByIDQuery     = rio.From[biz.{{.Pascal}}]().Where("id = ?").Must()
+)
+
+func New{{.Pascal}}Repo(db *rio.DB) biz.{{.Pascal}}Repo {
+	return &{{.Camel}}Repo{db: db}
 }
 
 func (r *{{.Camel}}Repo) List(ctx context.Context, page, limit int) ([]*biz.{{.Pascal}}, int64, error) {
-	total, err := rio.From[biz.{{.Pascal}}]().Count(ctx, r.db)
+	total, err := {{.Camel}}sQuery.Count(ctx, r.db)
 	if err != nil {
 		return nil, 0, oops.In("{{.Snake}}").Wrapf(err, "count {{.Table}}")
 	}
 
-	list, err := rio.From[biz.{{.Pascal}}]().
+	list, err := ordered{{.Pascal}}sQuery.
 		Offset((page - 1) * limit).
 		Limit(limit).
-		OrderBy("id").
 		All(ctx, r.db)
 	if err != nil {
 		return nil, 0, oops.In("{{.Snake}}").Wrapf(err, "list {{.Table}}")
@@ -76,7 +78,7 @@ func (r *{{.Camel}}Repo) Update(ctx context.Context, {{.Camel}} *biz.{{.Pascal}}
 }
 
 func (r *{{.Camel}}Repo) Delete(ctx context.Context, id uint) error {
-	n, err := rio.From[biz.{{.Pascal}}]().Where("id = ?", id).DeleteAll(ctx, r.db)
+	n, err := {{.Camel}}ByIDQuery.DeleteAll(ctx, r.db, id)
 	if err != nil {
 		return oops.In("{{.Snake}}").Wrapf(err, "delete {{.Snake}} %d", id)
 	}

@@ -1,31 +1,30 @@
 package service
 
 import (
+	"net/http"
+
 	"github.com/gofiber/fiber/v3"
-	"github.com/samber/do/v2"
 
 	"{{.Module}}/internal/pkg/transport"
 	"{{.Module}}/internal/{{.Snake}}/biz"
 )
 
-func {{.Pascal}}Routes(i do.Injector) (transport.Endpoints, error) {
-	{{.Camel}} := do.MustInvoke[*{{.Pascal}}Service](i)
-
+func {{.Pascal}}Routes({{.Camel}} *{{.Pascal}}Service) transport.Endpoints {
 	return transport.Endpoints{
 		{Method: fiber.MethodGet, Path: "/{{.Route}}", Handler: {{.Camel}}.List,
 			Summary: "List {{.Table}}", Tags: []string{"{{.Snake}}"},
-			Request: transport.Paginate{}, Response: transport.Envelope[transport.Page[*biz.{{.Pascal}}]]{}},
+			Document: transport.Describe[transport.Paginate, transport.Envelope[transport.Page[*biz.{{.Pascal}}]]](http.StatusOK)},
 		{Method: fiber.MethodPost, Path: "/{{.Route}}", Handler: {{.Camel}}.Create,
 			Summary: "Create a {{.Snake}}", Tags: []string{"{{.Snake}}"},
-			Request: {{.Pascal}}Add{}, Response: transport.Envelope[biz.{{.Pascal}}]{}},
+			Document: transport.Describe[{{.Pascal}}Add, transport.Envelope[biz.{{.Pascal}}]](http.StatusOK)},
 		{Method: fiber.MethodGet, Path: "/{{.Route}}/:id", Handler: {{.Camel}}.Get,
 			Summary: "Get a {{.Snake}}", Tags: []string{"{{.Snake}}"},
-			Request: {{.Pascal}}ID{}, Response: transport.Envelope[biz.{{.Pascal}}]{}},
+			Document: transport.Describe[{{.Pascal}}ID, transport.Envelope[biz.{{.Pascal}}]](http.StatusOK)},
 		{Method: fiber.MethodPut, Path: "/{{.Route}}/:id", Handler: {{.Camel}}.Update,
 			Summary: "Update a {{.Snake}}", Tags: []string{"{{.Snake}}"},
-			Request: {{.Pascal}}Update{}, Response: transport.Envelope[biz.{{.Pascal}}]{}},
+			Document: transport.Describe[{{.Pascal}}Update, transport.Envelope[biz.{{.Pascal}}]](http.StatusOK)},
 		{Method: fiber.MethodDelete, Path: "/{{.Route}}/:id", Handler: {{.Camel}}.Delete,
 			Summary: "Delete a {{.Snake}}", Tags: []string{"{{.Snake}}"},
-			Request: {{.Pascal}}ID{}},
-	}, nil
+			Document: transport.DescribeNoBody[{{.Pascal}}ID](http.StatusOK)},
+	}
 }

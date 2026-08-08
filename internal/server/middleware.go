@@ -57,8 +57,7 @@ func accessLog(log *slog.Logger) fiber.Handler {
 
 		// the error handler runs later; reflect the status it will write
 		status := c.Response().StatusCode()
-		var fe *fiber.Error
-		if errors.As(err, &fe) {
+		if fe, ok := errors.AsType[*fiber.Error](err); ok {
 			status = fe.Code
 		} else if err != nil {
 			status = fiber.StatusInternalServerError

@@ -8,28 +8,21 @@ import (
 
 	"github.com/go-rio/migrate"
 	"github.com/go-rio/rio"
-	"github.com/samber/do/v2"
 	"github.com/urfave/cli/v3"
 )
 
-func NewMigrate(i do.Injector) (*migrate.Migrator, error) {
-	db := do.MustInvoke[*rio.DB](i).Unwrap()
-
-	return migrate.New(db, migrate.SQLite,
-		migrate.WithLogger(do.MustInvoke[*slog.Logger](i)),
+func NewMigrate(db *rio.DB, log *slog.Logger) (*migrate.Migrator, error) {
+	return migrate.New(db.Unwrap(), migrate.SQLite,
+		migrate.WithLogger(log),
 	)
 }
 
-func MigrateCommand(i do.Injector) (*cli.Command, error) {
+func MigrateCommand(m *migrate.Migrator) *cli.Command {
 	return &cli.Command{
 		Name:  "migrate",
 		Usage: "apply pending database migrations",
 		Action: func(ctx context.Context, cmd *cli.Command) error {
-			m, err := do.Invoke[*migrate.Migrator](i)
-			if err != nil {
-				return err
-			}
-			if err = m.Up(ctx); err != nil {
+			if err := m.Up(ctx); err != nil {
 				return err
 			}
 			fmt.Println("database migrated")
@@ -40,10 +33,6 @@ func MigrateCommand(i do.Injector) (*cli.Command, error) {
 				Name:  "status",
 				Usage: "list migrations and whether they are applied",
 				Action: func(ctx context.Context, cmd *cli.Command) error {
-					m, err := do.Invoke[*migrate.Migrator](i)
-					if err != nil {
-						return err
-					}
 					statuses, err := m.Status(ctx)
 					if err != nil {
 						return err
@@ -70,11 +59,7 @@ func MigrateCommand(i do.Injector) (*cli.Command, error) {
 					&cli.IntFlag{Name: "step", Value: 1, Usage: "how many migrations to undo"},
 				},
 				Action: func(ctx context.Context, cmd *cli.Command) error {
-					m, err := do.Invoke[*migrate.Migrator](i)
-					if err != nil {
-						return err
-					}
-					if err = m.Rollback(ctx, cmd.Int("step")); err != nil {
+					if err := m.Rollback(ctx, cmd.Int("step")); err != nil {
 						return err
 					}
 					fmt.Println("rollback complete")
@@ -82,5 +67,5 @@ func MigrateCommand(i do.Injector) (*cli.Command, error) {
 				},
 			},
 		},
-	}, nil
+	}
 }

@@ -70,7 +70,7 @@ func run() error {
 		"service.tmpl":   filepath.Join("internal", m.Snake, "service", "service.go"),
 		"request.tmpl":   filepath.Join("internal", m.Snake, "service", "request.go"),
 		"route.tmpl":     filepath.Join("internal", m.Snake, "service", "route.go"),
-		"module.tmpl":    filepath.Join("internal", m.Snake, m.Snake+".go"),
+		"module.tmpl":    filepath.Join("internal", m.Snake, "wire.go"),
 	}
 
 	// refuse to overwrite anything: check all targets before writing any
@@ -89,9 +89,11 @@ func run() error {
 
 	fmt.Printf(`
 Next steps:
-  1. internal/app/injector.go: import "%[2]s/internal/%[1]s" and add
-     "%[1]s.Package," to the business modules list.
-  2. run "make generate" — mockery auto-discovers the new biz package and
+  1. internal/app/wire.go: import "%[2]s/internal/%[1]s" and add
+     "%[1]s.Module" to ApplicationModule.Include.
+  2. run "make generate" to regenerate Wire code and mocks.
+  3. run "make gen-check" to verify the generated module compiles.
+     Mockery auto-discovers the new biz package and
      writes its repo mock under mocks/%[1]s/biz (no .mockery.yaml edit needed).
 `, m.Snake, m.Module)
 

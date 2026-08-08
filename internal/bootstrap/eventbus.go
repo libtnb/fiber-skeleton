@@ -5,8 +5,6 @@ import (
 	"log/slog"
 	"sync"
 
-	"github.com/samber/do/v2"
-
 	"github.com/libtnb/fiber-skeleton/internal/pkg/event"
 )
 
@@ -18,11 +16,11 @@ type inProcessBus struct {
 	handlers map[string][]event.Handler
 }
 
-func NewBus(i do.Injector) (event.Bus, error) {
+func NewBus(log *slog.Logger) event.Bus {
 	return &inProcessBus{
-		log:      do.MustInvoke[*slog.Logger](i),
+		log:      log,
 		handlers: make(map[string][]event.Handler),
-	}, nil
+	}
 }
 
 func (b *inProcessBus) Subscribe(name string, h event.Handler) {

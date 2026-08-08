@@ -5,7 +5,6 @@ import (
 	"errors"
 
 	"github.com/go-rio/rio"
-	"github.com/samber/do/v2"
 
 	orderbiz "github.com/libtnb/fiber-skeleton/internal/order/biz"
 	userbiz "github.com/libtnb/fiber-skeleton/internal/user/biz"
@@ -17,10 +16,8 @@ type users struct {
 	uc *userbiz.UserUsecase
 }
 
-func NewUsers(i do.Injector) (orderbiz.Users, error) {
-	return &users{
-		uc: do.MustInvoke[*userbiz.UserUsecase](i),
-	}, nil
+func NewUsers(uc *userbiz.UserUsecase) orderbiz.Users {
+	return &users{uc: uc}
 }
 
 func (u *users) Exists(ctx context.Context, id uint) (bool, error) {

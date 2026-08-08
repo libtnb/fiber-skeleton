@@ -3,31 +3,19 @@
 package bootstrap
 
 import (
+	"context"
 	"io"
 	"log/slog"
 	"os"
 	"time"
 
 	"github.com/libtnb/logrotate"
-	"github.com/samber/do/v2"
 
 	"github.com/libtnb/fiber-skeleton/internal/conf"
 )
 
-// Logger owns the rotating writer; inject *slog.Logger everywhere else.
-type Logger struct {
-	*slog.Logger
-	close func() error
-}
-
-func (l *Logger) Shutdown() error {
-	return l.close()
-}
-
 // NewLogger builds the logger writing to a rotated file, stdout, or both.
-func NewLogger(i do.Injector) (*Logger, error) {
-	config := do.MustInvoke[*conf.Config](i)
-
+func NewLogger(config *conf.Config) (*slog.Logger, func() error, error) {
 	var (
 		writers []io.Writer
 		closer  = func() error { return nil }
@@ -42,10 +30,14 @@ func NewLogger(i do.Injector) (*Logger, error) {
 			logrotate.WithCompress(),
 		)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 		writers = append(writers, w)
-		closer = w.Close
+		closer = func() error {
+			ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+			defer cancel()
+			return w.Shutdown(ctx)
+		}
 	}
 	if config.Log.Output == "stdout" || config.Log.Output == "both" {
 		writers = append(writers, os.Stdout)
@@ -56,10 +48,5 @@ func NewLogger(i do.Injector) (*Logger, error) {
 	}))
 	slog.SetDefault(log)
 
-	return &Logger{Logger: log, close: closer}, nil
-}
-
-// NewSlog unwraps the plain *slog.Logger for the rest of the app.
-func NewSlog(i do.Injector) (*slog.Logger, error) {
-	return do.MustInvoke[*Logger](i).Logger, nil
+	return log, closer, nil
 }

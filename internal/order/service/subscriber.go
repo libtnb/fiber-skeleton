@@ -4,18 +4,13 @@ import (
 	"context"
 	"log/slog"
 
-	"github.com/samber/do/v2"
-
 	"github.com/libtnb/fiber-skeleton/internal/order/biz"
 	"github.com/libtnb/fiber-skeleton/internal/pkg/event"
 )
 
 // NewOrderPlacedLogger records placed orders — a stand-in for a confirmation
 // mail or analytics update.
-func NewOrderPlacedLogger(i do.Injector) (event.Subscription, error) {
-	bus := do.MustInvoke[event.Bus](i)
-	log := do.MustInvoke[*slog.Logger](i)
-
+func NewOrderPlacedLogger(bus event.Bus, log *slog.Logger) event.Subscription {
 	bus.Subscribe(biz.OrderPlaced{}.Name(), func(ctx context.Context, e event.Event) error {
 		placed, ok := e.(biz.OrderPlaced)
 		if !ok {
@@ -29,5 +24,5 @@ func NewOrderPlacedLogger(i do.Injector) (event.Subscription, error) {
 		return nil
 	})
 
-	return event.Subscription{}, nil
+	return event.Subscription{}
 }

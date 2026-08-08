@@ -7,23 +7,20 @@ import (
 	"net/http"
 
 	"github.com/gofiber/fiber/v3"
+	"github.com/libtnb/validator"
 	"github.com/libtnb/validator/contrib/openapi"
-	"github.com/samber/do/v2"
 
 	"github.com/libtnb/fiber-skeleton/internal/conf"
 	"github.com/libtnb/fiber-skeleton/internal/pkg/registry"
 )
 
-// Package wires the HTTP server.
-var Package = do.Package(
-	do.Lazy(NewRouter),
-	do.LazyNamed(registry.RoutePrefix+"health", HealthRoutes),
-	do.LazyNamed(registry.RoutePrefix+"ws", WsRoutes),
-)
-
-func NewRouter(i do.Injector) (*fiber.App, error) {
-	config := do.MustInvoke[*conf.Config](i)
-
+func NewRouter(
+	config *conf.Config,
+	log *slog.Logger,
+	validate *validator.Validator,
+	version Version,
+	routes registry.Routes,
+) (*fiber.App, error) {
 	r := fiber.New(fiber.Config{
 		AppName:           config.App.Name,
 		BodyLimit:         config.HTTP.BodyLimit << 10,
@@ -38,16 +35,14 @@ func NewRouter(i do.Injector) (*fiber.App, error) {
 		JSONDecoder:  json.Unmarshal,
 	})
 
-	for _, handler := range globalMiddlewares(config, do.MustInvoke[*slog.Logger](i)) {
+	for _, handler := range globalMiddlewares(config, log) {
 		r.Use(handler)
 	}
 
-	if err := HTTP(i, r); err != nil {
-		return nil, err
-	}
+	HTTP(routes, r)
 
 	if config.HTTP.Docs {
-		spec, err := SpecJSON(i, config.App.Name)
+		spec, err := SpecJSON(config.App.Name, version, validate, routes)
 		if err != nil {
 			return nil, err
 		}
@@ -68,8 +63,7 @@ func NewRouter(i do.Injector) (*fiber.App, error) {
 // errorHandler is the single error exit; 5xx details are logged, not sent.
 func errorHandler(c fiber.Ctx, err error) error {
 	code := fiber.StatusInternalServerError
-	var e *fiber.Error
-	if errors.As(err, &e) {
+	if e, ok := errors.AsType[*fiber.Error](err); ok {
 		code = e.Code
 	}
 

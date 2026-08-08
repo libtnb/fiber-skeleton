@@ -1,12 +1,11 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
 	_ "time/tzdata"
-
-	"github.com/samber/do/v2"
 
 	"github.com/libtnb/fiber-skeleton/internal/app"
 )
@@ -22,17 +21,18 @@ func main() {
 	}
 }
 
-func run() error {
+func run() (err error) {
 	fmt.Println("[APP] version", version)
 
-	injector := app.NewInjector(version)
-	// closes every shutdownable service in reverse dependency order
-	defer func() { _ = injector.Shutdown() }()
-
-	application, err := do.Invoke[*app.App](injector)
+	application, cleanup, err := app.InitializeApp(version)
 	if err != nil {
 		return err
 	}
+	defer func() {
+		if cleanup != nil {
+			err = errors.Join(err, cleanup())
+		}
+	}()
 
 	return application.Run()
 }

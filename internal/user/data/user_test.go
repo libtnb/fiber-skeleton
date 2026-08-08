@@ -67,6 +67,32 @@ func TestUserRepo_Get_NotFound(t *testing.T) {
 	require.ErrorIs(t, err, rio.ErrNotFound)
 }
 
+func TestUserRepo_PredefinedQueriesUsePerCallArguments(t *testing.T) {
+	repo := newTestRepo(t)
+	ctx := t.Context()
+
+	alice := &biz.User{Name: "alice"}
+	bob := &biz.User{Name: "bob"}
+	require.NoError(t, repo.Create(ctx, alice))
+	require.NoError(t, repo.Create(ctx, bob))
+
+	exists, err := repo.ExistsName(ctx, "alice")
+	require.NoError(t, err)
+	require.True(t, exists)
+	exists, err = repo.ExistsName(ctx, "bob")
+	require.NoError(t, err)
+	require.True(t, exists)
+	exists, err = repo.ExistsName(ctx, "missing")
+	require.NoError(t, err)
+	require.False(t, exists)
+
+	require.NoError(t, repo.Delete(ctx, bob.ID))
+	_, err = repo.Get(ctx, bob.ID)
+	require.ErrorIs(t, err, rio.ErrNotFound)
+	_, err = repo.Get(ctx, alice.ID)
+	require.NoError(t, err)
+}
+
 func TestUserRepo_Delete_SoftDeletesAndReports(t *testing.T) {
 	repo := newTestRepo(t)
 	ctx := t.Context()

@@ -6,14 +6,11 @@ import (
 
 	"github.com/libtnb/validator"
 	"github.com/libtnb/validator/translations"
-	"github.com/samber/do/v2"
 
 	"github.com/libtnb/fiber-skeleton/internal/conf"
 )
 
-func NewValidator(i do.Injector) (*validator.Validator, error) {
-	config := do.MustInvoke[*conf.Config](i)
-
+func NewValidator(config *conf.Config) (*validator.Validator, error) {
 	opts := []validator.Option{
 		validator.WithTagNameFunc(fieldName),
 	}
@@ -21,7 +18,7 @@ func NewValidator(i do.Injector) (*validator.Validator, error) {
 		opts = append(opts, validator.WithTranslation(messages))
 	}
 
-	return validator.NewValidator(opts...), nil
+	return validator.New(opts...)
 }
 
 // fieldName reports fields in error messages by the name the client sent.

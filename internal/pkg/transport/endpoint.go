@@ -2,24 +2,50 @@ package transport
 
 import (
 	"github.com/gofiber/fiber/v3"
+	"github.com/libtnb/validator/contrib/openapi"
 )
 
-// Endpoint declares one HTTP endpoint; without Request/Response samples it
-// stays out of the OpenAPI document.
-type Endpoint struct {
-	Method  string
-	Path    string
-	Handler fiber.Handler
-	Summary string
-	Tags    []string
-	// Request documents parameters and body via uri/query/json tags;
-	// constraints come from the validate tags.
-	Request any
-	// Response documents the response body; Status defaults to 200.
-	Response any
-	Status   int
+// Documentation adds an endpoint to an OpenAPI generator.
+type Documentation func(
+	g *openapi.Generator,
+	method string,
+	path string,
+	summary string,
+	tags []string,
+) error
+
+// Describe documents an endpoint with JSON request and response types.
+func Describe[Request, Response any](status int) Documentation {
+	return func(
+		g *openapi.Generator,
+		method string,
+		path string,
+		summary string,
+		tags []string,
+	) error {
+		return g.Add[Request](method, path,
+			openapi.WithSummary(summary),
+			openapi.WithTags(tags...),
+			openapi.WithResponse[Response](status),
+		)
+	}
 }
 
-// Endpoints is a module's route contribution, registered under
-// registry.RoutePrefix.
+// DescribeNoBody documents an endpoint whose successful response has no body.
+func DescribeNoBody[Request any](status int) Documentation {
+	return Describe[Request, openapi.NoBody](status)
+}
+
+// Endpoint declares one HTTP endpoint; without Document it stays out of the
+// OpenAPI document.
+type Endpoint struct {
+	Method   string
+	Path     string
+	Handler  fiber.Handler
+	Summary  string
+	Tags     []string
+	Document Documentation
+}
+
+// Endpoints is one module's route contribution.
 type Endpoints []Endpoint

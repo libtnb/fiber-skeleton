@@ -22,7 +22,7 @@ func bindOn[T any](t *testing.T, method, target, body, contentType string) (*T, 
 	var bound *T
 	app := fiber.New()
 	app.All("/bind/:id?", func(c fiber.Ctx) error {
-		req, err := transport.Bind[T](c, validator.NewValidator())
+		req, err := transport.Bind[T](c, validator.MustNew())
 		if err != nil {
 			return transport.Error(c, fiber.StatusUnprocessableEntity, "%v", err)
 		}

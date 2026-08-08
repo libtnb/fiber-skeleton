@@ -1,5 +1,7 @@
 APP_VERSION ?= $(shell git describe --tags --always 2>/dev/null || echo dev)
 LDFLAGS := -s -w -X main.version=$(APP_VERSION)
+# First golangci-lint revision using x/tools with Go 1.27 generic-method support.
+GOLANGCI_LINT_VERSION ?= v2.12.3-0.20260807211801-6c3b771b7b46
 
 .PHONY: help
 help: ## Show this help
@@ -13,8 +15,16 @@ init: ## Copy the example config
 tidy: ## Tidy go.mod
 	go mod tidy
 
+.PHONY: wire
+wire: ## Regenerate compile-time dependency injection
+	go tool wire generate ./...
+
+.PHONY: wire-check
+wire-check: ## Verify generated dependency injection is current
+	go tool wire check ./...
+
 .PHONY: generate
-generate: ## Regenerate mocks
+generate: wire ## Regenerate dependency injection and mocks
 	go tool mockery
 
 .PHONY: gen
@@ -25,12 +35,25 @@ gen: ## Generate a CRUD module: make gen name=article
 .PHONY: gen-check
 gen-check: ## Verify generator output still compiles
 	go run ./cmd/gen gencheck
-	go build ./...
-	rm -rf internal/gencheck
+	@set -e; \
+	  cp internal/app/wire.go internal/app/wire.go.gencheck; \
+	  restore() { \
+	    if [ -f internal/app/wire.go.gencheck ]; then mv -f internal/app/wire.go.gencheck internal/app/wire.go; fi; \
+	    rm -f internal/app/wire.go.tmp; \
+	    rm -rf internal/gencheck; \
+	    go tool wire generate ./... >/dev/null; \
+	  }; \
+	  trap 'status=$$?; trap - EXIT INT TERM; restore; exit $$status' EXIT INT TERM; \
+	  awk '1; /"github.com\/libtnb\/fiber-skeleton\/internal\/order"/ { print "\t\"github.com/libtnb/fiber-skeleton/internal/gencheck\"" }' internal/app/wire.go > internal/app/wire.go.tmp; \
+	  mv internal/app/wire.go.tmp internal/app/wire.go; \
+	  awk '1; /^[[:space:]]*order\.Module,$$/ { print "\t\tgencheck.Module," }' internal/app/wire.go > internal/app/wire.go.tmp; \
+	  mv internal/app/wire.go.tmp internal/app/wire.go; \
+	  go tool wire generate ./...; \
+	  go build ./...
 
 .PHONY: lint
 lint: ## Run golangci-lint
-	golangci-lint run
+	go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@$(GOLANGCI_LINT_VERSION) run --timeout=30m ./...
 
 .PHONY: test
 test: ## Run tests with race detector and coverage

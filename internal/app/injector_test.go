@@ -1,59 +1,47 @@
-package app_test
+package app
 
 import (
+	"io"
+	"net/http"
+	"net/http/httptest"
 	"path/filepath"
 	"testing"
 
-	"github.com/go-rio/migrate"
-	"github.com/samber/do/v2"
 	"github.com/stretchr/testify/require"
-	"github.com/urfave/cli/v3"
-
-	"github.com/libtnb/fiber-skeleton/internal/app"
-	"github.com/libtnb/fiber-skeleton/internal/pkg/job"
-	"github.com/libtnb/fiber-skeleton/internal/pkg/registry"
-	"github.com/libtnb/fiber-skeleton/internal/pkg/transport"
-	"github.com/libtnb/fiber-skeleton/internal/server"
 )
 
-// TestContainer builds the full object graph, catching wiring mistakes early.
-func TestContainer(t *testing.T) {
+// TestGeneratedGraphs builds both generated object graphs, catching wiring
+// and resource-lifecycle mistakes early.
+func TestGeneratedGraphs(t *testing.T) {
 	tmp := t.TempDir()
 	t.Setenv("APP_CONFIG", "../../config/config.example.yml")
 	t.Setenv("APP_DATABASE__PATH", filepath.Join(tmp, "test.db"))
 	t.Setenv("APP_LOG__OUTPUT", "file")
 	t.Setenv("APP_LOG__PATH", filepath.Join(tmp, "test.log"))
+	t.Setenv("APP_HTTP__DOCS", "true")
 
-	injector := app.NewInjector("test")
-	defer func() { _ = injector.Shutdown() }()
-
-	_, err := do.Invoke[*app.App](injector)
+	application, cleanup, err := InitializeApp("test")
 	require.NoError(t, err)
+	require.NotNil(t, application)
 
-	_, err = do.Invoke[*app.Cli](injector)
+	// Every migration must compile to SQLite and run on an empty schema.
+	require.NoError(t, application.migrator.Up(t.Context()))
+
+	resp, err := application.router.Test(httptest.NewRequest(http.MethodGet, "/openapi.json", nil))
 	require.NoError(t, err)
-
-	// a typoed prefix would otherwise be dropped silently
-	require.NoError(t, registry.Verify(injector, registry.RoutePrefix, registry.CommandPrefix, registry.JobPrefix, registry.SubscriberPrefix))
-
-	routes, err := registry.Collect[transport.Endpoints](injector, registry.RoutePrefix)
+	require.Equal(t, 200, resp.StatusCode)
+	body, err := io.ReadAll(resp.Body)
 	require.NoError(t, err)
-	require.NotEmpty(t, routes)
+	require.NoError(t, resp.Body.Close())
+	require.Contains(t, string(body), `"version": "test"`)
+	require.Contains(t, string(body), `"/users/{id}"`)
 
-	commands, err := registry.Collect[*cli.Command](injector, registry.CommandPrefix)
-	require.NoError(t, err)
-	require.NotEmpty(t, commands)
+	require.NoError(t, cleanup())
+	require.NoError(t, cleanup(), "generated cleanup must be idempotent")
 
-	jobs, err := registry.Collect[job.Fn](injector, registry.JobPrefix)
+	management, cleanupCLI, err := InitializeCLI()
 	require.NoError(t, err)
-	require.NotEmpty(t, jobs)
-
-	// every migration must compile to SQLite and run on an empty schema
-	m, err := do.Invoke[*migrate.Migrator](injector)
-	require.NoError(t, err)
-	require.NoError(t, m.Up(t.Context()))
-
-	spec, err := server.SpecJSON(injector, "t")
-	require.NoError(t, err)
-	require.Contains(t, string(spec), `"version": "test"`)
+	require.NotNil(t, management)
+	require.NoError(t, cleanupCLI())
+	require.NoError(t, cleanupCLI(), "generated cleanup must be idempotent")
 }

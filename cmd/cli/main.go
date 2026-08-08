@@ -1,12 +1,11 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
 	_ "time/tzdata"
-
-	"github.com/samber/do/v2"
 
 	"github.com/libtnb/fiber-skeleton/internal/app"
 )
@@ -22,19 +21,21 @@ func main() {
 	}
 }
 
-func run() error {
+func run() (err error) {
 	// keep stdout for command output: logs default to the file only
 	if os.Getenv("APP_LOG__OUTPUT") == "" {
 		_ = os.Setenv("APP_LOG__OUTPUT", "file")
 	}
 
-	injector := app.NewInjector(version)
-	defer func() { _ = injector.Shutdown() }()
-
-	cli, err := do.Invoke[*app.Cli](injector)
+	cli, cleanup, err := app.InitializeCLI()
 	if err != nil {
 		return err
 	}
+	defer func() {
+		if cleanup != nil {
+			err = errors.Join(err, cleanup())
+		}
+	}()
 
 	return cli.Run(version)
 }
