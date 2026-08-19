@@ -1,7 +1,5 @@
 APP_VERSION ?= $(shell git describe --tags --always 2>/dev/null || echo dev)
 LDFLAGS := -s -w -X main.version=$(APP_VERSION)
-# First golangci-lint revision using x/tools with Go 1.27 generic-method support.
-GOLANGCI_LINT_VERSION ?= v2.12.3-0.20260807211801-6c3b771b7b46
 
 .PHONY: help
 help: ## Show this help
@@ -53,7 +51,7 @@ gen-check: ## Verify generator output still compiles
 
 .PHONY: lint
 lint: ## Run golangci-lint
-	go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@$(GOLANGCI_LINT_VERSION) run --timeout=30m ./...
+	go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest run --timeout=30m ./...
 
 .PHONY: test
 test: ## Run tests with race detector and coverage

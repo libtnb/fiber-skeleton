@@ -19,8 +19,7 @@ Unlike [chi-skeleton](https://github.com/libtnb/chi-skeleton), this skeleton use
 
 ## Quick start
 
-Requires Go 1.27rc2. This template intentionally tracks the release candidate;
-move to the final Go 1.27 toolchain and container image when it is published.
+Requires Go 1.27.
 
 ```bash
 git clone https://github.com/libtnb/fiber-skeleton my-app && cd my-app
