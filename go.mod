@@ -22,7 +22,7 @@ require (
 	github.com/libtnb/validator/contrib/openapi v0.2.1
 	github.com/libtnb/wire v0.1.0
 	github.com/samber/oops v1.23.0
-	github.com/stretchr/testify v1.12.0
+	github.com/stretchr/testify v1.12.1
 	github.com/urfave/cli/v3 v3.11.0
 )
 
@@ -70,7 +70,7 @@ require (
 	github.com/xeipuuv/gojsonschema v1.2.0 // indirect
 	go.opentelemetry.io/otel v1.29.0 // indirect
 	go.opentelemetry.io/otel/trace v1.29.0 // indirect
-	go.yaml.in/yaml/v3 v3.0.4 // indirect
+	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	golang.org/x/crypto v0.54.0 // indirect
 	golang.org/x/exp v0.0.0-20260508232706-74f9aab9d74a // indirect
 	golang.org/x/mod v0.38.0 // indirect
