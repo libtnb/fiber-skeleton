@@ -3,9 +3,9 @@ module github.com/libtnb/fiber-skeleton
 go 1.27.0
 
 require (
-	github.com/go-rio/migrate v0.9.0
-	github.com/go-rio/rio v0.10.0
-	github.com/go-rio/sqlite v0.3.0
+	github.com/go-rio/migrate v0.9.1
+	github.com/go-rio/rio v0.10.1
+	github.com/go-rio/sqlite v0.3.1
 	github.com/go-viper/mapstructure/v2 v2.5.0
 	github.com/gofiber/contrib/v3/websocket v1.2.3
 	github.com/gofiber/fiber/v3 v3.5.0
