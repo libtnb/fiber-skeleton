@@ -115,8 +115,8 @@ github.com/rs/zerolog v1.35.1/go.mod h1:EjML9kdfa/RMA7h/6z6pYmq1ykOuA8/mjWaEvGI+
 github.com/russross/blackfriday/v2 v2.1.0/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
 github.com/samber/lo v1.53.0 h1:t975lj2py4kJPQ6haz1QMgtId2gtmfktACxIXArw3HM=
 github.com/samber/lo v1.53.0/go.mod h1:4+MXEGsJzbKGaUEQFKBq2xtfuznW9oz/WrgyzMzRoM0=
-github.com/samber/oops v1.23.0 h1:27aIZSRreSy4yveT0ZV4s3gLZp7/ra9Zbb84gwWbA9I=
-github.com/samber/oops v1.23.0/go.mod h1:8ZDRxwQdphVhmLtEX9I6134LHJe5yeCV8cTfHz3m91Y=
+github.com/samber/oops v1.23.1 h1:QKkdrmSTr46B2u+FoQnUJ8dtp0an/yHKvytWHCTEba8=
+github.com/samber/oops v1.23.1/go.mod h1:LO+VjrupgloQZ3CrXnhWqOWYARz8lY4EM+RHGzb3UJI=
 github.com/savsgio/gotils v0.0.0-20250924091648-bce9a52d7761 h1:McifyVxygw1d67y6vxUqls2D46J8W9nrki9c8c0eVvE=
 github.com/savsgio/gotils v0.0.0-20250924091648-bce9a52d7761/go.mod h1:Vi9gvHvTw4yCUHIznFl5TPULS7aXwgaTByGeBY75Wko=
 github.com/shamaton/msgpack/v3 v3.2.0 h1:1q2Ms+MWmuRju+PuDMSFDB7p7621npeX4zprJN5Zck8=
