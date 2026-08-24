@@ -21,7 +21,7 @@ require (
 	github.com/libtnb/validator v0.4.3
 	github.com/libtnb/validator/contrib/openapi v0.2.2
 	github.com/libtnb/wire v0.1.1
-	github.com/samber/oops v1.23.0
+	github.com/samber/oops v1.23.1
 	github.com/stretchr/testify v1.12.1
 	github.com/urfave/cli/v3 v3.11.0
 )
