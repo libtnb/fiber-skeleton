@@ -20,10 +20,10 @@ github.com/fsnotify/fsnotify v1.10.1 h1:b0/UzAf9yR5rhf3RPm9gf3ehBPpf0oZKIjtpKrx5
 github.com/fsnotify/fsnotify v1.10.1/go.mod h1:TLheqan6HD6GBK6PrDWyDPBaEV8LspOxvPSjC+bVfgo=
 github.com/fxamacker/cbor/v2 v2.9.3 h1:oQBnFATpNdY8gJHTndDDv5Xl4QqNaz51G5LLEPhng3Q=
 github.com/fxamacker/cbor/v2 v2.9.3/go.mod h1:vM4b+DJCtHn+zz7h3FFp/hDAI9WNWCsZj23V5ytsSxQ=
-github.com/go-rio/migrate v0.11.0 h1:5pgp39I40f08m0QwWL3ckiiowztcbYMpOzESV1kcHzQ=
-github.com/go-rio/migrate v0.11.0/go.mod h1:adFIRpwsmeKbOYWDPFOt9IXuzUEs77DQnMX+Cjv4BNs=
-github.com/go-rio/rio v0.13.0 h1:DOqjKtdiX62WdR9aOF7gru1rZ1SfQJPDtA3+yKbsGYI=
-github.com/go-rio/rio v0.13.0/go.mod h1:kzvXpbPi2Hoe0Pk24Z/dSv+BJzUxHWt+Fc5olwiu5+g=
+github.com/go-rio/migrate v0.12.0 h1:csIG06TMn4cngXwfvTvJ4CCUvbX3kSrynt1TDUEfuv4=
+github.com/go-rio/migrate v0.12.0/go.mod h1:adFIRpwsmeKbOYWDPFOt9IXuzUEs77DQnMX+Cjv4BNs=
+github.com/go-rio/rio v0.13.1 h1:iE1gyVUabSy9YNDX7DQaUBUwLkRQJN5eqCvnZSUrR2Y=
+github.com/go-rio/rio v0.13.1/go.mod h1:kzvXpbPi2Hoe0Pk24Z/dSv+BJzUxHWt+Fc5olwiu5+g=
 github.com/go-rio/sqlite v0.4.1 h1:5ZEqAaRaa0msbdBlum6BcJZTqDnK6hi5boMRa8IX0dU=
 github.com/go-rio/sqlite v0.4.1/go.mod h1:rmwtOTzLzVKEQlzLqAnvi2nWdooRqKQJpjgpzektcCY=
 github.com/go-viper/mapstructure/v2 v2.5.0 h1:vM5IJoUAy3d7zRSVtIwQgBj7BiWtMPfmPEgAXnvj1Ro=
