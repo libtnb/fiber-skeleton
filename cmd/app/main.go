@@ -1,9 +1,12 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"os"
+	"os/signal"
+	"syscall"
 
 	_ "time/tzdata"
 
@@ -24,6 +27,9 @@ func main() {
 func run() (err error) {
 	fmt.Println("[APP] version", version)
 
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
+
 	application, cleanup, err := app.InitializeApp(version)
 	if err != nil {
 		return err
@@ -34,5 +40,5 @@ func run() (err error) {
 		}
 	}()
 
-	return application.Run()
+	return application.Run(ctx)
 }
