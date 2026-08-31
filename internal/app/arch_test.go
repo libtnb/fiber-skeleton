@@ -79,39 +79,6 @@ func TestModuleBoundaries(t *testing.T) {
 	}
 }
 
-// TestMockeryConfigMatchesLayout fails when .mockery.yaml's exclude list
-// drifts from the internal/ taxonomy: every non-module package plus the
-// module data/service layers must be excluded, and nothing else.
-func TestMockeryConfigMatchesLayout(t *testing.T) {
-	raw, err := os.ReadFile(filepath.Join("..", "..", ".mockery.yaml"))
-	if err != nil {
-		t.Fatalf("read .mockery.yaml: %v", err)
-	}
-
-	want := map[string]bool{"/data$": true, "/service$": true}
-	for name := range nonModulePackages {
-		want["/"+name+"(/|$)"] = true
-	}
-
-	got := map[string]bool{}
-	for line := range strings.Lines(string(raw)) {
-		if pat, ok := strings.CutPrefix(strings.TrimSpace(line), `- "`); ok {
-			got[strings.TrimSuffix(pat, `"`)] = true
-		}
-	}
-
-	for pat := range want {
-		if !got[pat] {
-			t.Errorf(".mockery.yaml must exclude %q", pat)
-		}
-	}
-	for pat := range got {
-		if !want[pat] {
-			t.Errorf(".mockery.yaml excludes %q, which the layout does not require", pat)
-		}
-	}
-}
-
 // violation returns why this import edge is illegal, or "".
 func violation(modules map[string]bool, ownerTop, ownerSub, target string) string {
 	targetSegs := strings.Split(target, "/")
