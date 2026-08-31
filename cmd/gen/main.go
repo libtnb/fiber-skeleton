@@ -44,7 +44,6 @@ type module struct {
 	Camel  string // article, orderItem
 	Table  string // articles, order_items
 	Route  string // articles, order_items
-	Date   string // 20260708120000, migration name prefix
 }
 
 // migration feeds migration.tmpl; the name doubles as the file name.
@@ -89,9 +88,8 @@ func generateModule(name string) error {
 		Camel:  toCamel(name),
 		Table:  inflection.Plural(name),
 		Route:  inflection.Plural(name),
-		Date:   time.Now().Format("20060102150405"),
 	}
-	mig := migration{Name: m.Date + "_create_" + m.Table + "_table", Table: m.Table, Create: true}
+	mig := migrationFor(time.Now().Format("20060102150405"), "create_"+m.Table+"_table")
 
 	files := []struct {
 		src  string

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"sync"
 
+	"github.com/libtnb/fiber-skeleton/internal/migrations"
 	biz2 "github.com/libtnb/fiber-skeleton/internal/order/biz"
 	data2 "github.com/libtnb/fiber-skeleton/internal/order/data"
 	service2 "github.com/libtnb/fiber-skeleton/internal/order/service"
@@ -90,7 +91,7 @@ func InitializeApp(wireInput0 string) (*App, func() error, error) {
 		return wireZero0, nil, errors.Join(wireErr9, cleanupErr)
 	}
 
-	wireValue28_0 := server.NewVersion(wireInput0)
+	wireValue29_0 := server.NewVersion(wireInput0)
 
 	wireValue6_0, wireResourceCleanup6, wireErr6 := bootstrap.NewData(wireValue27_0, wireValue5_0)
 	if wireErr6 != nil {
@@ -102,14 +103,14 @@ func InitializeApp(wireInput0 string) (*App, func() error, error) {
 		wireCleanups = append(wireCleanups, wireResourceCleanup6)
 	}
 
-	wireValue35_0 := bootstrap.DatabaseHealthCheck(wireValue6_0)
+	wireValue36_0 := bootstrap.DatabaseHealthCheck(wireValue6_0)
 
-	wireValue39_0 := make(registry.HealthChecks, 0, 1)
-	wireValue39_0 = append(wireValue39_0, wireValue35_0)
+	wireValue40_0 := make(registry.HealthChecks, 0, 1)
+	wireValue40_0 = append(wireValue40_0, wireValue36_0)
 
-	wireValue38_0 := server.HealthRoutes(wireValue39_0)
+	wireValue39_0 := server.HealthRoutes(wireValue40_0)
 
-	wireValue40_0 := server.WsRoutes()
+	wireValue41_0 := server.WsRoutes()
 
 	wireValue7_0 := bootstrap.ProvideDB(wireValue6_0)
 
@@ -119,7 +120,7 @@ func InitializeApp(wireInput0 string) (*App, func() error, error) {
 
 	wireValue18_0 := service.NewUserService(wireValue17_0, wireValue9_0)
 
-	wireValue41_0 := service.UserRoutes(wireValue18_0)
+	wireValue42_0 := service.UserRoutes(wireValue18_0)
 
 	wireValue21_0 := data2.NewOrderRepo(wireValue7_0)
 
@@ -131,50 +132,52 @@ func InitializeApp(wireInput0 string) (*App, func() error, error) {
 
 	wireValue24_0 := service2.NewOrderService(wireValue23_0, wireValue9_0)
 
-	wireValue43_0 := service2.OrderRoutes(wireValue24_0)
+	wireValue44_0 := service2.OrderRoutes(wireValue24_0)
 
-	wireValue45_0 := make(registry.Routes, 0, 4)
-	wireValue45_0 = append(wireValue45_0, wireValue38_0)
-	wireValue45_0 = append(wireValue45_0, wireValue40_0)
-	wireValue45_0 = append(wireValue45_0, wireValue41_0)
-	wireValue45_0 = append(wireValue45_0, wireValue43_0)
+	wireValue46_0 := make(registry.Routes, 0, 4)
+	wireValue46_0 = append(wireValue46_0, wireValue39_0)
+	wireValue46_0 = append(wireValue46_0, wireValue41_0)
+	wireValue46_0 = append(wireValue46_0, wireValue42_0)
+	wireValue46_0 = append(wireValue46_0, wireValue44_0)
 
-	wireValue30_0, wireErr30 := server.NewRouter(wireValue27_0, wireValue5_0, wireValue9_0, wireValue28_0, wireValue45_0)
-	if wireErr30 != nil {
+	wireValue31_0, wireErr31 := server.NewRouter(wireValue27_0, wireValue5_0, wireValue9_0, wireValue29_0, wireValue46_0)
+	if wireErr31 != nil {
 		wireCommitted = true
 		cleanupErr := wireCleanup()
-		return wireZero0, nil, errors.Join(wireErr30, cleanupErr)
+		return wireZero0, nil, errors.Join(wireErr31, cleanupErr)
 	}
 
-	wireValue11_0, wireErr11 := bootstrap.NewMigrate(wireValue7_0, wireValue5_0)
+	wireValue28_0 := migrations.Collection()
+
+	wireValue11_0, wireErr11 := bootstrap.NewMigrate(wireValue7_0, wireValue28_0, wireValue5_0)
 	if wireErr11 != nil {
 		wireCommitted = true
 		cleanupErr := wireCleanup()
 		return wireZero0, nil, errors.Join(wireErr11, cleanupErr)
 	}
 
-	wireValue36_0 := bootstrap.Heartbeat(wireValue5_0)
+	wireValue37_0 := bootstrap.Heartbeat(wireValue5_0)
 
-	wireValue46_0 := make(registry.Jobs, 0, 1)
-	wireValue46_0 = append(wireValue46_0, wireValue36_0)
+	wireValue47_0 := make(registry.Jobs, 0, 1)
+	wireValue47_0 = append(wireValue47_0, wireValue37_0)
 
-	wireValue29_0, wireErr29 := bootstrap.NewCron(wireValue5_0, wireValue46_0)
-	if wireErr29 != nil {
+	wireValue30_0, wireErr30 := bootstrap.NewCron(wireValue5_0, wireValue47_0)
+	if wireErr30 != nil {
 		wireCommitted = true
 		cleanupErr := wireCleanup()
-		return wireZero0, nil, errors.Join(wireErr29, cleanupErr)
+		return wireZero0, nil, errors.Join(wireErr30, cleanupErr)
 	}
 
-	wireValue44_0 := service2.NewOrderPlacedLogger(wireValue10_0, wireValue5_0)
+	wireValue45_0 := service2.NewOrderPlacedLogger(wireValue10_0, wireValue5_0)
 
-	wireValue47_0 := make(registry.Subscriptions, 0, 1)
-	wireValue47_0 = append(wireValue47_0, wireValue44_0)
+	wireValue48_0 := make(registry.Subscriptions, 0, 1)
+	wireValue48_0 = append(wireValue48_0, wireValue45_0)
 
-	wireValue32_0 := NewApp(wireValue27_0, wireValue30_0, wireValue11_0, wireValue29_0, wireValue47_0)
+	wireValue33_0 := NewApp(wireValue27_0, wireValue31_0, wireValue11_0, wireValue30_0, wireValue48_0)
 
 	wireCommitted = true
 
-	return wireValue32_0, wireCleanup, nil
+	return wireValue33_0, wireCleanup, nil
 }
 
 func InitializeCLI() (*Cli, func() error, error) {
@@ -253,30 +256,32 @@ func InitializeCLI() (*Cli, func() error, error) {
 
 	wireValue7_0 := bootstrap.ProvideDB(wireValue6_0)
 
-	wireValue11_0, wireErr11 := bootstrap.NewMigrate(wireValue7_0, wireValue5_0)
+	wireValue28_0 := migrations.Collection()
+
+	wireValue11_0, wireErr11 := bootstrap.NewMigrate(wireValue7_0, wireValue28_0, wireValue5_0)
 	if wireErr11 != nil {
 		wireCommitted = true
 		cleanupErr := wireCleanup()
 		return wireZero0, nil, errors.Join(wireErr11, cleanupErr)
 	}
 
-	wireValue36_0 := bootstrap.MigrateCommand(wireValue11_0)
+	wireValue37_0 := bootstrap.MigrateCommand(wireValue11_0)
 
 	wireValue16_0 := data.NewUserRepo(wireValue7_0)
 
 	wireValue17_0 := biz.NewUserUsecase(wireValue16_0)
 
-	wireValue41_0 := service.UserCommand(wireValue17_0)
+	wireValue42_0 := service.UserCommand(wireValue17_0)
 
-	wireValue44_0 := make(registry.Commands, 0, 2)
-	wireValue44_0 = append(wireValue44_0, wireValue36_0)
-	wireValue44_0 = append(wireValue44_0, wireValue41_0)
+	wireValue45_0 := make(registry.Commands, 0, 2)
+	wireValue45_0 = append(wireValue45_0, wireValue37_0)
+	wireValue45_0 = append(wireValue45_0, wireValue42_0)
 
-	wireValue31_0 := newRootCommand(wireValue44_0)
+	wireValue32_0 := newRootCommand(wireValue45_0)
 
-	wireValue33_0 := NewCli(wireValue31_0)
+	wireValue34_0 := NewCli(wireValue32_0)
 
 	wireCommitted = true
 
-	return wireValue33_0, wireCleanup, nil
+	return wireValue34_0, wireCleanup, nil
 }

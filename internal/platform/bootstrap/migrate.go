@@ -9,13 +9,11 @@ import (
 	"github.com/go-rio/migrate"
 	"github.com/go-rio/rio"
 	"github.com/urfave/cli/v3"
-
-	"github.com/libtnb/fiber-skeleton/internal/migrations"
 )
 
-func NewMigrate(db *rio.DB, log *slog.Logger) (*migrate.Migrator, error) {
+func NewMigrate(db *rio.DB, c *migrate.Collection, log *slog.Logger) (*migrate.Migrator, error) {
 	return migrate.New(db.Unwrap(), migrate.SQLite,
-		migrate.WithCollection(migrations.Collection()),
+		migrate.WithCollection(c),
 		migrate.WithLogger(log),
 	)
 }

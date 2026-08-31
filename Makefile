@@ -35,14 +35,15 @@ gen-migration: ## Generate a schema migration: make gen-migration name=add_email
 
 .PHONY: gen-check
 gen-check: ## Verify generator output still compiles
-	go run ./cmd/gen gencheck
+	go run ./cmd/gen gencheck > gencheck.created && cat gencheck.created
 	@set -e; \
 	  cp internal/app/wire.go internal/app/wire.go.gencheck; \
 	  restore() { \
 	    if [ -f internal/app/wire.go.gencheck ]; then mv -f internal/app/wire.go.gencheck internal/app/wire.go; fi; \
 	    rm -f internal/app/wire.go.tmp; \
+	    sed -n 's/^created //p' gencheck.created | xargs rm -f; \
+	    rm -f gencheck.created; \
 	    rm -rf internal/gencheck; \
-	    rm -f internal/migrations/*_create_genchecks_table.go; \
 	    go tool wire generate ./... >/dev/null; \
 	  }; \
 	  trap 'status=$$?; trap - EXIT INT TERM; restore; exit $$status' EXIT INT TERM; \

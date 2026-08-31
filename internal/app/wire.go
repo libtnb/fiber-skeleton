@@ -5,6 +5,7 @@ package app
 import (
 	"github.com/libtnb/wire"
 
+	"github.com/libtnb/fiber-skeleton/internal/migrations"
 	"github.com/libtnb/fiber-skeleton/internal/order"
 	"github.com/libtnb/fiber-skeleton/internal/platform/bootstrap"
 	"github.com/libtnb/fiber-skeleton/internal/platform/conf"
@@ -26,6 +27,7 @@ var ApplicationModule = wire.New().
 		order.Module,
 	).
 	Provide(conf.Load).
+	Provide(migrations.Collection).
 	Provide(server.NewVersion).
 	Provide(bootstrap.NewCron).
 	Provide(server.NewRouter).
