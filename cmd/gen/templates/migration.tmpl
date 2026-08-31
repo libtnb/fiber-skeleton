@@ -1,15 +1,20 @@
-package data
+package migrations
 
 import "github.com/go-rio/migrate"
 
-// The module owns its schema; init registers it with the migrator.
 func init() {
-	migrate.Add("{{.Date}}_create_{{.Table}}", func(s *migrate.Schema) {
+	collection.Add("{{.Name}}", func(s *migrate.Schema) {
+{{- if .Create}}
 		s.Create("{{.Table}}", func(t *migrate.Table) {
 			t.ID()
 			t.String("name")
 			t.Timestamps()
 			t.SoftDeletes()
 		})
+{{- else}}
+		s.Table("{{.Table}}", func(t *migrate.Table) {
+			// declare the change, e.g. t.String("email").Nullable()
+		})
+{{- end}}
 	})
 }

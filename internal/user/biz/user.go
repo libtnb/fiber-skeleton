@@ -1,5 +1,4 @@
-// Package biz holds the user module's transport-independent business logic;
-// other modules depend on it, never on the data layer.
+// Package biz holds the user module's business logic.
 package biz
 
 import (
@@ -7,7 +6,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/libtnb/fiber-skeleton/internal/pkg/apperr"
+	"github.com/libtnb/fiber-skeleton/internal/shared/apperr"
 )
 
 type User struct {
@@ -30,8 +29,7 @@ type UserRepo interface {
 	Delete(ctx context.Context, id uint) error
 }
 
-// UserUsecase is shared by HTTP, CLI and jobs; methods take domain
-// parameters, not request DTOs.
+// UserUsecase is shared by HTTP, CLI and jobs.
 type UserUsecase struct {
 	repo UserRepo
 }

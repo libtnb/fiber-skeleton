@@ -6,7 +6,7 @@ package user
 import (
 	"github.com/libtnb/wire"
 
-	"github.com/libtnb/fiber-skeleton/internal/pkg/registry"
+	"github.com/libtnb/fiber-skeleton/internal/shared/registry"
 	"github.com/libtnb/fiber-skeleton/internal/user/biz"
 	"github.com/libtnb/fiber-skeleton/internal/user/data"
 	"github.com/libtnb/fiber-skeleton/internal/user/service"

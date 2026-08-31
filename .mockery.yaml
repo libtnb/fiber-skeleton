@@ -10,10 +10,9 @@ packages:
       recursive: true
       all: true
       exclude-subpkg-regex:
-        - "/pkg(/|$)"
+        - "/app(/|$)"
+        - "/migrations(/|$)"
+        - "/platform(/|$)"
+        - "/shared(/|$)"
         - "/data$"
         - "/service$"
-        - "/server$"
-        - "/bootstrap$"
-        - "/conf$"
-        - "/app$"

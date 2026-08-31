@@ -5,11 +5,10 @@ import (
 	"log/slog"
 
 	"github.com/libtnb/fiber-skeleton/internal/order/biz"
-	"github.com/libtnb/fiber-skeleton/internal/pkg/event"
+	"github.com/libtnb/fiber-skeleton/internal/shared/event"
 )
 
-// NewOrderPlacedLogger records placed orders — a stand-in for a confirmation
-// mail or analytics update.
+// NewOrderPlacedLogger logs placed orders; replace with a real subscriber.
 func NewOrderPlacedLogger(bus event.Bus, log *slog.Logger) event.Subscription {
 	bus.Subscribe(biz.OrderPlaced{}.Name(), func(ctx context.Context, e event.Event) error {
 		placed, ok := e.(biz.OrderPlaced)

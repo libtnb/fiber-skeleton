@@ -9,6 +9,7 @@ import (
 	"github.com/go-rio/sqlite"
 	"github.com/stretchr/testify/require"
 
+	"github.com/libtnb/fiber-skeleton/internal/migrations"
 	"github.com/libtnb/fiber-skeleton/internal/user/biz"
 )
 
@@ -20,7 +21,7 @@ func newTestRepo(t *testing.T) *userRepo {
 	require.NoError(t, err)
 	t.Cleanup(func() { _ = db.Close() })
 
-	m, err := migrate.New(db.Unwrap(), migrate.SQLite)
+	m, err := migrate.New(db.Unwrap(), migrate.SQLite, migrate.WithCollection(migrations.Collection()))
 	require.NoError(t, err)
 	require.NoError(t, m.Up(t.Context()))
 

@@ -29,6 +29,9 @@ generate: wire ## Regenerate dependency injection and mocks
 gen: ## Generate a CRUD module: make gen name=article
 	go run ./cmd/gen $(name)
 
+.PHONY: gen-migration
+gen-migration: ## Generate a schema migration: make gen-migration name=add_email_to_users_table
+	go run ./cmd/gen migration $(name)
 
 .PHONY: gen-check
 gen-check: ## Verify generator output still compiles
@@ -39,6 +42,7 @@ gen-check: ## Verify generator output still compiles
 	    if [ -f internal/app/wire.go.gencheck ]; then mv -f internal/app/wire.go.gencheck internal/app/wire.go; fi; \
 	    rm -f internal/app/wire.go.tmp; \
 	    rm -rf internal/gencheck; \
+	    rm -f internal/migrations/*_create_genchecks_table.go; \
 	    go tool wire generate ./... >/dev/null; \
 	  }; \
 	  trap 'status=$$?; trap - EXIT INT TERM; restore; exit $$status' EXIT INT TERM; \

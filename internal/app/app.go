@@ -14,8 +14,8 @@ import (
 	"github.com/libtnb/cron"
 	"github.com/libtnb/graceful"
 
-	"github.com/libtnb/fiber-skeleton/internal/conf"
-	"github.com/libtnb/fiber-skeleton/internal/pkg/registry"
+	"github.com/libtnb/fiber-skeleton/internal/platform/conf"
+	"github.com/libtnb/fiber-skeleton/internal/shared/registry"
 )
 
 type App struct {

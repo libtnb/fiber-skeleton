@@ -8,7 +8,7 @@ import (
 
 	"github.com/urfave/cli/v3"
 
-	"github.com/libtnb/fiber-skeleton/internal/pkg/registry"
+	"github.com/libtnb/fiber-skeleton/internal/shared/registry"
 )
 
 type Cli struct {
@@ -29,7 +29,6 @@ func (r *Cli) Run(version string) error {
 	return r.cmd.Run(ctx, os.Args)
 }
 
-// newRootCommand assembles every command contribution into the root CLI.
 func newRootCommand(commands registry.Commands) *cli.Command {
 	return &cli.Command{
 		Name:     "cli",

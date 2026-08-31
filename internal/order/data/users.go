@@ -10,8 +10,7 @@ import (
 	userbiz "github.com/libtnb/fiber-skeleton/internal/user/biz"
 )
 
-// users adapts the user module's public usecase to the Users port; replace
-// this file with an RPC client to split user into its own service.
+// users adapts the user module's usecase to the biz.Users port.
 type users struct {
 	uc *userbiz.UserUsecase
 }

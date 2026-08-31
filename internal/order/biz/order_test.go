@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/libtnb/fiber-skeleton/internal/order/biz"
-	"github.com/libtnb/fiber-skeleton/internal/pkg/event"
+	"github.com/libtnb/fiber-skeleton/internal/shared/event"
 	mocksbiz "github.com/libtnb/fiber-skeleton/mocks/order/biz"
 )
 

@@ -5,11 +5,11 @@ package app
 import (
 	"github.com/libtnb/wire"
 
-	"github.com/libtnb/fiber-skeleton/internal/bootstrap"
-	"github.com/libtnb/fiber-skeleton/internal/conf"
 	"github.com/libtnb/fiber-skeleton/internal/order"
-	"github.com/libtnb/fiber-skeleton/internal/pkg/registry"
-	"github.com/libtnb/fiber-skeleton/internal/server"
+	"github.com/libtnb/fiber-skeleton/internal/platform/bootstrap"
+	"github.com/libtnb/fiber-skeleton/internal/platform/conf"
+	"github.com/libtnb/fiber-skeleton/internal/platform/server"
+	"github.com/libtnb/fiber-skeleton/internal/shared/registry"
 	"github.com/libtnb/fiber-skeleton/internal/user"
 )
 

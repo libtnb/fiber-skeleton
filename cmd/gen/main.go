@@ -1,7 +1,11 @@
-// Command gen scaffolds a CRUD module: biz entity + repo interface, data
-// repo implementation, service handlers, request structs and a migration.
+// Command gen scaffolds a CRUD module (biz entity + repo interface, data repo
+// implementation, service handlers, request structs, create-table migration
+// and Wire module) or a standalone schema migration.
 //
-// Usage: go run ./cmd/gen <name>   (name is singular snake_case, e.g. article)
+// Usage:
+//
+//	go run ./cmd/gen <name>            new module (singular snake_case, e.g. article)
+//	go run ./cmd/gen migration <name>  new migration (e.g. add_email_to_users_table)
 package main
 
 import (
@@ -23,7 +27,15 @@ import (
 //go:embed templates/*.tmpl
 var templates embed.FS
 
-var namePattern = regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
+var (
+	namePattern = regexp.MustCompile(`^[a-z][a-z0-9_]*$`)
+	// alterTarget extracts the table from names such as add_email_to_users.
+	alterTarget = regexp.MustCompile(`_(?:to|from|in|on)_([a-z0-9_]+)$`)
+
+	errUsage = errors.New(`usage:
+  go run ./cmd/gen <name>            scaffold a CRUD module (singular snake_case, e.g. article)
+  go run ./cmd/gen migration <name>  scaffold a schema migration (e.g. add_email_to_users_table)`)
+)
 
 type module struct {
 	Module string // module path from go.mod
@@ -35,6 +47,13 @@ type module struct {
 	Date   string // 20260708120000, migration name prefix
 }
 
+// migration feeds migration.tmpl; the name doubles as the file name.
+type migration struct {
+	Name   string // 20260708120000_create_articles_table
+	Table  string // articles
+	Create bool   // create-table skeleton instead of an alter skeleton
+}
+
 func main() {
 	if err := run(); err != nil {
 		_, _ = fmt.Fprintln(os.Stderr, "gen:", err)
@@ -43,11 +62,21 @@ func main() {
 }
 
 func run() error {
-	if len(os.Args) != 2 || !namePattern.MatchString(os.Args[1]) {
-		return errors.New("usage: go run ./cmd/gen <name> (singular snake_case, e.g. article or order_item)")
+	args := os.Args[1:]
+	switch {
+	case len(args) == 2 && args[0] == "migration":
+		return generateMigration(args[1])
+	case len(args) == 1 && args[0] != "migration":
+		return generateModule(args[0])
+	default:
+		return errUsage
 	}
+}
 
-	name := os.Args[1]
+func generateModule(name string) error {
+	if !namePattern.MatchString(name) {
+		return errUsage
+	}
 	modPath, err := modulePath()
 	if err != nil {
 		return err
@@ -62,29 +91,34 @@ func run() error {
 		Route:  inflection.Plural(name),
 		Date:   time.Now().Format("20060102150405"),
 	}
+	mig := migration{Name: m.Date + "_create_" + m.Table + "_table", Table: m.Table, Create: true}
 
-	files := map[string]string{
-		"biz.tmpl":       filepath.Join("internal", m.Snake, "biz", m.Snake+".go"),
-		"data.tmpl":      filepath.Join("internal", m.Snake, "data", m.Snake+".go"),
-		"migration.tmpl": filepath.Join("internal", m.Snake, "data", "migration.go"),
-		"service.tmpl":   filepath.Join("internal", m.Snake, "service", "service.go"),
-		"request.tmpl":   filepath.Join("internal", m.Snake, "service", "request.go"),
-		"route.tmpl":     filepath.Join("internal", m.Snake, "service", "route.go"),
-		"module.tmpl":    filepath.Join("internal", m.Snake, "wire.go"),
+	files := []struct {
+		src  string
+		dst  string
+		data any
+	}{
+		{"biz.tmpl", filepath.Join("internal", m.Snake, "biz", m.Snake+".go"), m},
+		{"data.tmpl", filepath.Join("internal", m.Snake, "data", m.Snake+".go"), m},
+		{"service.tmpl", filepath.Join("internal", m.Snake, "service", "service.go"), m},
+		{"request.tmpl", filepath.Join("internal", m.Snake, "service", "request.go"), m},
+		{"route.tmpl", filepath.Join("internal", m.Snake, "service", "route.go"), m},
+		{"module.tmpl", filepath.Join("internal", m.Snake, "wire.go"), m},
+		{"migration.tmpl", filepath.Join("internal", "migrations", mig.Name+".go"), mig},
 	}
 
 	// refuse to overwrite anything: check all targets before writing any
-	for _, dst := range files {
-		if _, err := os.Stat(dst); err == nil {
-			return fmt.Errorf("%s already exists", dst)
+	for _, f := range files {
+		if _, err := os.Stat(f.dst); err == nil {
+			return fmt.Errorf("%s already exists", f.dst)
 		}
 	}
 
-	for src, dst := range files {
-		if err := render(src, dst, m); err != nil {
+	for _, f := range files {
+		if err := render(f.src, f.dst, f.data); err != nil {
 			return err
 		}
-		fmt.Println("created", dst)
+		fmt.Println("created", f.dst)
 	}
 
 	fmt.Printf(`
@@ -100,6 +134,37 @@ Next steps:
 	return nil
 }
 
+func generateMigration(name string) error {
+	if !namePattern.MatchString(name) {
+		return errUsage
+	}
+
+	mig := migrationFor(time.Now().Format("20060102150405"), name)
+	dst := filepath.Join("internal", "migrations", mig.Name+".go")
+	if _, err := os.Stat(dst); err == nil {
+		return fmt.Errorf("%s already exists", dst)
+	}
+	if err := render("migration.tmpl", dst, mig); err != nil {
+		return err
+	}
+	fmt.Println("created", dst)
+
+	return nil
+}
+
+// migrationFor derives the skeleton from the migration name, following the
+// create_<table>_table / add_<column>_to_<table>_table naming convention.
+func migrationFor(date, name string) migration {
+	mig := migration{Name: date + "_" + name, Table: "CHANGE_ME"}
+	base := strings.TrimSuffix(name, "_table")
+	if table, ok := strings.CutPrefix(base, "create_"); ok {
+		mig.Table, mig.Create = table, true
+	} else if sub := alterTarget.FindStringSubmatch(base); sub != nil {
+		mig.Table = sub[1]
+	}
+	return mig
+}
+
 func modulePath() (string, error) {
 	data, err := os.ReadFile("go.mod")
 	if err != nil {
@@ -113,14 +178,14 @@ func modulePath() (string, error) {
 	return "", errors.New("cannot determine module path from go.mod")
 }
 
-func render(src, dst string, m module) error {
+func render(src, dst string, data any) error {
 	t, err := template.ParseFS(templates, "templates/"+src)
 	if err != nil {
 		return err
 	}
 
 	var buf bytes.Buffer
-	if err = t.Execute(&buf, m); err != nil {
+	if err = t.Execute(&buf, data); err != nil {
 		return err
 	}
 	code, err := format.Source(buf.Bytes())
@@ -150,7 +215,8 @@ func toPascal(snake string) string {
 		if part == "" {
 			continue
 		}
-		b.WriteString(strings.ToUpper(part[:1]) + part[1:])
+		b.WriteString(strings.ToUpper(part[:1]))
+		b.WriteString(part[1:])
 	}
 	return b.String()
 }

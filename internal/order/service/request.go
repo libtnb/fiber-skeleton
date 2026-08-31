@@ -5,9 +5,7 @@ type OrderID struct {
 }
 
 type OrderCreate struct {
-	// UserID is validated for shape here; that the user actually exists is a
-	// business rule checked in the usecase through the user module, not a
-	// database rule that would reach across the module boundary.
+	// the user's existence is checked in the usecase, not by a DB constraint
 	UserID uint  `json:"user_id" form:"user_id" validate:"required && number"`
 	Amount int64 `json:"amount" form:"amount" validate:"required && number && min:1"`
 }

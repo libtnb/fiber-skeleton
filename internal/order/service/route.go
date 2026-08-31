@@ -6,7 +6,7 @@ import (
 	"github.com/gofiber/fiber/v3"
 
 	"github.com/libtnb/fiber-skeleton/internal/order/biz"
-	"github.com/libtnb/fiber-skeleton/internal/pkg/transport"
+	"github.com/libtnb/fiber-skeleton/internal/shared/transport"
 )
 
 func OrderRoutes(order *OrderService) transport.Endpoints {

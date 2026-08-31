@@ -1,5 +1,4 @@
-// Package biz holds the order module's business logic; cross-module needs are
-// interfaces defined here (Users), so it never imports another module.
+// Package biz holds the order module's business logic.
 package biz
 
 import (
@@ -8,8 +7,8 @@ import (
 	"log/slog"
 	"time"
 
-	"github.com/libtnb/fiber-skeleton/internal/pkg/apperr"
-	"github.com/libtnb/fiber-skeleton/internal/pkg/event"
+	"github.com/libtnb/fiber-skeleton/internal/shared/apperr"
+	"github.com/libtnb/fiber-skeleton/internal/shared/event"
 )
 
 type Order struct {
@@ -31,8 +30,7 @@ type OrderRepo interface {
 	Delete(ctx context.Context, id uint) error
 }
 
-// Users is the slice of the user module that orders need; swap its adapter
-// for an RPC client and the module splits into a service unchanged.
+// Users is the slice of the user module that orders need.
 type Users interface {
 	Exists(ctx context.Context, id uint) (bool, error)
 }
@@ -83,7 +81,7 @@ func (uc *OrderUsecase) Place(ctx context.Context, userID uint, amount int64) (*
 		return nil, err
 	}
 
-	// the order is committed — log and move on; a durable broker needs an outbox
+	// the order is already committed; log the failure and move on
 	if err := uc.bus.Publish(ctx, OrderPlaced{OrderID: order.ID, UserID: userID, Amount: amount}); err != nil {
 		slog.ErrorContext(ctx, "publish order.placed failed",
 			slog.Uint64("order_id", uint64(order.ID)),

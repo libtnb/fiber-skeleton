@@ -9,7 +9,7 @@ import (
 	"github.com/libtnb/fiber-skeleton/internal/order/biz"
 	"github.com/libtnb/fiber-skeleton/internal/order/data"
 	"github.com/libtnb/fiber-skeleton/internal/order/service"
-	"github.com/libtnb/fiber-skeleton/internal/pkg/registry"
+	"github.com/libtnb/fiber-skeleton/internal/shared/registry"
 )
 
 var Module = wire.New().

@@ -1,12 +1,11 @@
-// Package service adapts HTTP and CLI to the usecase: bind, validate,
-// delegate, respond.
+// Package service adapts HTTP and CLI to the usecase.
 package service
 
 import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/libtnb/validator"
 
-	"github.com/libtnb/fiber-skeleton/internal/pkg/transport"
+	"github.com/libtnb/fiber-skeleton/internal/shared/transport"
 	"github.com/libtnb/fiber-skeleton/internal/user/biz"
 )
 
