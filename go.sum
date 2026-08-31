@@ -22,8 +22,8 @@ github.com/fxamacker/cbor/v2 v2.9.3 h1:oQBnFATpNdY8gJHTndDDv5Xl4QqNaz51G5LLEPhng
 github.com/fxamacker/cbor/v2 v2.9.3/go.mod h1:vM4b+DJCtHn+zz7h3FFp/hDAI9WNWCsZj23V5ytsSxQ=
 github.com/go-rio/migrate v0.12.0 h1:csIG06TMn4cngXwfvTvJ4CCUvbX3kSrynt1TDUEfuv4=
 github.com/go-rio/migrate v0.12.0/go.mod h1:adFIRpwsmeKbOYWDPFOt9IXuzUEs77DQnMX+Cjv4BNs=
-github.com/go-rio/rio v0.13.1 h1:iE1gyVUabSy9YNDX7DQaUBUwLkRQJN5eqCvnZSUrR2Y=
-github.com/go-rio/rio v0.13.1/go.mod h1:kzvXpbPi2Hoe0Pk24Z/dSv+BJzUxHWt+Fc5olwiu5+g=
+github.com/go-rio/rio v0.13.2 h1:yyReXsxDO/PqKIyTTGqAlsGKGqWtGGRkjL1oXFl0+8E=
+github.com/go-rio/rio v0.13.2/go.mod h1:kzvXpbPi2Hoe0Pk24Z/dSv+BJzUxHWt+Fc5olwiu5+g=
 github.com/go-rio/sqlite v0.4.1 h1:5ZEqAaRaa0msbdBlum6BcJZTqDnK6hi5boMRa8IX0dU=
 github.com/go-rio/sqlite v0.4.1/go.mod h1:rmwtOTzLzVKEQlzLqAnvi2nWdooRqKQJpjgpzektcCY=
 github.com/go-viper/mapstructure/v2 v2.5.0 h1:vM5IJoUAy3d7zRSVtIwQgBj7BiWtMPfmPEgAXnvj1Ro=

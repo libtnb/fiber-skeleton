@@ -4,7 +4,7 @@ go 1.27.0
 
 require (
 	github.com/go-rio/migrate v0.12.0
-	github.com/go-rio/rio v0.13.1
+	github.com/go-rio/rio v0.13.2
 	github.com/go-rio/sqlite v0.4.1
 	github.com/go-viper/mapstructure/v2 v2.5.0
 	github.com/gofiber/contrib/v3/websocket v1.2.3
