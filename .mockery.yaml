@@ -1,6 +1,6 @@
 template: testify
 # one mock package per module, so same-named interfaces cannot collide
-dir: mocks/{{.InterfaceDirRelative | trimPrefix "internal/"}}
+dir: internal/mocks/{{.InterfaceDirRelative | trimPrefix "internal/"}}
 structname: "{{.InterfaceName}}"
 pkgname: "{{.SrcPackageName}}"
 filename: "{{.InterfaceName}}.go"
@@ -12,6 +12,7 @@ packages:
       exclude-subpkg-regex:
         - "/app(/|$)"
         - "/migrations(/|$)"
+        - "/mocks(/|$)"
         - "/platform(/|$)"
         - "/shared(/|$)"
         - "/data$"

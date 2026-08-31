@@ -18,6 +18,7 @@ const modulePrefix = "github.com/libtnb/fiber-skeleton/internal/"
 var nonModulePackages = map[string]bool{
 	"app":        true,
 	"migrations": true,
+	"mocks":      true,
 	"platform":   true,
 	"shared":     true,
 }
@@ -90,6 +91,9 @@ func violation(modules map[string]bool, ownerTop, ownerSub, target string) strin
 	switch {
 	case ownerTop == "app":
 		return "" // the assembly imports everything
+
+	case ownerTop == "mocks":
+		return "" // generated mirrors of the mocked interfaces
 
 	case ownerTop == "migrations":
 		return "migrations declares schema only and imports no internal package"

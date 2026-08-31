@@ -8,8 +8,8 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
+	mocksbiz "github.com/libtnb/fiber-skeleton/internal/mocks/user/biz"
 	"github.com/libtnb/fiber-skeleton/internal/user/biz"
-	mocksbiz "github.com/libtnb/fiber-skeleton/mocks/user/biz"
 )
 
 func TestUserUsecase_Create(t *testing.T) {

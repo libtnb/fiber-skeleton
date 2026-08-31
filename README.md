@@ -50,11 +50,11 @@ docs/           hand-written docs; the OpenAPI document is generated at runtime
 internal/
   app/          composition root: combines modules into the app and cli injectors
   migrations/   schema history, one file per migration
+  mocks/        generated repository mocks
   platform/     infrastructure assembly: bootstrap (providers), conf, server
   shared/       contracts shared by every module: transport, apperr, event, registry, job
   user/         business module
   order/        business module
-mocks/          generated repository mocks
 storage/        runtime files: logs, SQLite database
 web/            frontend code
 ```
@@ -80,8 +80,8 @@ contributes routes, commands, jobs, subscribers and health checks.
 - a module imports `app`, `platform` or `migrations`
 - `shared` or `platform` imports anything above its layer
 
-Everything under `internal/` that is not `app`, `migrations`, `platform` or
-`shared` is a business module.
+Everything under `internal/` that is not `app`, `migrations`, `mocks`,
+`platform` or `shared` is a business module.
 
 To use another module, declare an interface in your own `biz` package and adapt
 it over the other module's usecase in `data` (see `order/biz.Users`). Swapping

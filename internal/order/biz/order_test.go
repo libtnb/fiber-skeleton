@@ -7,9 +7,9 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
+	mocksbiz "github.com/libtnb/fiber-skeleton/internal/mocks/order/biz"
 	"github.com/libtnb/fiber-skeleton/internal/order/biz"
 	"github.com/libtnb/fiber-skeleton/internal/shared/event"
-	mocksbiz "github.com/libtnb/fiber-skeleton/mocks/order/biz"
 )
 
 // fakeBus records what the usecase publishes.

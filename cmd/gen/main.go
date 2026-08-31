@@ -128,7 +128,7 @@ Next steps:
   2. run "make generate" to regenerate Wire code and mocks.
   3. run "make gen-check" to verify the generated module compiles.
      Mockery auto-discovers the new biz package and
-     writes its repo mock under mocks/%[1]s/biz (no .mockery.yaml edit needed).
+     writes its repo mock under internal/mocks/%[1]s/biz (no .mockery.yaml edit needed).
 `, m.Snake, m.Module)
 
 	return nil

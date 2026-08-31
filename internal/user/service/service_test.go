@@ -13,9 +13,9 @@ import (
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 
+	mocksbiz "github.com/libtnb/fiber-skeleton/internal/mocks/user/biz"
 	"github.com/libtnb/fiber-skeleton/internal/user/biz"
 	"github.com/libtnb/fiber-skeleton/internal/user/service"
-	mocksbiz "github.com/libtnb/fiber-skeleton/mocks/user/biz"
 )
 
 // newTestApp wires the service against a mocked repo and a real validator.
