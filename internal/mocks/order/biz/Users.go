@@ -11,16 +11,16 @@ import (
 	"github.com/libtnb/fiber-skeleton/internal/order/biz"
 )
 
-// Ensure that UsersMock does implement biz.Users.
+// Ensure that Users does implement biz.Users.
 // If this is not the case, regenerate this file with mockery.
-var _ biz.Users = &UsersMock{}
+var _ biz.Users = &Users{}
 
-// UsersMock is a mock implementation of biz.Users.
+// Users is a mock implementation of biz.Users.
 //
 //	func TestSomethingThatUsesUsers(t *testing.T) {
 //
 //		// make and configure a mocked biz.Users
-//		mockedUsers := &UsersMock{
+//		mockedUsers := &Users{
 //			ExistsFunc: func(ctx context.Context, id uint) (bool, error) {
 //				panic("mock out the Exists method")
 //			},
@@ -30,7 +30,7 @@ var _ biz.Users = &UsersMock{}
 //		// and then make assertions.
 //
 //	}
-type UsersMock struct {
+type Users struct {
 	// ExistsFunc mocks the Exists method.
 	ExistsFunc func(ctx context.Context, id uint) (bool, error)
 
@@ -48,9 +48,9 @@ type UsersMock struct {
 }
 
 // Exists calls ExistsFunc.
-func (mock *UsersMock) Exists(ctx context.Context, id uint) (bool, error) {
+func (mock *Users) Exists(ctx context.Context, id uint) (bool, error) {
 	if mock.ExistsFunc == nil {
-		panic("UsersMock.ExistsFunc: method is nil but Users.Exists was just called")
+		panic("Users.ExistsFunc: method is nil but Users.Exists was just called")
 	}
 	callInfo := struct {
 		Ctx context.Context
@@ -69,7 +69,7 @@ func (mock *UsersMock) Exists(ctx context.Context, id uint) (bool, error) {
 // Check the length with:
 //
 //	len(mockedUsers.ExistsCalls())
-func (mock *UsersMock) ExistsCalls() []struct {
+func (mock *Users) ExistsCalls() []struct {
 	Ctx context.Context
 	ID  uint
 } {

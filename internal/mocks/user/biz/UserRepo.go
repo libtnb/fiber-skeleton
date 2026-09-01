@@ -11,16 +11,16 @@ import (
 	"github.com/libtnb/fiber-skeleton/internal/user/biz"
 )
 
-// Ensure that UserRepoMock does implement biz.UserRepo.
+// Ensure that UserRepo does implement biz.UserRepo.
 // If this is not the case, regenerate this file with mockery.
-var _ biz.UserRepo = &UserRepoMock{}
+var _ biz.UserRepo = &UserRepo{}
 
-// UserRepoMock is a mock implementation of biz.UserRepo.
+// UserRepo is a mock implementation of biz.UserRepo.
 //
 //	func TestSomethingThatUsesUserRepo(t *testing.T) {
 //
 //		// make and configure a mocked biz.UserRepo
-//		mockedUserRepo := &UserRepoMock{
+//		mockedUserRepo := &UserRepo{
 //			CreateFunc: func(ctx context.Context, user *biz.User) error {
 //				panic("mock out the Create method")
 //			},
@@ -45,7 +45,7 @@ var _ biz.UserRepo = &UserRepoMock{}
 //		// and then make assertions.
 //
 //	}
-type UserRepoMock struct {
+type UserRepo struct {
 	// CreateFunc mocks the Create method.
 	CreateFunc func(ctx context.Context, user *biz.User) error
 
@@ -120,9 +120,9 @@ type UserRepoMock struct {
 }
 
 // Create calls CreateFunc.
-func (mock *UserRepoMock) Create(ctx context.Context, user *biz.User) error {
+func (mock *UserRepo) Create(ctx context.Context, user *biz.User) error {
 	if mock.CreateFunc == nil {
-		panic("UserRepoMock.CreateFunc: method is nil but UserRepo.Create was just called")
+		panic("UserRepo.CreateFunc: method is nil but UserRepo.Create was just called")
 	}
 	callInfo := struct {
 		Ctx  context.Context
@@ -141,7 +141,7 @@ func (mock *UserRepoMock) Create(ctx context.Context, user *biz.User) error {
 // Check the length with:
 //
 //	len(mockedUserRepo.CreateCalls())
-func (mock *UserRepoMock) CreateCalls() []struct {
+func (mock *UserRepo) CreateCalls() []struct {
 	Ctx  context.Context
 	User *biz.User
 } {
@@ -156,9 +156,9 @@ func (mock *UserRepoMock) CreateCalls() []struct {
 }
 
 // Delete calls DeleteFunc.
-func (mock *UserRepoMock) Delete(ctx context.Context, id uint) error {
+func (mock *UserRepo) Delete(ctx context.Context, id uint) error {
 	if mock.DeleteFunc == nil {
-		panic("UserRepoMock.DeleteFunc: method is nil but UserRepo.Delete was just called")
+		panic("UserRepo.DeleteFunc: method is nil but UserRepo.Delete was just called")
 	}
 	callInfo := struct {
 		Ctx context.Context
@@ -177,7 +177,7 @@ func (mock *UserRepoMock) Delete(ctx context.Context, id uint) error {
 // Check the length with:
 //
 //	len(mockedUserRepo.DeleteCalls())
-func (mock *UserRepoMock) DeleteCalls() []struct {
+func (mock *UserRepo) DeleteCalls() []struct {
 	Ctx context.Context
 	ID  uint
 } {
@@ -192,9 +192,9 @@ func (mock *UserRepoMock) DeleteCalls() []struct {
 }
 
 // ExistsName calls ExistsNameFunc.
-func (mock *UserRepoMock) ExistsName(ctx context.Context, name string) (bool, error) {
+func (mock *UserRepo) ExistsName(ctx context.Context, name string) (bool, error) {
 	if mock.ExistsNameFunc == nil {
-		panic("UserRepoMock.ExistsNameFunc: method is nil but UserRepo.ExistsName was just called")
+		panic("UserRepo.ExistsNameFunc: method is nil but UserRepo.ExistsName was just called")
 	}
 	callInfo := struct {
 		Ctx  context.Context
@@ -213,7 +213,7 @@ func (mock *UserRepoMock) ExistsName(ctx context.Context, name string) (bool, er
 // Check the length with:
 //
 //	len(mockedUserRepo.ExistsNameCalls())
-func (mock *UserRepoMock) ExistsNameCalls() []struct {
+func (mock *UserRepo) ExistsNameCalls() []struct {
 	Ctx  context.Context
 	Name string
 } {
@@ -228,9 +228,9 @@ func (mock *UserRepoMock) ExistsNameCalls() []struct {
 }
 
 // Get calls GetFunc.
-func (mock *UserRepoMock) Get(ctx context.Context, id uint) (*biz.User, error) {
+func (mock *UserRepo) Get(ctx context.Context, id uint) (*biz.User, error) {
 	if mock.GetFunc == nil {
-		panic("UserRepoMock.GetFunc: method is nil but UserRepo.Get was just called")
+		panic("UserRepo.GetFunc: method is nil but UserRepo.Get was just called")
 	}
 	callInfo := struct {
 		Ctx context.Context
@@ -249,7 +249,7 @@ func (mock *UserRepoMock) Get(ctx context.Context, id uint) (*biz.User, error) {
 // Check the length with:
 //
 //	len(mockedUserRepo.GetCalls())
-func (mock *UserRepoMock) GetCalls() []struct {
+func (mock *UserRepo) GetCalls() []struct {
 	Ctx context.Context
 	ID  uint
 } {
@@ -264,9 +264,9 @@ func (mock *UserRepoMock) GetCalls() []struct {
 }
 
 // List calls ListFunc.
-func (mock *UserRepoMock) List(ctx context.Context, page int, limit int) ([]*biz.User, int64, error) {
+func (mock *UserRepo) List(ctx context.Context, page int, limit int) ([]*biz.User, int64, error) {
 	if mock.ListFunc == nil {
-		panic("UserRepoMock.ListFunc: method is nil but UserRepo.List was just called")
+		panic("UserRepo.ListFunc: method is nil but UserRepo.List was just called")
 	}
 	callInfo := struct {
 		Ctx   context.Context
@@ -287,7 +287,7 @@ func (mock *UserRepoMock) List(ctx context.Context, page int, limit int) ([]*biz
 // Check the length with:
 //
 //	len(mockedUserRepo.ListCalls())
-func (mock *UserRepoMock) ListCalls() []struct {
+func (mock *UserRepo) ListCalls() []struct {
 	Ctx   context.Context
 	Page  int
 	Limit int
@@ -304,9 +304,9 @@ func (mock *UserRepoMock) ListCalls() []struct {
 }
 
 // Update calls UpdateFunc.
-func (mock *UserRepoMock) Update(ctx context.Context, user *biz.User) (*biz.User, error) {
+func (mock *UserRepo) Update(ctx context.Context, user *biz.User) (*biz.User, error) {
 	if mock.UpdateFunc == nil {
-		panic("UserRepoMock.UpdateFunc: method is nil but UserRepo.Update was just called")
+		panic("UserRepo.UpdateFunc: method is nil but UserRepo.Update was just called")
 	}
 	callInfo := struct {
 		Ctx  context.Context
@@ -325,7 +325,7 @@ func (mock *UserRepoMock) Update(ctx context.Context, user *biz.User) (*biz.User
 // Check the length with:
 //
 //	len(mockedUserRepo.UpdateCalls())
-func (mock *UserRepoMock) UpdateCalls() []struct {
+func (mock *UserRepo) UpdateCalls() []struct {
 	Ctx  context.Context
 	User *biz.User
 } {

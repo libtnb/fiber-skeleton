@@ -12,7 +12,7 @@ import (
 )
 
 func TestUserUsecase_Create(t *testing.T) {
-	repo := &mocksbiz.UserRepoMock{
+	repo := &mocksbiz.UserRepo{
 		ExistsNameFunc: func(context.Context, string) (bool, error) { return false, nil },
 		CreateFunc:     func(context.Context, *biz.User) error { return nil },
 	}
@@ -28,7 +28,7 @@ func TestUserUsecase_Create(t *testing.T) {
 
 func TestUserUsecase_Create_NameTaken(t *testing.T) {
 	// CreateFunc stays nil: a Create call would panic the test
-	repo := &mocksbiz.UserRepoMock{
+	repo := &mocksbiz.UserRepo{
 		ExistsNameFunc: func(context.Context, string) (bool, error) { return true, nil },
 	}
 
@@ -38,7 +38,7 @@ func TestUserUsecase_Create_NameTaken(t *testing.T) {
 }
 
 func TestUserUsecase_Get_NotFound(t *testing.T) {
-	repo := &mocksbiz.UserRepoMock{
+	repo := &mocksbiz.UserRepo{
 		GetFunc: func(context.Context, uint) (*biz.User, error) { return nil, rio.ErrNotFound },
 	}
 
@@ -48,7 +48,7 @@ func TestUserUsecase_Get_NotFound(t *testing.T) {
 }
 
 func TestUserUsecase_Update(t *testing.T) {
-	repo := &mocksbiz.UserRepoMock{
+	repo := &mocksbiz.UserRepo{
 		UpdateFunc: func(_ context.Context, u *biz.User) (*biz.User, error) { return u, nil },
 	}
 

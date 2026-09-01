@@ -19,10 +19,10 @@ import (
 )
 
 // newTestApp wires the service against a mocked repo and a real validator.
-func newTestApp(t *testing.T) (*fiber.App, *mocksbiz.UserRepoMock) {
+func newTestApp(t *testing.T) (*fiber.App, *mocksbiz.UserRepo) {
 	t.Helper()
 
-	repo := &mocksbiz.UserRepoMock{}
+	repo := &mocksbiz.UserRepo{}
 	user := service.NewUserService(biz.NewUserUsecase(repo), validator.MustNew())
 
 	app := fiber.New()

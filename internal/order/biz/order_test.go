@@ -23,10 +23,10 @@ func (b *fakeBus) Publish(_ context.Context, e event.Event) error {
 }
 
 func TestOrderUsecase_Place(t *testing.T) {
-	repo := &mocksbiz.OrderRepoMock{
+	repo := &mocksbiz.OrderRepo{
 		CreateFunc: func(context.Context, *biz.Order) error { return nil },
 	}
-	users := &mocksbiz.UsersMock{
+	users := &mocksbiz.Users{
 		ExistsFunc: func(context.Context, uint) (bool, error) { return true, nil },
 	}
 	bus := &fakeBus{}
@@ -50,8 +50,8 @@ func TestOrderUsecase_Place(t *testing.T) {
 
 func TestOrderUsecase_Place_UnknownUser(t *testing.T) {
 	// CreateFunc stays nil: a Create call would panic the test
-	repo := &mocksbiz.OrderRepoMock{}
-	users := &mocksbiz.UsersMock{
+	repo := &mocksbiz.OrderRepo{}
+	users := &mocksbiz.Users{
 		ExistsFunc: func(context.Context, uint) (bool, error) { return false, nil },
 	}
 	bus := &fakeBus{}

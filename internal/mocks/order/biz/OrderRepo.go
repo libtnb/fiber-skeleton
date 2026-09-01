@@ -11,16 +11,16 @@ import (
 	"github.com/libtnb/fiber-skeleton/internal/order/biz"
 )
 
-// Ensure that OrderRepoMock does implement biz.OrderRepo.
+// Ensure that OrderRepo does implement biz.OrderRepo.
 // If this is not the case, regenerate this file with mockery.
-var _ biz.OrderRepo = &OrderRepoMock{}
+var _ biz.OrderRepo = &OrderRepo{}
 
-// OrderRepoMock is a mock implementation of biz.OrderRepo.
+// OrderRepo is a mock implementation of biz.OrderRepo.
 //
 //	func TestSomethingThatUsesOrderRepo(t *testing.T) {
 //
 //		// make and configure a mocked biz.OrderRepo
-//		mockedOrderRepo := &OrderRepoMock{
+//		mockedOrderRepo := &OrderRepo{
 //			CreateFunc: func(ctx context.Context, order *biz.Order) error {
 //				panic("mock out the Create method")
 //			},
@@ -39,7 +39,7 @@ var _ biz.OrderRepo = &OrderRepoMock{}
 //		// and then make assertions.
 //
 //	}
-type OrderRepoMock struct {
+type OrderRepo struct {
 	// CreateFunc mocks the Create method.
 	CreateFunc func(ctx context.Context, order *biz.Order) error
 
@@ -92,9 +92,9 @@ type OrderRepoMock struct {
 }
 
 // Create calls CreateFunc.
-func (mock *OrderRepoMock) Create(ctx context.Context, order *biz.Order) error {
+func (mock *OrderRepo) Create(ctx context.Context, order *biz.Order) error {
 	if mock.CreateFunc == nil {
-		panic("OrderRepoMock.CreateFunc: method is nil but OrderRepo.Create was just called")
+		panic("OrderRepo.CreateFunc: method is nil but OrderRepo.Create was just called")
 	}
 	callInfo := struct {
 		Ctx   context.Context
@@ -113,7 +113,7 @@ func (mock *OrderRepoMock) Create(ctx context.Context, order *biz.Order) error {
 // Check the length with:
 //
 //	len(mockedOrderRepo.CreateCalls())
-func (mock *OrderRepoMock) CreateCalls() []struct {
+func (mock *OrderRepo) CreateCalls() []struct {
 	Ctx   context.Context
 	Order *biz.Order
 } {
@@ -128,9 +128,9 @@ func (mock *OrderRepoMock) CreateCalls() []struct {
 }
 
 // Delete calls DeleteFunc.
-func (mock *OrderRepoMock) Delete(ctx context.Context, id uint) error {
+func (mock *OrderRepo) Delete(ctx context.Context, id uint) error {
 	if mock.DeleteFunc == nil {
-		panic("OrderRepoMock.DeleteFunc: method is nil but OrderRepo.Delete was just called")
+		panic("OrderRepo.DeleteFunc: method is nil but OrderRepo.Delete was just called")
 	}
 	callInfo := struct {
 		Ctx context.Context
@@ -149,7 +149,7 @@ func (mock *OrderRepoMock) Delete(ctx context.Context, id uint) error {
 // Check the length with:
 //
 //	len(mockedOrderRepo.DeleteCalls())
-func (mock *OrderRepoMock) DeleteCalls() []struct {
+func (mock *OrderRepo) DeleteCalls() []struct {
 	Ctx context.Context
 	ID  uint
 } {
@@ -164,9 +164,9 @@ func (mock *OrderRepoMock) DeleteCalls() []struct {
 }
 
 // Get calls GetFunc.
-func (mock *OrderRepoMock) Get(ctx context.Context, id uint) (*biz.Order, error) {
+func (mock *OrderRepo) Get(ctx context.Context, id uint) (*biz.Order, error) {
 	if mock.GetFunc == nil {
-		panic("OrderRepoMock.GetFunc: method is nil but OrderRepo.Get was just called")
+		panic("OrderRepo.GetFunc: method is nil but OrderRepo.Get was just called")
 	}
 	callInfo := struct {
 		Ctx context.Context
@@ -185,7 +185,7 @@ func (mock *OrderRepoMock) Get(ctx context.Context, id uint) (*biz.Order, error)
 // Check the length with:
 //
 //	len(mockedOrderRepo.GetCalls())
-func (mock *OrderRepoMock) GetCalls() []struct {
+func (mock *OrderRepo) GetCalls() []struct {
 	Ctx context.Context
 	ID  uint
 } {
@@ -200,9 +200,9 @@ func (mock *OrderRepoMock) GetCalls() []struct {
 }
 
 // List calls ListFunc.
-func (mock *OrderRepoMock) List(ctx context.Context, page int, limit int) ([]*biz.Order, int64, error) {
+func (mock *OrderRepo) List(ctx context.Context, page int, limit int) ([]*biz.Order, int64, error) {
 	if mock.ListFunc == nil {
-		panic("OrderRepoMock.ListFunc: method is nil but OrderRepo.List was just called")
+		panic("OrderRepo.ListFunc: method is nil but OrderRepo.List was just called")
 	}
 	callInfo := struct {
 		Ctx   context.Context
@@ -223,7 +223,7 @@ func (mock *OrderRepoMock) List(ctx context.Context, page int, limit int) ([]*bi
 // Check the length with:
 //
 //	len(mockedOrderRepo.ListCalls())
-func (mock *OrderRepoMock) ListCalls() []struct {
+func (mock *OrderRepo) ListCalls() []struct {
 	Ctx   context.Context
 	Page  int
 	Limit int
