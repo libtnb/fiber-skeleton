@@ -67,15 +67,3 @@ linters:
       - path: _test\.go
         linters:
           - noctx
-
-formatters:
-  enable:
-    - gofmt
-    - goimports
-  settings:
-    goimports:
-      local-prefixes:
-        - github.com/libtnb/fiber-skeleton
-  exclusions:
-    paths:
-      - mocks
