@@ -13,7 +13,7 @@ require (
 	github.com/knadh/koanf/providers/env/v2 v2.0.1
 	github.com/knadh/koanf/providers/file v1.2.1
 	github.com/knadh/koanf/v2 v2.3.6
-	github.com/libtnb/assert v0.3.2
+	github.com/libtnb/assert v0.4.0
 	github.com/libtnb/cron v0.5.4
 	github.com/libtnb/graceful v0.2.1
 	github.com/libtnb/logrotate v0.1.4

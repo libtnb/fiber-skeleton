@@ -25,7 +25,7 @@ func TestCheckReadiness(t *testing.T) {
 			{Name: "database", Check: func(context.Context) error { return errors.New("secret backend detail") }},
 		}
 		err := checkReadiness(t.Context(), checks, time.Second)
-		must.EqualError(t, err, "database unavailable")
+		must.ErrorEqual(t, err, "database unavailable")
 		must.NotContains(t, err.Error(), "secret")
 	})
 
@@ -39,7 +39,7 @@ func TestCheckReadiness(t *testing.T) {
 			}},
 		}
 		err := checkReadiness(t.Context(), checks, 10*time.Millisecond)
-		must.EqualError(t, err, "readiness checks timed out")
+		must.ErrorEqual(t, err, "readiness checks timed out")
 		must.Eventually(t, func() bool {
 			select {
 			case <-cancelled:
@@ -47,7 +47,7 @@ func TestCheckReadiness(t *testing.T) {
 			default:
 				return false
 			}
-		}, time.Second, time.Millisecond)
+		}, must.Tick(time.Millisecond))
 	})
 
 	t.Run("failure cancels siblings", func(t *testing.T) {
@@ -60,7 +60,7 @@ func TestCheckReadiness(t *testing.T) {
 				return context.Cause(ctx)
 			}},
 		}
-		must.EqualError(t, checkReadiness(t.Context(), checks, time.Second), "failed unavailable")
+		must.ErrorEqual(t, checkReadiness(t.Context(), checks, time.Second), "failed unavailable")
 		must.Eventually(t, func() bool {
 			select {
 			case <-cancelled:
@@ -68,6 +68,6 @@ func TestCheckReadiness(t *testing.T) {
 			default:
 				return false
 			}
-		}, time.Second, time.Millisecond)
+		}, must.Tick(time.Millisecond))
 	})
 }
