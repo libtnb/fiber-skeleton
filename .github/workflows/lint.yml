@@ -21,7 +21,6 @@ jobs:
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v9
         with:
-          skip-cache: true
           version: latest
           args: --timeout=30m ./...
   govulncheck:
