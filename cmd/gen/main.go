@@ -21,7 +21,7 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/jinzhu/inflection"
+	"github.com/go-rio/rio"
 )
 
 //go:embed templates/*.tmpl
@@ -86,8 +86,8 @@ func generateModule(name string) error {
 		Snake:  name,
 		Pascal: toPascal(name),
 		Camel:  toCamel(name),
-		Table:  inflection.Plural(name),
-		Route:  inflection.Plural(name),
+		Table:  rio.TableName(name),
+		Route:  rio.TableName(name),
 	}
 	mig := migrationFor(time.Now().Format("20060102150405"), "create_"+m.Table+"_table")
 
