@@ -1,7 +1,7 @@
-template: testify
+template: matryer
 # one mock package per module, so same-named interfaces cannot collide
 dir: internal/mocks/{{.InterfaceDirRelative | trimPrefix "internal/"}}
-structname: "{{.InterfaceName}}"
+structname: "{{.InterfaceName}}Mock"
 pkgname: "{{.SrcPackageName}}"
 filename: "{{.InterfaceName}}.go"
 packages:

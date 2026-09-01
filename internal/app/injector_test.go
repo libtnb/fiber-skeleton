@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/libtnb/assert/must"
 )
 
 // TestGeneratedGraphs builds both generated object graphs, catching wiring
@@ -21,27 +21,27 @@ func TestGeneratedGraphs(t *testing.T) {
 	t.Setenv("APP_HTTP__DOCS", "true")
 
 	application, cleanup, err := InitializeApp("test")
-	require.NoError(t, err)
-	require.NotNil(t, application)
+	must.NoError(t, err)
+	must.NotNil(t, application)
 
 	// Every migration must compile to SQLite and run on an empty schema.
-	require.NoError(t, application.migrator.Up(t.Context()))
+	must.NoError(t, application.migrator.Up(t.Context()))
 
 	resp, err := application.router.Test(httptest.NewRequest(http.MethodGet, "/openapi.json", nil))
-	require.NoError(t, err)
-	require.Equal(t, 200, resp.StatusCode)
+	must.NoError(t, err)
+	must.Equal(t, resp.StatusCode, 200)
 	body, err := io.ReadAll(resp.Body)
-	require.NoError(t, err)
-	require.NoError(t, resp.Body.Close())
-	require.Contains(t, string(body), `"version": "test"`)
-	require.Contains(t, string(body), `"/users/{id}"`)
+	must.NoError(t, err)
+	must.NoError(t, resp.Body.Close())
+	must.Contains(t, string(body), `"version": "test"`)
+	must.Contains(t, string(body), `"/users/{id}"`)
 
-	require.NoError(t, cleanup())
-	require.NoError(t, cleanup(), "generated cleanup must be idempotent")
+	must.NoError(t, cleanup())
+	must.NoError(t, cleanup(), "generated cleanup must be idempotent")
 
 	management, cleanupCLI, err := InitializeCLI()
-	require.NoError(t, err)
-	require.NotNil(t, management)
-	require.NoError(t, cleanupCLI())
-	require.NoError(t, cleanupCLI(), "generated cleanup must be idempotent")
+	must.NoError(t, err)
+	must.NotNil(t, management)
+	must.NoError(t, cleanupCLI())
+	must.NoError(t, cleanupCLI(), "generated cleanup must be idempotent")
 }

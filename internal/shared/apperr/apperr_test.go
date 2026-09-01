@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/stretchr/testify/require"
+	"github.com/libtnb/assert/must"
 
 	"github.com/libtnb/fiber-skeleton/internal/shared/apperr"
 )
@@ -15,19 +15,19 @@ var errSentinel = errors.New("sentinel")
 func TestKindAndCodeSurviveWrapping(t *testing.T) {
 	err := apperr.Conflict("user.name_taken", "name already taken").In("user").Wrap(errSentinel)
 
-	require.Equal(t, apperr.KindConflict, apperr.KindOf(err))
-	require.Equal(t, "user.name_taken", apperr.CodeOf(err))
-	require.ErrorIs(t, err, errSentinel)
+	must.Equal(t, apperr.KindOf(err), apperr.KindConflict)
+	must.Equal(t, apperr.CodeOf(err), "user.name_taken")
+	must.ErrorIs(t, err, errSentinel)
 
 	wrapped := fmt.Errorf("placing order: %w", err)
-	require.Equal(t, apperr.KindConflict, apperr.KindOf(wrapped))
-	require.Equal(t, "user.name_taken", apperr.CodeOf(wrapped))
+	must.Equal(t, apperr.KindOf(wrapped), apperr.KindConflict)
+	must.Equal(t, apperr.CodeOf(wrapped), "user.name_taken")
 }
 
 func TestPlainErrorsCarryNoKind(t *testing.T) {
-	require.Equal(t, apperr.Kind(""), apperr.KindOf(errors.New("boom")))
-	require.Empty(t, apperr.CodeOf(errors.New("boom")))
-	require.Equal(t, apperr.Kind(""), apperr.KindOf(nil))
+	must.Equal(t, apperr.KindOf(errors.New("boom")), apperr.Kind(""))
+	must.Empty(t, apperr.CodeOf(errors.New("boom")))
+	must.Equal(t, apperr.KindOf(nil), apperr.Kind(""))
 }
 
 func TestHelpersSetTheirKinds(t *testing.T) {
@@ -54,6 +54,6 @@ func TestHelpersSetTheirKinds(t *testing.T) {
 		case "unprocessable":
 			err = apperr.Unprocessable("c", "p").Errorf("x")
 		}
-		require.Equal(t, kind, apperr.KindOf(err), helper)
+		must.Equal(t, apperr.KindOf(err), kind, helper)
 	}
 }

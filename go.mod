@@ -13,6 +13,7 @@ require (
 	github.com/knadh/koanf/providers/env/v2 v2.0.1
 	github.com/knadh/koanf/providers/file v1.2.1
 	github.com/knadh/koanf/v2 v2.3.6
+	github.com/libtnb/assert v0.3.2
 	github.com/libtnb/cron v0.5.4
 	github.com/libtnb/graceful v0.2.1
 	github.com/libtnb/logrotate v0.1.4
@@ -21,7 +22,6 @@ require (
 	github.com/libtnb/validator/contrib/openapi v0.2.2
 	github.com/libtnb/wire v0.1.1
 	github.com/samber/oops v1.23.1
-	github.com/stretchr/testify v1.12.1
 	github.com/urfave/cli/v3 v3.11.0
 )
 
@@ -38,6 +38,7 @@ require (
 	github.com/fxamacker/cbor/v2 v2.9.3 // indirect
 	github.com/gofiber/schema v1.8.4 // indirect
 	github.com/gofiber/utils/v2 v2.4.1 // indirect
+	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/huandu/xstrings v1.5.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
@@ -61,7 +62,7 @@ require (
 	github.com/savsgio/gotils v0.0.0-20250924091648-bce9a52d7761 // indirect
 	github.com/spf13/cobra v1.10.2 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect
-	github.com/stretchr/objx v0.5.3 // indirect
+	github.com/stretchr/testify v1.12.1 // indirect
 	github.com/tinylib/msgp v1.6.4 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.73.0 // indirect

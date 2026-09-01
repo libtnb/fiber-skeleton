@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/gofiber/fiber/v3"
+	"github.com/libtnb/assert/must"
 	"github.com/libtnb/validator"
-	"github.com/stretchr/testify/require"
 
 	"github.com/libtnb/fiber-skeleton/internal/shared/transport"
 )
@@ -41,36 +41,36 @@ func bindOn[T any](t *testing.T, method, target, body, contentType string) (*T, 
 		req.Header.Set(fiber.HeaderContentType, contentType)
 	}
 	resp, err := app.Test(req)
-	require.NoError(t, err)
+	must.NoError(t, err)
 	return bound, resp.StatusCode
 }
 
 func TestBindBodyAndValidate(t *testing.T) {
 	got, status := bindOn[createReq](t, fiber.MethodPost, "/bind", `{"name":"alice"}`, fiber.MIMEApplicationJSON)
-	require.Equal(t, fiber.StatusOK, status)
-	require.Equal(t, "alice", got.Name)
+	must.Equal(t, status, fiber.StatusOK)
+	must.Equal(t, got.Name, "alice")
 }
 
 func TestBindRejectsInvalid(t *testing.T) {
 	_, status := bindOn[createReq](t, fiber.MethodPost, "/bind", `{"name":"ab"}`, fiber.MIMEApplicationJSON)
-	require.Equal(t, fiber.StatusUnprocessableEntity, status)
+	must.Equal(t, status, fiber.StatusUnprocessableEntity)
 }
 
 func TestBindRunsPrepareHook(t *testing.T) {
 	got, status := bindOn[transport.Paginate](t, fiber.MethodGet, "/bind", "", "")
-	require.Equal(t, fiber.StatusOK, status)
-	require.Equal(t, 1, got.Page)
-	require.Equal(t, 10, got.Limit)
+	must.Equal(t, status, fiber.StatusOK)
+	must.Equal(t, got.Page, 1)
+	must.Equal(t, got.Limit, 10)
 
 	got, status = bindOn[transport.Paginate](t, fiber.MethodGet, "/bind?page=3&limit=50", "", "")
-	require.Equal(t, fiber.StatusOK, status)
-	require.Equal(t, 3, got.Page)
-	require.Equal(t, 50, got.Limit)
+	must.Equal(t, status, fiber.StatusOK)
+	must.Equal(t, got.Page, 3)
+	must.Equal(t, got.Limit, 50)
 }
 
 func TestBindQueryOverLimitFailsValidation(t *testing.T) {
 	_, status := bindOn[transport.Paginate](t, fiber.MethodGet, "/bind?limit=5000", "", "")
-	require.Equal(t, fiber.StatusUnprocessableEntity, status)
+	must.Equal(t, status, fiber.StatusUnprocessableEntity)
 }
 
 type uriReq struct {
@@ -79,6 +79,6 @@ type uriReq struct {
 
 func TestBindURI(t *testing.T) {
 	got, status := bindOn[uriReq](t, fiber.MethodGet, "/bind/42", "", "")
-	require.Equal(t, fiber.StatusOK, status)
-	require.EqualValues(t, 42, got.ID)
+	must.Equal(t, status, fiber.StatusOK)
+	must.Equal(t, got.ID, 42)
 }

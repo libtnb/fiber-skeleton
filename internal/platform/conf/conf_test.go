@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/require"
+	"github.com/libtnb/assert/must"
 
 	"github.com/libtnb/fiber-skeleton/internal/platform/conf"
 )
@@ -14,7 +14,7 @@ import (
 func writeConfig(t *testing.T, yaml string) {
 	t.Helper()
 	path := filepath.Join(t.TempDir(), "config.yml")
-	require.NoError(t, os.WriteFile(path, []byte(yaml), 0o600))
+	must.NoError(t, os.WriteFile(path, []byte(yaml), 0o600))
 	t.Setenv("APP_CONFIG", path)
 }
 
@@ -30,13 +30,13 @@ func TestLoadAppliesDefaults(t *testing.T) {
 	writeConfig(t, minimal)
 
 	c, err := conf.Load()
-	require.NoError(t, err)
+	must.NoError(t, err)
 
-	require.Equal(t, "test-app", c.App.Name)
-	require.Equal(t, 4096, c.HTTP.BodyLimit)
-	require.Equal(t, "info", c.Log.Level)
-	require.Equal(t, "file", c.Log.Output)
-	require.Equal(t, "storage/logs/app.log", c.Log.Path)
+	must.Equal(t, c.App.Name, "test-app")
+	must.Equal(t, c.HTTP.BodyLimit, 4096)
+	must.Equal(t, c.Log.Level, "info")
+	must.Equal(t, c.Log.Output, "file")
+	must.Equal(t, c.Log.Path, "storage/logs/app.log")
 }
 
 func TestLoadEnvOverrides(t *testing.T) {
@@ -47,12 +47,12 @@ func TestLoadEnvOverrides(t *testing.T) {
 	t.Setenv("APP_LOG__OUTPUT", "stdout")
 
 	c, err := conf.Load()
-	require.NoError(t, err)
+	must.NoError(t, err)
 
-	require.Equal(t, ":8080", c.HTTP.Address)
-	require.Equal(t, 30*time.Second, c.HTTP.ReadTimeout)
-	require.Equal(t, []string{"https://a.example", "https://b.example"}, c.HTTP.CorsOrigins)
-	require.Equal(t, "stdout", c.Log.Output)
+	must.Equal(t, c.HTTP.Address, ":8080")
+	must.Equal(t, c.HTTP.ReadTimeout, 30*time.Second)
+	must.DeepEqual(t, c.HTTP.CorsOrigins, []string{"https://a.example", "https://b.example"})
+	must.Equal(t, c.Log.Output, "stdout")
 }
 
 func TestLoadRejectsBadValues(t *testing.T) {
@@ -86,7 +86,7 @@ func TestLoadRejectsBadValues(t *testing.T) {
 				t.Setenv(k, v)
 			}
 			_, err := conf.Load()
-			require.ErrorContains(t, err, tc.wantErr)
+			must.ErrorContains(t, err, tc.wantErr)
 		})
 	}
 }
@@ -94,5 +94,5 @@ func TestLoadRejectsBadValues(t *testing.T) {
 func TestLoadMissingFileFails(t *testing.T) {
 	t.Setenv("APP_CONFIG", filepath.Join(t.TempDir(), "absent.yml"))
 	_, err := conf.Load()
-	require.Error(t, err)
+	must.Error(t, err)
 }

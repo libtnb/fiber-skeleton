@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/libtnb/assert/must"
 	"github.com/libtnb/validator"
-	"github.com/stretchr/testify/require"
 
 	"github.com/libtnb/fiber-skeleton/internal/shared/registry"
 	"github.com/libtnb/fiber-skeleton/internal/shared/transport"
@@ -30,8 +30,8 @@ func TestSpecJSONUsesTypedSchemasAndNoBodyResponse(t *testing.T) {
 	}}
 
 	spec, err := SpecJSON("test", "v1", validator.MustNew(), routes)
-	require.NoError(t, err)
-	require.Contains(t, string(spec), `"format": "date-time"`)
+	must.NoError(t, err)
+	must.Contains(t, string(spec), `"format": "date-time"`)
 
 	type response struct {
 		Content map[string]any `json:"content"`
@@ -45,16 +45,16 @@ func TestSpecJSONUsesTypedSchemasAndNoBodyResponse(t *testing.T) {
 		} `json:"info"`
 		Paths map[string]map[string]operation `json:"paths"`
 	}
-	require.NoError(t, json.Unmarshal(spec, &document))
-	require.Equal(t, "v1", document.Info.Version)
+	must.NoError(t, json.Unmarshal(spec, &document))
+	must.Equal(t, document.Info.Version, "v1")
 	path := document.Paths["/things/{id}"]
-	require.NotNil(t, path["get"].Responses["200"].Content)
-	require.Nil(t, path["delete"].Responses["204"].Content)
+	must.NotNil(t, path["get"].Responses["200"].Content)
+	must.Nil(t, path["delete"].Responses["204"].Content)
 }
 
 func TestSpecJSONPropagatesGeneratorErrors(t *testing.T) {
 	_, err := SpecJSON("", "v1", validator.MustNew(), nil)
-	require.Error(t, err)
+	must.Error(t, err)
 
 	routes := registry.Routes{{{
 		Method:   http.MethodGet,
@@ -62,5 +62,5 @@ func TestSpecJSONPropagatesGeneratorErrors(t *testing.T) {
 		Document: transport.Describe[documentRequest, documentResponse](0),
 	}}}
 	_, err = SpecJSON("test", "v1", validator.MustNew(), routes)
-	require.Error(t, err)
+	must.Error(t, err)
 }

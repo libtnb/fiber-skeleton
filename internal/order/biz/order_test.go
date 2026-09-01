@@ -4,8 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/stretchr/testify/mock"
-	"github.com/stretchr/testify/require"
+	"github.com/libtnb/assert/must"
 
 	mocksbiz "github.com/libtnb/fiber-skeleton/internal/mocks/order/biz"
 	"github.com/libtnb/fiber-skeleton/internal/order/biz"
@@ -24,36 +23,41 @@ func (b *fakeBus) Publish(_ context.Context, e event.Event) error {
 }
 
 func TestOrderUsecase_Place(t *testing.T) {
-	repo := mocksbiz.NewOrderRepo(t)
-	users := mocksbiz.NewUsers(t)
+	repo := &mocksbiz.OrderRepoMock{
+		CreateFunc: func(context.Context, *biz.Order) error { return nil },
+	}
+	users := &mocksbiz.UsersMock{
+		ExistsFunc: func(context.Context, uint) (bool, error) { return true, nil },
+	}
 	bus := &fakeBus{}
-
-	users.EXPECT().Exists(mock.Anything, uint(1)).Return(true, nil)
-	repo.EXPECT().Create(mock.Anything, mock.MatchedBy(func(o *biz.Order) bool {
-		return o.UserID == 1 && o.Amount == 500
-	})).Return(nil)
 
 	order, err := biz.NewOrderUsecase(repo, users, bus).Place(t.Context(), 1, 500)
 
-	require.NoError(t, err)
-	require.Equal(t, uint(1), order.UserID)
+	must.NoError(t, err)
+	must.Equal(t, order.UserID, uint(1))
 
-	require.Len(t, bus.published, 1)
+	created := repo.CreateCalls()
+	must.Len(t, created, 1)
+	must.Equal(t, created[0].Order.UserID, uint(1))
+	must.Equal(t, created[0].Order.Amount, 500)
+
+	must.Len(t, bus.published, 1)
 	placed, ok := bus.published[0].(biz.OrderPlaced)
-	require.True(t, ok)
-	require.Equal(t, uint(1), placed.UserID)
-	require.EqualValues(t, 500, placed.Amount)
+	must.True(t, ok)
+	must.Equal(t, placed.UserID, uint(1))
+	must.Equal(t, placed.Amount, 500)
 }
 
 func TestOrderUsecase_Place_UnknownUser(t *testing.T) {
-	repo := mocksbiz.NewOrderRepo(t) // no Create expectation: it must not be called
-	users := mocksbiz.NewUsers(t)
+	// CreateFunc stays nil: a Create call would panic the test
+	repo := &mocksbiz.OrderRepoMock{}
+	users := &mocksbiz.UsersMock{
+		ExistsFunc: func(context.Context, uint) (bool, error) { return false, nil },
+	}
 	bus := &fakeBus{}
-
-	users.EXPECT().Exists(mock.Anything, uint(9)).Return(false, nil)
 
 	_, err := biz.NewOrderUsecase(repo, users, bus).Place(t.Context(), 9, 500)
 
-	require.ErrorIs(t, err, biz.ErrUserNotFound)
-	require.Empty(t, bus.published)
+	must.ErrorIs(t, err, biz.ErrUserNotFound)
+	must.Empty(t, bus.published)
 }

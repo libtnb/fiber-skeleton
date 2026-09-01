@@ -7,7 +7,7 @@ import (
 	"github.com/go-rio/migrate"
 	"github.com/go-rio/rio"
 	"github.com/go-rio/sqlite"
-	"github.com/stretchr/testify/require"
+	"github.com/libtnb/assert/must"
 
 	"github.com/libtnb/fiber-skeleton/internal/migrations"
 	"github.com/libtnb/fiber-skeleton/internal/user/biz"
@@ -18,12 +18,12 @@ func newTestRepo(t *testing.T) *userRepo {
 	t.Helper()
 
 	db, err := sqlite.Open("file:" + filepath.Join(t.TempDir(), "test.db"))
-	require.NoError(t, err)
+	must.NoError(t, err)
 	t.Cleanup(func() { _ = db.Close() })
 
 	m, err := migrate.New(db.Unwrap(), migrate.SQLite, migrate.WithCollection(migrations.Collection()))
-	require.NoError(t, err)
-	require.NoError(t, m.Up(t.Context()))
+	must.NoError(t, err)
+	must.NoError(t, m.Up(t.Context()))
 
 	return &userRepo{db: db}
 }
@@ -33,39 +33,39 @@ func TestUserRepo_CRUD(t *testing.T) {
 	ctx := t.Context()
 
 	user := &biz.User{Name: "alice"}
-	require.NoError(t, repo.Create(ctx, user))
-	require.NotZero(t, user.ID)
-	require.False(t, user.CreatedAt.IsZero())
+	must.NoError(t, repo.Create(ctx, user))
+	must.NotZero(t, user.ID)
+	must.False(t, user.CreatedAt.IsZero())
 
 	got, err := repo.Get(ctx, user.ID)
-	require.NoError(t, err)
-	require.Equal(t, "alice", got.Name)
+	must.NoError(t, err)
+	must.Equal(t, got.Name, "alice")
 
 	list, total, err := repo.List(ctx, 1, 10)
-	require.NoError(t, err)
-	require.Equal(t, int64(1), total)
-	require.Len(t, list, 1)
+	must.NoError(t, err)
+	must.Equal(t, total, int64(1))
+	must.Len(t, list, 1)
 
 	// Update changes the name but keeps CreatedAt.
 	updated, err := repo.Update(ctx, &biz.User{ID: user.ID, Name: "bob"})
-	require.NoError(t, err)
-	require.Equal(t, "bob", updated.Name)
-	require.Equal(t, user.CreatedAt.Unix(), updated.CreatedAt.Unix())
+	must.NoError(t, err)
+	must.Equal(t, updated.Name, "bob")
+	must.Equal(t, updated.CreatedAt.Unix(), user.CreatedAt.Unix())
 }
 
 func TestUserRepo_Create_DuplicateName(t *testing.T) {
 	repo := newTestRepo(t)
 	ctx := t.Context()
 
-	require.NoError(t, repo.Create(ctx, &biz.User{Name: "alice"}))
-	require.ErrorIs(t, repo.Create(ctx, &biz.User{Name: "alice"}), biz.ErrNameTaken)
+	must.NoError(t, repo.Create(ctx, &biz.User{Name: "alice"}))
+	must.ErrorIs(t, repo.Create(ctx, &biz.User{Name: "alice"}), biz.ErrNameTaken)
 }
 
 func TestUserRepo_Get_NotFound(t *testing.T) {
 	repo := newTestRepo(t)
 
 	_, err := repo.Get(t.Context(), 404)
-	require.ErrorIs(t, err, rio.ErrNotFound)
+	must.ErrorIs(t, err, rio.ErrNotFound)
 }
 
 func TestUserRepo_PredefinedQueriesUsePerCallArguments(t *testing.T) {
@@ -74,24 +74,24 @@ func TestUserRepo_PredefinedQueriesUsePerCallArguments(t *testing.T) {
 
 	alice := &biz.User{Name: "alice"}
 	bob := &biz.User{Name: "bob"}
-	require.NoError(t, repo.Create(ctx, alice))
-	require.NoError(t, repo.Create(ctx, bob))
+	must.NoError(t, repo.Create(ctx, alice))
+	must.NoError(t, repo.Create(ctx, bob))
 
 	exists, err := repo.ExistsName(ctx, "alice")
-	require.NoError(t, err)
-	require.True(t, exists)
+	must.NoError(t, err)
+	must.True(t, exists)
 	exists, err = repo.ExistsName(ctx, "bob")
-	require.NoError(t, err)
-	require.True(t, exists)
+	must.NoError(t, err)
+	must.True(t, exists)
 	exists, err = repo.ExistsName(ctx, "missing")
-	require.NoError(t, err)
-	require.False(t, exists)
+	must.NoError(t, err)
+	must.False(t, exists)
 
-	require.NoError(t, repo.Delete(ctx, bob.ID))
+	must.NoError(t, repo.Delete(ctx, bob.ID))
 	_, err = repo.Get(ctx, bob.ID)
-	require.ErrorIs(t, err, rio.ErrNotFound)
+	must.ErrorIs(t, err, rio.ErrNotFound)
 	_, err = repo.Get(ctx, alice.ID)
-	require.NoError(t, err)
+	must.NoError(t, err)
 }
 
 func TestUserRepo_Delete_SoftDeletesAndReports(t *testing.T) {
@@ -99,15 +99,15 @@ func TestUserRepo_Delete_SoftDeletesAndReports(t *testing.T) {
 	ctx := t.Context()
 
 	user := &biz.User{Name: "carol"}
-	require.NoError(t, repo.Create(ctx, user))
+	must.NoError(t, repo.Create(ctx, user))
 
 	// Delete soft-deletes: the row is gone from default reads.
-	require.NoError(t, repo.Delete(ctx, user.ID))
+	must.NoError(t, repo.Delete(ctx, user.ID))
 	_, err := repo.Get(ctx, user.ID)
-	require.ErrorIs(t, err, rio.ErrNotFound)
+	must.ErrorIs(t, err, rio.ErrNotFound)
 
-	require.ErrorIs(t, repo.Delete(ctx, user.ID), rio.ErrNotFound)
+	must.ErrorIs(t, repo.Delete(ctx, user.ID), rio.ErrNotFound)
 
 	// soft-deleting released the name
-	require.NoError(t, repo.Create(ctx, &biz.User{Name: "carol"}))
+	must.NoError(t, repo.Create(ctx, &biz.User{Name: "carol"}))
 }
