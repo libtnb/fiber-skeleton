@@ -20,9 +20,9 @@ require (
 	github.com/libtnb/utils v1.2.2
 	github.com/libtnb/validator v0.5.0
 	github.com/libtnb/validator/contrib/openapi v0.3.0
-	github.com/libtnb/wire v0.2.0
+	github.com/libtnb/wire v0.3.0
 	github.com/samber/oops v1.23.1
-	github.com/urfave/cli/v3 v3.11.0
+	github.com/urfave/cli/v3 v3.12.0
 )
 
 require (

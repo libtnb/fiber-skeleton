@@ -82,8 +82,8 @@ github.com/libtnb/validator v0.5.0 h1:1jiUBwDskUxaSQCoS9k8Ua96wofU3aZ5vttKAmEfFU
 github.com/libtnb/validator v0.5.0/go.mod h1:yssIkchUNzAQc8EeP99rwIeYbFE2usrYbN1Ki5pamfQ=
 github.com/libtnb/validator/contrib/openapi v0.3.0 h1:3yqF52Naa3BanMHAnpXpLJ23ilGPuQcb27fw89zChi4=
 github.com/libtnb/validator/contrib/openapi v0.3.0/go.mod h1:NrRAZg/IvkdEPMn3WhtDdwVPgKmnVj7J0yogBKYTygo=
-github.com/libtnb/wire v0.2.0 h1:F2kKXldu8jq7CUzPIOnWc0DBghtxkCKZREr9u3Ht9bc=
-github.com/libtnb/wire v0.2.0/go.mod h1:LiM46FF18IcKFV/a6mauzKSkBlm2Hp+r/1xKx4MqTww=
+github.com/libtnb/wire v0.3.0 h1:AXNLM/J5z8DymfJNbJtet85bydN124orgQUL9jhXziQ=
+github.com/libtnb/wire v0.3.0/go.mod h1:LiM46FF18IcKFV/a6mauzKSkBlm2Hp+r/1xKx4MqTww=
 github.com/mattn/go-colorable v0.1.15 h1:+u9SLTRGnXv73cEsnsmoZBom+dMU88B2M0aDcWy0/jY=
 github.com/mattn/go-colorable v0.1.15/go.mod h1:6LmQG8QLFO4G5z1gPvYEzlUgJ2wF+stgPZH1UqBm1s8=
 github.com/mattn/go-isatty v0.0.24 h1:tGZZoVgT/KiqK1c8ocVLeDS8BSWMRd47J3Lbz7vsReI=
@@ -132,8 +132,8 @@ github.com/stretchr/testify v1.12.1 h1:EuwCh5fleGS7H32xRwO3wRGT7DxrDhLAT6FF8MpWD
 github.com/stretchr/testify v1.12.1/go.mod h1:MDEgiDPPsNp5cuIrHPPCyornHKgEVbtFUmoNlxoYthg=
 github.com/tinylib/msgp v1.6.4 h1:mOwYbyYDLPj35mkA2BjjYejgJk9BuHxDdvRnb6v2ZcQ=
 github.com/tinylib/msgp v1.6.4/go.mod h1:RSp0LW9oSxFut3KzESt5Voq4GVWyS+PSulT77roAqEA=
-github.com/urfave/cli/v3 v3.11.0 h1:P/euJp99kb9p0tlVY+iYTLYYTAQlfl0hR2gUO1Img1Q=
-github.com/urfave/cli/v3 v3.11.0/go.mod h1:ysVLtOEmg2tOy6PknnYVhDoouyC/6N42TMeoMzskhso=
+github.com/urfave/cli/v3 v3.12.0 h1:p2iMu5yeXB+ORzD1AAqwP2kHV9Q6QObnwyQXFFdnXYQ=
+github.com/urfave/cli/v3 v3.12.0/go.mod h1:vXn6HxPNccJSzQr2QvwVncOKrgYGIHU0HY5h8B2nQj4=
 github.com/valyala/bytebufferpool v1.0.0 h1:GqA5TC/0021Y/b9FG4Oi9Mr3q7XYx6KllzawFIhcdPw=
 github.com/valyala/bytebufferpool v1.0.0/go.mod h1:6bBcMArwyJ5K/AmCkWv1jt77kVWyCJ6HpOuEn7z0Csc=
 github.com/valyala/fasthttp v1.74.0 h1:wMS9fnO2QTALozYx5pId2Vi7ZwU/epUkY8i/KPWCHoU=
