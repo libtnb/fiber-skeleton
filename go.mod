@@ -22,7 +22,7 @@ require (
 	github.com/libtnb/validator/contrib/openapi v0.3.0
 	github.com/libtnb/wire v0.3.0
 	github.com/samber/oops v1.23.2
-	github.com/urfave/cli/v3 v3.12.0
+	github.com/urfave/cli/v3 v3.13.0
 )
 
 require (
