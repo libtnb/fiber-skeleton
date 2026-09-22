@@ -20,10 +20,10 @@ github.com/fxamacker/cbor/v2 v2.9.3 h1:oQBnFATpNdY8gJHTndDDv5Xl4QqNaz51G5LLEPhng
 github.com/fxamacker/cbor/v2 v2.9.3/go.mod h1:vM4b+DJCtHn+zz7h3FFp/hDAI9WNWCsZj23V5ytsSxQ=
 github.com/go-rio/migrate v0.14.0 h1:X6sOLL3SPiSj62B+n1XxsMRmrw1bROdP4gowMUTqoIk=
 github.com/go-rio/migrate v0.14.0/go.mod h1:adFIRpwsmeKbOYWDPFOt9IXuzUEs77DQnMX+Cjv4BNs=
-github.com/go-rio/rio v0.18.1 h1:R/WjFxHh4PEX9R+uCKbfod/Im88OVJIAQfKkJCHCiyY=
-github.com/go-rio/rio v0.18.1/go.mod h1:kzvXpbPi2Hoe0Pk24Z/dSv+BJzUxHWt+Fc5olwiu5+g=
-github.com/go-rio/sqlite v0.6.2 h1:7UvNH7BeVBSQeGHVfYLLQdzeWtMwbO0IQz9qf2tLKL0=
-github.com/go-rio/sqlite v0.6.2/go.mod h1:rypPP403JfZLCcjC427cCwZ2D6ROJMD1k2pR0EFHGbY=
+github.com/go-rio/rio v0.19.1 h1:D9WpW6nEwh0tsOXhNAiUA5Fz5Kgbq26w0mYsny+R91U=
+github.com/go-rio/rio v0.19.1/go.mod h1:kzvXpbPi2Hoe0Pk24Z/dSv+BJzUxHWt+Fc5olwiu5+g=
+github.com/go-rio/sqlite v0.6.4 h1:Hfwq1rq6UMHOx0UPhaDJwwB3vHVj+AveTrMTJXT2sz8=
+github.com/go-rio/sqlite v0.6.4/go.mod h1:M+w6kowiAVORZDbdGlaVUYgay79JfJjk4SMtkkUJpXQ=
 github.com/go-viper/mapstructure/v2 v2.5.0 h1:vM5IJoUAy3d7zRSVtIwQgBj7BiWtMPfmPEgAXnvj1Ro=
 github.com/go-viper/mapstructure/v2 v2.5.0/go.mod h1:oJDH3BJKyqBA2TXFhDsKDGDTlndYOZ6rGS0BRZIxGhM=
 github.com/gofiber/contrib/v3/websocket v1.2.6 h1:5XcHejNCq460uLSdDAAp11RIrDGMHax07d0zWUZXgYc=
