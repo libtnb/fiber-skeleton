@@ -12,11 +12,11 @@ require (
 	github.com/knadh/koanf/parsers/yaml v1.1.1
 	github.com/knadh/koanf/providers/env/v2 v2.0.2
 	github.com/knadh/koanf/providers/file v1.2.1
-	github.com/knadh/koanf/v2 v2.3.7
+	github.com/knadh/koanf/v2 v2.3.8
 	github.com/libtnb/assert v0.4.2
 	github.com/libtnb/cron v0.6.0
-	github.com/libtnb/graceful v0.3.1
-	github.com/libtnb/logrotate v0.1.5
+	github.com/libtnb/graceful v0.3.2
+	github.com/libtnb/logrotate v0.1.6
 	github.com/libtnb/utils v1.2.2
 	github.com/libtnb/validator v0.5.0
 	github.com/libtnb/validator/contrib/openapi v0.3.0
