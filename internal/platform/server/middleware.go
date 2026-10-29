@@ -12,7 +12,7 @@ import (
 	"github.com/gofiber/fiber/v3/middleware/encryptcookie"
 	"github.com/gofiber/fiber/v3/middleware/etag"
 	"github.com/gofiber/fiber/v3/middleware/helmet"
-	"github.com/gofiber/fiber/v3/middleware/recover"
+	fiberrecover "github.com/gofiber/fiber/v3/middleware/recover"
 	"github.com/gofiber/fiber/v3/middleware/requestid"
 
 	"github.com/libtnb/fiber-skeleton/internal/platform/conf"
@@ -20,7 +20,7 @@ import (
 
 func globalMiddlewares(config *conf.Config, log *slog.Logger) []fiber.Handler {
 	handlers := []fiber.Handler{
-		recover.New(recover.Config{
+		fiberrecover.New(fiberrecover.Config{
 			EnableStackTrace: true,
 		}),
 	}
