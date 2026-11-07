@@ -7,7 +7,7 @@ require (
 	github.com/go-rio/rio v0.21.0
 	github.com/go-rio/sqlite v0.6.8
 	github.com/go-viper/mapstructure/v2 v2.5.0
-	github.com/gofiber/contrib/v3/websocket v1.2.12
+	github.com/gofiber/contrib/v3/websocket v1.2.13
 	github.com/gofiber/fiber/v3 v3.6.1
 	github.com/knadh/koanf/parsers/yaml v1.1.1
 	github.com/knadh/koanf/providers/env/v2 v2.0.2
