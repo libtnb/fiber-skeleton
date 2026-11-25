@@ -7,7 +7,7 @@ require (
 	github.com/go-rio/rio v0.21.0
 	github.com/go-rio/sqlite v0.7.0
 	github.com/go-viper/mapstructure/v2 v2.5.0
-	github.com/gofiber/contrib/v3/websocket v1.2.16
+	github.com/gofiber/contrib/v3/websocket v1.3.0
 	github.com/gofiber/fiber/v3 v3.7.0
 	github.com/knadh/koanf/parsers/yaml v1.1.1
 	github.com/knadh/koanf/providers/env/v2 v2.0.2
@@ -41,7 +41,7 @@ require (
 	github.com/huandu/xstrings v1.5.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jedib0t/go-pretty/v6 v6.8.3 // indirect
-	github.com/klauspost/compress v1.20.4 // indirect
+	github.com/klauspost/compress v1.20.5 // indirect
 	github.com/knadh/koanf/maps v0.1.3 // indirect
 	github.com/knadh/koanf/providers/env v1.1.0 // indirect
 	github.com/knadh/koanf/providers/posflag v1.0.2 // indirect
@@ -63,7 +63,7 @@ require (
 	github.com/spf13/pflag v1.0.10 // indirect
 	github.com/tinylib/msgp v1.6.5 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasthttp v1.79.0 // indirect
+	github.com/valyala/fasthttp v1.80.0 // indirect
 	github.com/vektra/mockery/v3 v3.9.2 // indirect
 	github.com/xeipuuv/gojsonpointer v0.0.0-20190905194746-02993c407bfb // indirect
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
